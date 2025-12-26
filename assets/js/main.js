@@ -1,4 +1,43 @@
 // ==============================================
+// --- Dark Mode Toggle ---
+'use strict';
+
+(function () {
+  const STORAGE_KEY = 'theme';
+  const root = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
+
+  // 1. Initiales Theme bestimmen
+  function getInitialTheme() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) return stored;
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+  }
+
+  // 2. Theme setzen
+  function setTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    localStorage.setItem(STORAGE_KEY, theme);
+  }
+
+  // 3. Initial anwenden
+  const initialTheme = getInitialTheme();
+  setTheme(initialTheme);
+
+  // 4. Toggle-Button
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    });
+  }
+})();
+
+// ==============================================
 // --- Menu ---
 function toggleMenu() {
   const menu = document.getElementById('mobileMenu');

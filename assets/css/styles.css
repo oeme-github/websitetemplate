@@ -8,7 +8,6 @@
   --color-bg-body: #ffffff;
   --color-bg-header: #111111;
   --color-bg-section-alt: #f5f5f5;
-
   --color-bg-hero-start: #222222;
   --color-bg-hero-end: #444444;
 
@@ -20,11 +19,16 @@
   /* Akzent */
   --color-accent: #4f46e5;
 
+  /* Topbar */
+  --color-bg-topbar: var(--color-accent);
+  --color-text-topbar: #ffffff;
+
   /* Layout */
   --max-width: 1200px;
 
   /* Font Families */
-  --font-base: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-base: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: "Inter", system-ui, sans-serif;
 
   /* Font Sizes */
   --fs-100: clamp(0.875rem, 0.85vw, 0.95rem);  /* Small */
@@ -32,6 +36,9 @@
   --fs-300: clamp(1.25rem, 1.5vw, 1.5rem);    /* H3 */
   --fs-400: clamp(1.75rem, 3vw, 2.25rem);     /* H2 */
   --fs-500: clamp(2.5rem, 5vw, 4rem);         /* H1 */
+  /* Topbar */
+  --fs-topbar: var(--fs-100);
+  --space-topbar-y: var(--space-2);
 
   /* Line Heights */
   --lh-body: 1.6;
@@ -45,8 +52,13 @@
   --space-5: 4rem;
   --space-6: 6rem;
 
+  /* Logo URLs */
+  --logo-url-light: url("/assets/logo/logo_secondary.svg");
+  --logo-url-dark: url("/assets/logo/logo_secondary_white.svg");
+
 }
 
+/* Dunkelmodus Variablen */
 [data-theme="dark"] {
   --color-bg-body: #0f0f0f;
   --color-bg-header: #000000;
@@ -57,9 +69,18 @@
   --color-text-muted: #999999;
 
   --color-accent: #818cf8;
+
+  --color-bg-topbar: #1f2937;
+
+  --logo-src: "assets/logos/logo-dark.svg";
 }
 
 /* Überschriften */
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
 h1 {
   font-size: var(--fs-500);
   line-height: var(--lh-heading);
@@ -72,6 +93,15 @@ h2 {
 h3 {
   font-size: var(--fs-300);
 }
+
+/* Fließtext */
+p {
+  font-family: var(--font-base);
+  font-weight: 400;
+  font-size: var(--fs-200);
+
+}
+
 /* Kleiner Text */
 small {
   font-size: var(--fs-100);
@@ -80,6 +110,20 @@ small {
 /* Reset & Basis */
 * {
   box-sizing: border-box;
+}
+
+.topbar {
+  background: var(--color-bg-topbar);
+  color: var(--color-text-topbar);
+
+  font-size: var(--fs-topbar);
+  text-align: center;
+
+  padding: var(--space-topbar-y) var(--space-3);
+}
+
+.topbar p {
+  margin: 0;
 }
 
 html, body {
@@ -120,6 +164,17 @@ body {
   gap: var(--space-3);
   justify-content: space-between;
   align-items: center;
+}
+
+.logo-image {
+  display: block;
+  width: auto;
+  height: clamp(1.75rem, 2vw, 2.5rem);
+
+  background-image: var(--logo-url-dark);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: left center;
 }
 
 .header nav a {
@@ -175,6 +230,11 @@ body {
 /* Footer */
 .footer {
   /* Layout */
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
+  align-items: center;
+
   padding: var(--space-3);
   text-align: center;
   /* Farben */
@@ -184,9 +244,24 @@ body {
   scroll-snap-align: none;
 }
 
+.theme-toggle {
+  background: none;
+  border: 1px solid currentColor;
+  color: var(--color-text-muted);
+  padding: var(--space-1) var(--space-2);
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  color: var(--color-accent);
+}
+
+
 /* Dunkelmodus */
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
   }
 }
+

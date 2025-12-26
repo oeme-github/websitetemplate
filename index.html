@@ -5,12 +5,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>One-Pager</title>
+    <link rel="icon" href="/assets/icons/icon.svg" type="image/svg+xml">
+    <link rel="icon" href="/assets/icons/favicon-32.png" sizes="32x32">
+    <link rel="icon" href="/assets/icons/favicon-16.png" sizes="16x16">
+    <link rel="icon" href="/assets/icons/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="assets/icons/site.webmanifest">
     <link rel="stylesheet" href="/assets/css/styles.css" />
+    <script src="/assets/js/main.js" defer></script>
 </head>
 
+
 <body>
+    <!-- Topbar -->
+    <div class="topbar">
+        <p>✨ Kostenloser Versand ab 50 €</p>
+    </div>
+    <!-- Header -->
     <header class="header">
         <div class="header-inner">
+            <a href="#hero" class="logo">
+                <img class="logo-img" src="/assets/logo/logo_secondary_white.svg" alt="Mein One-Pager" />
+            </a>
+            <a href="#hero" class="logo" aria-label="Startseite">
+                <span class="logo-image"></span>
+            </a>
             <h1>Mein One-Pager</h1>
             <nav>
                 <a href="#hero">Hero</a>
@@ -20,33 +39,38 @@
             </nav>
         </div>
     </header>
-
+    <!-- Main Content -->
     <main class="content">
+        <!-- Hero Section -->
         <section id="hero" class="section hero">
             <h2>Hero Section</h2>
             <p>Kurze Beschreibung oder Call-to-Action</p>
         </section>
-
+        <!-- Features Section -->
         <section id="features" class="section">
             <h2>Features</h2>
             <p>Inhalt…</p>
             <p>Inhalt…</p>
         </section>
-
+        <!-- About Section -->
         <section id="about" class="section alt">
             <h2>Über uns</h2>
             <p>Inhalt…</p>
             <p>Inhalt…</p>
         </section>
-
+        <!-- Contact Section -->
         <section id="contact" class="section">
             <h2>Kontakt</h2>
             <p>E-Mail, Formular, Adresse…</p>
         </section>
     </main>
-
+    <!-- Footer -->
     <footer class="footer">
-        © 2025 · Mein One-Pager
+        <p>© 2025 · Mein One-Pager</p>
+
+        <button id="themeToggle" class="theme-toggle" aria-label="Theme wechseln" aria-pressed="false">
+            🌗 Theme
+        </button>
     </footer>
 </body>
 
