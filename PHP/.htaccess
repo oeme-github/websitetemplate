@@ -1,0 +1,25 @@
+# -- verhindert Direktzugriff auf Libraries & Config --
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Verzeichnis selbst sperren
+    RewriteRule ^$ - [F,L]
+
+    # csrf.php erlauben (GET)
+    RewriteRule ^csrf\.php$ - [L]
+
+    # send.php nur per POST erlauben
+    RewriteCond %{REQUEST_METHOD} !POST
+    RewriteRule ^send\.php$ - [F,L]
+
+    # send.php erlauben
+    RewriteRule ^send\.php$ - [L]
+
+    # alle anderen PHP-Dateien blockieren
+    RewriteRule \.php$ - [F,L]
+
+    # sensible Dateien blockieren
+    RewriteRule \.(inc|conf|ini|log|sh|sql)$ - [F,L]
+</IfModule>
+
+Options -Indexes
