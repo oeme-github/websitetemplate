@@ -24,21 +24,33 @@
     <!-- Header -->
     <header class="header">
         <div class="header-inner">
-            <a href="#hero" class="logo">
-                <img class="logo-img" src="/assets/logo/logo_secondary_white.svg" alt="Mein One-Pager" />
-            </a>
             <a href="#hero" class="logo" aria-label="Startseite">
-                <span class="logo-image"></span>
+                <img class="logo-img" alt="Mein One-Pager" />
             </a>
             <h1>Mein One-Pager</h1>
-            <nav>
+            <!-- Desktop Navigation -->
+            <nav class="nav-desktop" id="desktopMenu">
                 <a href="#hero">Hero</a>
                 <a href="#features">Features</a>
                 <a href="#about">Über uns</a>
                 <a href="#contact">Kontakt</a>
             </nav>
+
+            <!-- Mobile Button -->
+            <button id="menuToggle" class="menu-toggle" aria-label="Menü öffnen" aria-expanded="false">
+                ☰
+            </button>
         </div>
+
+        <!-- Mobile Menü -->
+        <nav id="mobileMenu" class="nav-mobile" aria-hidden="true">
+            <a href="#hero">Hero</a>
+            <a href="#features">Features</a>
+            <a href="#about">Über uns</a>
+            <a href="#contact">Kontakt</a>
+        </nav>
     </header>
+    <div id="menuBackdrop" class="menu-backdrop"></div>
     <!-- Main Content -->
     <main class="content">
         <!-- Hero Section -->
