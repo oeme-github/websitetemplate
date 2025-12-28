@@ -78,9 +78,7 @@ $errors = [];
 // Honypot -> muss leer bleiben
 // =======================
 if (!empty($_POST['website'] ?? '')) {
-    echo json_encode([
-        'spam' => true
-    ]);
+    echo json_encode(['spam' => true]);
     exit;
 }
 

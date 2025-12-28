@@ -1,6 +1,15 @@
 'use strict';
 
 /* =====================================================
+  API / Backend Endpoints
+===================================================== */
+const BASE_PATH = document.body.dataset.basePath || '';
+const API = {
+  csrf: `${BASE_PATH}/PHP/csrf.php`,
+  send: `${BASE_PATH}/PHP/send_kontakt.php`,
+};
+
+/* =====================================================
   THEME (Dark / Light)
 ===================================================== */
 (function () {
@@ -35,7 +44,7 @@
 ===================================================== */
 const menuToggle = document.getElementById('menuToggle');
 const mobileMenu = document.getElementById('mobileMenu');
-const backdrop   = document.getElementById('menuBackdrop');
+const backdrop = document.getElementById('menuBackdrop');
 let lastFocusedElement = null;
 
 // Menü öffnen
@@ -158,7 +167,7 @@ function setButtonLoading(button, text = 'Sende...') {
   button.textContent = text;
 }
 
-function resetButton(button, text = 'SEPA-Mandat absenden') {
+function resetButton(button, text = 'Absenden') {
   button.disabled = false;
   button.textContent = text;
 }
@@ -182,23 +191,26 @@ function showValidationErrors(errors) {
   const box = document.getElementById('formMessage');
   if (!box) return;
 
-  box.innerHTML = '';
+  // Rolle für Fehler
+  box.setAttribute('role', 'alert');
+  box.setAttribute('aria-live', 'assertive');
+
+  box.innerHTML =
+    '<strong>Bitte überprüfen Sie Ihre Eingaben:</strong><ul>' +
+    Object.values(errors).map(msg => `<li>${msg}</li>`).join('') +
+    '</ul>';
+
   box.className = 'form-message error';
+  box.focus();
 
-  const list = document.createElement('ul');
-  list.style.margin = '0';
-  list.style.paddingLeft = '1.2rem';
-
-  Object.entries(errors).forEach(([field, message]) => {
-    const li = document.createElement('li');
-    li.textContent = message;
-    list.appendChild(li);
-
+  // Felder markieren (ARIA + visuell)
+  Object.keys(errors).forEach((field) => {
     const input = document.querySelector(`[name="${field}"]`);
-    input?.classList.add('field-error');
+    if (input) {
+      input.classList.add('field-error');
+      input.setAttribute('aria-invalid', 'true');
+    }
   });
-
-  box.appendChild(list);
 }
 
 function focusFirstError(errors) {
@@ -245,7 +257,7 @@ if (form) {
   button.disabled = true;
 
   // CSRF Token
-  fetch('PHP/csrf.php', { credentials: 'same-origin' })
+  fetch(API.csrf, { credentials: 'same-origin' })
     .then(res => res.json())
     .then(data => {
       document.getElementById('csrf_token').value = data.csrf_token;
@@ -253,13 +265,18 @@ if (form) {
     })
     .catch(() => console.error('CSRF-Token Fehler'));
 
+  form.addEventListener('input', (e) => {
+    e.target.classList.remove('field-error');
+    e.target.removeAttribute('aria-invalid');
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     clearFormMessage();
     setButtonLoading(button);
 
     try {
-      const result = await submitForm('PHP/send.php', new FormData(form));
+      const result = await submitForm(API.send, new FormData(form));
 
       if (!result || result.spam) {
         resetButton(button);
@@ -274,12 +291,23 @@ if (form) {
       }
 
       if (result.success) {
-        showFormMessage('Erfolgreich gesendet!', 'success');
-        window.location.href = 'danke.html';
+        form.reset();
+        formMessage.setAttribute('role', 'status');
+        formMessage.setAttribute('aria-live', 'polite');
+        formMessage.textContent = 'Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet.';
+        formMessage.className = 'form-message success';
+        formMessage.classList.add('success');
       }
-    } catch {
-      showFormMessage('Technischer Fehler. Bitte später erneut versuchen.');
-    } finally {
+    }
+    catch {
+      formMessage.setAttribute('role', 'alert');
+      formMessage.setAttribute('aria-live', 'assertive');
+      formMessage.textContent = 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.';
+      formMessage.className = 'form-message error';
+      formMessage.focus();
+      setTimeout(() => { formMessage.setAttribute('role', 'status'); }, 100);
+    }
+    finally {
       resetButton(button);
     }
   });
