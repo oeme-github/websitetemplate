@@ -52,12 +52,17 @@ function openMenu() {
   lastFocusedElement = document.activeElement;
 
   mobileMenu.classList.add('is-open');
-  mobileMenu.setAttribute('aria-hidden', 'false');
+
+  // aria-hidden vollständig entfernen
+  mobileMenu.removeAttribute('aria-hidden');
+
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.removeAttribute('tabindex');
+  });
 
   backdrop?.classList.add('is-active');
   menuToggle.setAttribute('aria-expanded', 'true');
 
-  // Fokus ins Menü
   const firstLink = mobileMenu.querySelector('a');
   firstLink?.focus();
 
@@ -68,7 +73,9 @@ function openMenu() {
 function closeMenu() {
   mobileMenu.classList.remove('is-open');
   mobileMenu.setAttribute('aria-hidden', 'true');
-
+ mobileMenu.querySelectorAll('a').forEach(link => {
+    link.setAttribute('tabindex', '-1');
+  });
   backdrop?.classList.remove('is-active');
   menuToggle.setAttribute('aria-expanded', 'false');
 
@@ -77,9 +84,28 @@ function closeMenu() {
 }
 
 // Klick auf Toggle öffnet/schließt
-menuToggle?.addEventListener('click', () => {
-  const isOpen = mobileMenu.classList.contains('is-open');
-  isOpen ? closeMenu() : openMenu();
+menuToggle.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.toggle('is-open');
+
+  if (isOpen) {
+    // Menü geöffnet
+    mobileMenu.removeAttribute('aria-hidden');
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.removeAttribute('tabindex');
+    });
+
+    menuToggle.setAttribute('aria-expanded', 'true');
+  } else {
+    // Menü geschlossen
+    mobileMenu.setAttribute('aria-hidden', 'true');
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.setAttribute('tabindex', '-1');
+    });
+
+    menuToggle.setAttribute('aria-expanded', 'false');
+  }
 });
 
 // Klick auf Backdrop schließt
@@ -277,9 +303,11 @@ if (form) {
 
     try {
       const result = await submitForm(API.send, new FormData(form));
+      form.setAttribute('aria-busy', 'true');
 
       if (!result || result.spam) {
         resetButton(button);
+        form.removeAttribute('aria-busy');
         return;
       }
 
@@ -287,6 +315,7 @@ if (form) {
         showValidationErrors(result.errors);
         focusFirstError(result.errors);
         resetButton(button);
+        form.removeAttribute('aria-busy');
         return;
       }
 
@@ -309,6 +338,7 @@ if (form) {
     }
     finally {
       resetButton(button);
+      form.removeAttribute('aria-busy');
     }
   });
 

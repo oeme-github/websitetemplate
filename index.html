@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Das ist ein Template für eine One-Pager Website.">
+    <meta name="robots" content="index, follow">
     <title>One-Pager</title>
     <link rel="icon" href="/assets/icons/icon.svg" type="image/svg+xml">
     <link rel="icon" href="/assets/icons/favicon-32.png" sizes="32x32">
@@ -15,13 +16,13 @@
     <script src="/assets/js/main.js" defer></script>
 </head>
 
-
 <body data-base-path="">
     <!-- Topbar -->
     <div class="topbar">
         <p>✨ Kostenloser Versand ab 50 €</p>
     </div>
-    <!-- Header -->
+
+    <!-- Header mit Logo, Desktop Navigation & Mobile Menu -->
     <header class="header">
         <div class="header-inner">
             <a href="#hero" class="logo" aria-label="Startseite">
@@ -33,7 +34,7 @@
                 <a href="#hero">Hero</a>
                 <a href="#features">Features</a>
                 <a href="#about">Über uns</a>
-                <a href="#contact">Kontakt</a>
+                <a href="#contact">Kontakt aufnehmen</a>
             </nav>
 
             <!-- Mobile Button -->
@@ -44,10 +45,10 @@
 
         <!-- Mobile Menü -->
         <nav id="mobileMenu" class="nav-mobile" aria-hidden="true">
-            <a href="#hero">Hero</a>
-            <a href="#features">Features</a>
-            <a href="#about">Über uns</a>
-            <a href="#contact">Kontakt</a>
+            <a href="#hero" tabindex="-1">Hero</a>
+            <a href="#features" tabindex="-1">Features</a>
+            <a href="#about" tabindex="-1">Über uns</a>
+            <a href="#contact" tabindex="-1">Kontakt</a>
         </nav>
     </header>
     <div id="menuBackdrop" class="menu-backdrop"></div>

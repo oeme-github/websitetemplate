@@ -1,4 +1,12 @@
 <?php
+/** 
+ * Kontaktformular - Senden
+ * - CSRF-Schutz
+ * - Honeypot gegen Spam
+ * - Validierung der Eingaben
+ * - Versand via PHPMailer und SMTP
+ * - JSON-Antworten & AJAX-Unterstützung
+ * */
 declare(strict_types=1);
 
 /* =========================
