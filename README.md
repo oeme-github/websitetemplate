@@ -70,6 +70,31 @@ Nach eigenen Anpassungen (z. B. Farben, Schriften, Inhalte) sollte die Barrieref
 
 ---
 
+## Philosophy & Goals
+
+Dieses Projekt verfolgt einen pragmatischen Ansatz:
+
+- **Barrierefreiheit ist kein Add-on**, sondern Teil der Grundarchitektur.
+- **Einfachheit vor Komplexität**: Kein Framework-Zwang, kein Build-Overhead.
+- **Verständlicher Code** statt cleverer, aber schwer wartbarer Lösungen.
+- **Security by default** bei Formularen (CSRF, Honeypot, serverseitige Validierung).
+- **Gute Standards statt Overengineering**.
+
+### Ziele
+- Einen soliden, barrierearmen Ausgangspunkt für kleine bis mittlere Websites bieten
+- Als Lern- und Referenzprojekt für modernes, sauberes Web-Development dienen
+- Ohne Abhängigkeit von großen Frameworks einsetzbar sein
+- Lokal wie auch produktiv reproduzierbar funktionieren
+
+### Nicht-Ziele
+- Kein vollständiges Framework
+- Kein CMS-Ersatz
+- Keine Garantie für vollständige WCAG-Konformität nach individuellen Anpassungen
+
+Dieses Template soll **Orientierung geben**, nicht einschränken.
+
+---
+
 ## Lizenz
 MIT License
 
