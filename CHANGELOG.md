@@ -1,3 +1,23 @@
+## v1.1.0 – Legal Pages & Layout Refinement
+
+### Added
+- New legal pages: Impressum and Datenschutzerklärung
+- Consistent global header and footer across all pages
+- Footer redesigned using responsive CSS Grid
+
+### Improved
+- Legal content layout with dedicated `.section-legal`
+- Removed scroll-snap from legal pages
+- Improved mobile readability for long headings
+- Reduced footer height on mobile
+- Mobile viewport handling using modern `svh/dvh`
+
+### Quality
+- Lighthouse: 100 / 100 / 100 / ~98
+- No breaking changes
+
+---
+
 ## v1.0.0 – Initial Release
 
 Erste stabile Version des One-Pager-Templates.
