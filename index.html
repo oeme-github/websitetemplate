@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -53,7 +54,7 @@
     </header>
     <div id="menuBackdrop" class="menu-backdrop"></div>
     <!-- Main Content -->
-    <main class="content">
+    <main id="main" class="content">
         <!-- Hero Section -->
         <section id="hero" class="section hero">
             <h2>Hero Section</h2>
@@ -110,18 +111,34 @@
                 <!-- Absenden -->
                 <button type="submit" class="btn-primary" id="submitBtn">Absenden</button>
                 <!-- Formularmeldung -->
-                <div id="formMessage" class="form-message" role="alert" aria-live="assertive" aria-atomic="true" tabindex="-1"></div>
+                <div id="formMessage" class="form-message" role="alert" aria-live="assertive" aria-atomic="true"
+                    tabindex="-1"></div>
             </form>
         </section>
     </main>
     <!-- Footer -->
     <footer class="footer">
-        <p>© 2025 · Mein One-Pager</p>
-
-        <button id="themeToggle" class="theme-toggle" aria-label="Theme wechseln" aria-pressed="false">
-            🌗 Theme
-        </button>
+        <!-- Footer Grid -->
+        <div class="footer-inner footer-grid">
+            <!-- Spalte 1: Copyright -->
+            <div class="footer-col footer-copy">
+                © 2025 · Mein One-Pager
+            </div>
+            <!-- Spalte 2: Rechtliches -->
+            <nav class="footer-col footer-legal" aria-label="Rechtliches">
+                <ul>
+                    <li><a href="/impressum.html">Impressum</a></li>
+                    <li><a href="/datenschutz.html">Datenschutz</a></li>
+                </ul>
+            </nav>
+            <!-- Spalte 3: Theme Toggle -->
+            <div class="footer-col footer-theme">
+                <!-- Theme Toggle -->
+                <button id="themeToggle" class="theme-toggle" aria-label="Theme wechseln" aria-pressed="false">
+                    🌗 Theme
+                </button>
+            </div>
+        </div>
     </footer>
 </body>
-
 </html>

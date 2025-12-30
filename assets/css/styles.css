@@ -26,9 +26,14 @@
   --color-text-main: #111111;
   --color-text-light: #0b0d1a;
   --color-text-muted: #303030;
+  --color-text-footer: #666666;
 
   /* Akzent */
   --color-accent: #1d1c30;
+
+  /* Button */
+  --color-bg-btn: var(--color-accent);
+  --color-text-btn: var(--color-bg-section-alt);
 
   /* Topbar */
   --color-bg-topbar: var(--color-accent);
@@ -78,20 +83,27 @@
   Dunkelmodus Styles
 ===================================================== */
 [data-theme="dark"] {
+  /* Grundfarben */
   --color-bg-body: #0f0f0f;
   --color-bg-header: #000000;
   --color-bg-section-alt: #1a1a1a;
   --color-bg-hero-start: #222222;
   --color-bg-hero-end: #444444;
-
+  /* Textfarben */
   --color-text-main: #f5f5f5;
   --color-text-light: #ffffff;
   --color-text-muted: #999999;
+  --color-text-footer: #cacaca;
 
+  /* Akzent */
   --color-accent: #0b0c16;
 
+  /* Button */
+  --color-bg-btn: var(--color-bg-hero-end);
+  --color-text-btn: var(--color-text-light);
+  /* Topbar */
   --color-bg-topbar: #1f2937;
-
+  /* logo */
   --logo-src: url("/assets/logo/logo_mark_white.svg");
 }
 
@@ -107,9 +119,10 @@ h3 {
 }
 
 h1 {
-  font-size: var(--fs-500);
+  font-size: var(--fs-400);
   line-height: var(--lh-heading);
-
+  margin-top: 0;
+  word-break: break-word;
 }
 
 h2 {
@@ -142,6 +155,7 @@ small {
 }
 
 .topbar {
+  display: none;
   background: var(--color-bg-topbar);
   color: var(--color-text-topbar);
 
@@ -159,7 +173,9 @@ html,
 body {
   /* Vollbild */
   height: 100%;
+  width: 100%;
   margin: 0;
+  overflow-x: hidden;
   /* Schrift */
   font-family: var(--font-base);
   font-size: var(--fs-200);
@@ -171,10 +187,11 @@ body {
 
 /* Layout */
 body {
-  /* Flexbox Layout */
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
 /* Header */
@@ -255,22 +272,72 @@ body {
   color: var(--color-text-light);
 }
 
-/* Footer */
+/* =====================================================
+  Footer
+===================================================== */
 .footer {
-  /* Layout */
+  margin-top: auto;
+  background: var(--color-footer-bg);
+  color: var(--color-text-footer);
+}
+
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-3);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: var(--space-1) var(--space-2);
+  align-items: center;
+  text-align: left;
+}
+
+.footer-legal ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
   display: flex;
   gap: var(--space-3);
-  justify-content: space-between;
-  align-items: center;
-
-  padding: var(--space-3);
-  text-align: center;
-  /* Farben */
-  background: var(--color-bg-header);
-  color: var(--color-text-muted);
-  /* Scroll Snap */
-  scroll-snap-align: none;
 }
+
+.footer-legal a {
+  font-size: var(--fs-100);
+  color: inherit;
+  text-decoration: underline;
+}
+
+.footer-legal a:hover,
+.footer-legal a:focus-visible {
+  text-decoration: none;
+}
+
+.footer-copy,
+.footer-legal a,
+.footer-theme .theme-toggle {
+  font-size: var(--fs-100);
+}
+
+.footer-copy {
+  order: 3;
+  justify-self: start;
+}
+
+.footer-legal {
+  order: 1;
+  justify-self: center;
+}
+
+.footer-theme {
+  order: 2;
+  justify-self: end;
+}
+
+
 
 /* =====================================================
   Navigation Styles
@@ -280,7 +347,7 @@ body {
   background: none;
   border: 1px solid currentColor;
   color: var(--color-text-muted);
-  padding: var(--space-1) var(--space-2);
+  padding: var(--space-1) var(--space-1);
   border-radius: 0.5rem;
   cursor: pointer;
 }
@@ -470,8 +537,8 @@ body {
   font-size: var(--fs-200);
   font-weight: 600;
 
-  background: var(--color-accent);
-  color: #fff;
+  background: var(--color-bg-btn);
+  color: var(--color-text-btn);
 
   border: none;
   border-radius: 0.5rem;
@@ -498,6 +565,33 @@ body {
   color: #15803d;
 }
 
+/* =====================================================
+  Legal Content Layout
+===================================================== */
+.section-legal{
+  /* Layout */
+  min-height: 10vh;
+  padding: var(--space-1) var(--space-2);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.section-legal.alt {
+  background: var(--color-bg-section-alt);
+}
+
+.section-legal:last-child {
+  margin-bottom: 0;
+}
+
+.section-legal h2 {
+  margin-bottom: var(--space-2);
+}
+
+.section-legal p,
+.section-legal ul {
+  margin-bottom: var(--space-2);
+}
 
 /* =====================================================
   Dark Mode Unterstützung
@@ -526,12 +620,18 @@ body {
   Desktop Layout
 ===================================================== */
 @media (min-width: 768px) {
+
+  /* Topbar anzeigen */
+  .topbar {
+    display: block;
+  }
+
+  /* Kontaktformular Grid Layout */
   #kontaktForm {
     grid-template-columns: 1fr 3fr;
     column-gap: var(--space-3);
   }
 
-  /* Vollbreite-Elemente */
   #kontaktForm textarea,
   #kontaktForm button,
   #kontaktForm .form-message,
@@ -540,7 +640,45 @@ body {
     grid-column: 1 / -1;
   }
 
+  /* Footer Grid Layout */
+  .footer-inner {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .footer-grid {
+    gap: var(--space-2);
+  }
+
+  .footer-grid {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    text-align: left;
+    gap: var(--space-2);
+  }
+
+  .footer-copy,
+  .footer-legal a,
+  .footer-theme .theme-toggle {
+    font-size: var(--fs-200);
+  }
+
+  .footer-copy {
+    order: 1;
+    justify-self: start;
+  }
+
+  .footer-legal {
+    order: 2;
+    justify-self: center;
+  }
+
+  .footer-theme {
+    order: 3;
+    justify-self: end;
+  }
+
 }
+
 
 /* =====================================================
   Mobile Layout
@@ -562,8 +700,7 @@ body {
   }
 
   .logo,
-  .menu-toggle,
-  .theme-toggle {
+  .menu-toggle {
     padding: var(--space-2);
   }
 
@@ -587,8 +724,11 @@ body {
 
   .menu-toggle {
     display: block;
-    font-size: 1.75rem;
+    font-size: var(--fs-100);
   }
 
-}
+  .section-legal {
+    margin-bottom: var(--space-4);
+  }  
 
+}

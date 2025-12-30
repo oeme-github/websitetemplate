@@ -18,6 +18,7 @@ Nach eigenen Anpassungen (z. B. Farben, Schriften, Inhalte) sollte die Barrieref
 - Barrierefreies Mobile-Menü
 - Kontaktformular mit CSRF- & Honeypot-Schutz
 - AJAX-Submit mit ARIA-Feedback
+- Legal-Pages für Impressum und Datenschutz
 
 ---
 
