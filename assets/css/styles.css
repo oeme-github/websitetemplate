@@ -75,7 +75,7 @@
   --space-6: 6rem;
 
   /* Logo URLs */
-  --logo-src: url("/assets/logo/logo_mark.svg");
+  --logo-src: url("../logo/logo_mark.svg");
 
 }
 
@@ -104,7 +104,7 @@
   /* Topbar */
   --color-bg-topbar: #1f2937;
   /* logo */
-  --logo-src: url("/assets/logo/logo_mark_white.svg");
+  --logo-src: url("../logo/logo_mark_white.svg");
 }
 
 /* =====================================================
