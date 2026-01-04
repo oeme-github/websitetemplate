@@ -1,0 +1,13 @@
+{
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    },
+    "files": [
+      "src/Helpers/escaper.php",
+      "src/Security/session.php",
+      "src/Security/headers.php",
+      "src/Security/csrf.php"
+    ]
+  }
+}

@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 // =======================
-// CSFR-Prüfung
+// CSRF-Prüfung
 // =======================
 if (
     empty($_POST['csrf_token']) ||

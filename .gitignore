@@ -1,4 +1,5 @@
 .env
 settings.*
 *.lock
-/PHP/vendor/
+*.log
+/vendor/

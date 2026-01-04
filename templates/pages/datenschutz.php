@@ -1,15 +1,20 @@
-<!doctype html>
+<?php
+$pageH1 = 'Impressum';
+$navBase = 'index.php';
+?>
+<!DOCTYPE html>
 <html lang="de">
+
 <!-- This is a template for a one-page website - legal page-->
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Das ist ein Template für eine Impressum-Page der One-Pager Website.">
+  <meta name="description" content="Das ist ein Template für eine Datenschutz-Page der One-Pager Website.">
   <!-- SEO -->
   <meta name="robots" content="noindex, follow">
   <!-- Title -->
-  <title>Impressum – One-Pager Template</title>
+  <title>Datenschutz – One-Pager Template</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="icon" href="/assets/icons/icon.svg" type="image/svg+xml">
@@ -36,7 +41,7 @@
       <a href="index.html#hero" class="logo" aria-label="Startseite">
         <img class="logo-img" alt="Mein One-Pager" />
       </a>
-      <h1>Impressum</h1>
+      <h1>Datenschutzerklärung</h1>
       <!-- Desktop Navigation -->
       <nav class="nav-desktop" id="desktopMenu">
         <a href="index.html#hero">Hero</a>
@@ -60,70 +65,59 @@
     </nav>
   </header>
   <div id="menuBackdrop" class="menu-backdrop"></div>
-  <!-- Main Content -->
 
+  <!-- Main Content -->
   <main id="main" class="content">
     <section class="section-legal">
-      <h2>Angaben gemäß § 5 TMG</h2>
+      <h2>1. Datenschutz auf einen Blick</h2>
+      <p>
+        Die folgenden Hinweise geben einen einfachen Überblick darüber,
+        was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen.
+      </p>
+    </section>
+    <!-- Weitere Abschnitte der Datenschutzerklärung -->
+    <section class="section-legal">
+      <h2>2. Verantwortliche Stelle</h2>
       <p>
         Max Mustermann<br>
         Musterstraße 1<br>
-        12345 Musterstadt
-      </p>
-    </section>
-
-    <section class="section-legal">
-      <h2>Kontakt</h2>
-      <p>
-        Telefon: +49 (0) 123 456789<br>
+        12345 Musterstadt<br>
         E-Mail: <a href="mailto:info@example.de">info@example.de</a>
       </p>
     </section>
-
+    <!-- Weitere Abschnitte der Datenschutzerklärung -->
     <section class="section-legal">
-      <h2>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+      <h2>3. Erhebung und Verarbeitung personenbezogener Daten</h2>
       <p>
-        Max Mustermann<br>
-        Musterstraße 1<br>
-        12345 Musterstadt
+        Personenbezogene Daten werden nur erhoben, wenn Sie uns diese freiwillig mitteilen,
+        z. B. über das Kontaktformular.
       </p>
     </section>
-
+    <!-- Weitere Abschnitte der Datenschutzerklärung -->
     <section class="section-legal">
-      <h2>Haftung für Inhalte</h2>
+      <h2>4. Kontaktformular</h2>
       <p>
-        Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen
-        Seiten nach den allgemeinen Gesetzen verantwortlich.
+        Wenn Sie uns per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben
+        aus dem Formular inklusive der von Ihnen dort angegebenen Kontaktdaten zwecks
+        Bearbeitung der Anfrage gespeichert.
       </p>
+    </section>
+    <!-- Weitere Abschnitte der Datenschutzerklärung -->
+    <section class="section-legal">
+      <h2>5. Ihre Rechte</h2>
+      <ul>
+        <li>Auskunft über Ihre gespeicherten Daten</li>
+        <li>Berichtigung unrichtiger Daten</li>
+        <li>Löschung Ihrer Daten</li>
+        <li>Einschränkung der Verarbeitung</li>
+        <li>Widerspruch gegen die Verarbeitung</li>
+      </ul>
     </section>
   </main>
-
   <!-- Footer -->
-  <footer class="footer">
-    <!-- Footer Grid -->
-    <div class="footer-inner footer-grid">
-      <!-- Spalte 1: Copyright -->
-      <div class="footer-col footer-copy">
-        © 2025 · Mein One-Pager
-      </div>
-      <!-- Spalte 2: Rechtliches -->
-      <nav class="footer-col footer-legal" aria-label="Rechtliches">
-        <ul>
-          <li><a href="/impressum.html">Impressum</a></li>
-          <li><a href="/datenschutz.html">Datenschutz</a></li>
-        </ul>
-      </nav>
-      <!-- Spalte 3: Theme Toggle -->
-      <div class="footer-col footer-theme">
-        <!-- Theme Toggle -->
-        <button id="themeToggle" class="theme-toggle" aria-label="Theme wechseln" aria-pressed="false">
-          🌗 Theme
-        </button>
-      </div>
-    </div>
-  </footer>
-  <!-- Scripts -->
-  <script src="/assets/js/main.js" defer></script>
+  <!-- wird durch base.php eingebunden -->
+  <!-- JavaScript -->
+  <script src="./assets/js/main.js" defer></script>
 </body>
 
 </html>
