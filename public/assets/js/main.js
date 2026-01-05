@@ -1,348 +1,99 @@
 'use strict';
 
 /* =====================================================
-  API / Backend Endpoints
-===================================================== */
-const BASE_PATH = document.body.dataset.basePath || '';
-const API = {
-  csrf: `${BASE_PATH}/PHP/csrf.php`,
-  send: `${BASE_PATH}/PHP/send_kontakt.php`,
-};
-
-/* =====================================================
-  THEME (Dark / Light)
+  B) Theme (Dark / Light)
 ===================================================== */
 (function () {
   const STORAGE_KEY = 'theme';
   const root = document.documentElement;
-  const toggle = document.getElementById('themeToggle');
+  const toggle = document.querySelector('[data-theme-toggle]');
 
-  function getInitialTheme() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) return stored;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
+  if (!toggle) return;
+
+  const storedTheme = localStorage.getItem(STORAGE_KEY);
+  if (storedTheme) {
+    root.setAttribute('data-theme', storedTheme);
   }
 
-  function setTheme(theme) {
-    root.setAttribute('data-theme', theme);
-    localStorage.setItem(STORAGE_KEY, theme);
-    toggle?.setAttribute('aria-pressed', theme === 'dark');
-  }
-
-  setTheme(getInitialTheme());
-
-  toggle?.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme');
-    setTheme(current === 'dark' ? 'light' : 'dark');
+  toggle.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', current);
+    localStorage.setItem(STORAGE_KEY, current);
   });
 })();
 
 /* =====================================================
-  MOBILE MENU (Slide + Fade)
+  C) Mobile Navigation
 ===================================================== */
-const menuToggle = document.getElementById('menuToggle');
-const mobileMenu = document.getElementById('mobileMenu');
-const backdrop = document.getElementById('menuBackdrop');
-let lastFocusedElement = null;
+(function () {
+  const toggle = document.querySelector('[data-nav-toggle]');
+  const nav = document.querySelector('[data-nav]');
 
-// Menü öffnen
-function openMenu() {
-  lastFocusedElement = document.activeElement;
+  if (!toggle || !nav) return;
 
-  mobileMenu.classList.add('is-open');
-
-  // aria-hidden vollständig entfernen
-  mobileMenu.removeAttribute('aria-hidden');
-
-  mobileMenu.querySelectorAll('a').forEach(link => {
-    link.removeAttribute('tabindex');
+  toggle.addEventListener('click', () => {
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!expanded));
+    nav.classList.toggle('is-open');
   });
-
-  backdrop?.classList.add('is-active');
-  menuToggle.setAttribute('aria-expanded', 'true');
-
-  const firstLink = mobileMenu.querySelector('a');
-  firstLink?.focus();
-
-  trapFocus(mobileMenu);
-}
-
-// Menü schließen
-function closeMenu() {
-  mobileMenu.classList.remove('is-open');
-  mobileMenu.setAttribute('aria-hidden', 'true');
- mobileMenu.querySelectorAll('a').forEach(link => {
-    link.setAttribute('tabindex', '-1');
-  });
-  backdrop?.classList.remove('is-active');
-  menuToggle.setAttribute('aria-expanded', 'false');
-
-  // Fokus zurück
-  lastFocusedElement?.focus();
-}
-
-// Klick auf Toggle öffnet/schließt
-menuToggle.addEventListener('click', () => {
-  const isOpen = mobileMenu.classList.toggle('is-open');
-
-  if (isOpen) {
-    // Menü geöffnet
-    mobileMenu.removeAttribute('aria-hidden');
-
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.removeAttribute('tabindex');
-    });
-
-    menuToggle.setAttribute('aria-expanded', 'true');
-  } else {
-    // Menü geschlossen
-    mobileMenu.setAttribute('aria-hidden', 'true');
-
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.setAttribute('tabindex', '-1');
-    });
-
-    menuToggle.setAttribute('aria-expanded', 'false');
-  }
-});
-
-// Klick auf Backdrop schließt
-backdrop?.addEventListener('click', closeMenu);
-
-// Klick auf Link schließt
-mobileMenu?.addEventListener('click', (e) => {
-  if (e.target.tagName === 'A') closeMenu();
-});
-
-// ESC schließt
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeMenu();
-});
-
-// Fokus-Trap
-function trapFocus(container) {
-  const focusable = container.querySelectorAll(
-    'a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])'
-  );
-
-  if (!focusable.length) return;
-
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-
-  container.addEventListener('keydown', (e) => {
-    if (e.key !== 'Tab') return;
-
-    if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  });
-}
+})();
 
 /* =====================================================
-  COUNT-UP ANIMATION
+  D) Kontaktformular – AJAX (neu & minimal)
 ===================================================== */
-const counters = document.querySelectorAll('.count');
-let countersStarted = false;
+(function () {
+  const form = document.getElementById('kontaktForm');
+  if (!form || !window.fetch) return;
 
-function startCounters() {
-  if (countersStarted) return;
+  const messageBox = document.getElementById('formMessage');
+  const submitBtn = form.querySelector('button[type="submit"]');
 
-  counters.forEach(counter => {
-    const target = Number(counter.dataset.target);
-    let current = 0;
-    const increment = target / 80;
-
-    function update() {
-      current += increment;
-      if (current < target) {
-        counter.textContent = Math.ceil(current);
-        requestAnimationFrame(update);
-      } else {
-        counter.textContent = target + '+';
-      }
-    }
-
-    update();
-  });
-
-  countersStarted = true;
-}
-
-// Trigger bei Scroll
-const counterSection = document.getElementById('zahlen');
-if (counterSection) {
-  window.addEventListener('scroll', () => {
-    if (counterSection.getBoundingClientRect().top < window.innerHeight * 0.8) {
-      startCounters();
-    }
-  }, { passive: true });
-}
-
-/* =====================================================
-  FORM HELPERS
-===================================================== */
-function setButtonLoading(button, text = 'Sende...') {
-  button.disabled = true;
-  button.textContent = text;
-}
-
-function resetButton(button, text = 'Absenden') {
-  button.disabled = false;
-  button.textContent = text;
-}
-
-function clearFormMessage() {
-  const box = document.getElementById('formMessage');
-  if (box) {
-    box.innerHTML = '';
-    box.className = 'form-message';
+  function setMessage(text, isOk) {
+    if (!messageBox) return;
+    messageBox.textContent = text;
+    messageBox.className = 'form-message ' + (isOk ? 'is-ok' : 'is-error');
+    messageBox.focus();
   }
-}
-
-function showFormMessage(message, type = 'error') {
-  const box = document.getElementById('formMessage');
-  if (!box) return;
-  box.textContent = message;
-  box.className = `form-message ${type}`;
-}
-
-function showValidationErrors(errors) {
-  const box = document.getElementById('formMessage');
-  if (!box) return;
-
-  // Rolle für Fehler
-  box.setAttribute('role', 'alert');
-  box.setAttribute('aria-live', 'assertive');
-
-  box.innerHTML =
-    '<strong>Bitte überprüfen Sie Ihre Eingaben:</strong><ul>' +
-    Object.values(errors).map(msg => `<li>${msg}</li>`).join('') +
-    '</ul>';
-
-  box.className = 'form-message error';
-  box.focus();
-
-  // Felder markieren (ARIA + visuell)
-  Object.keys(errors).forEach((field) => {
-    const input = document.querySelector(`[name="${field}"]`);
-    if (input) {
-      input.classList.add('field-error');
-      input.setAttribute('aria-invalid', 'true');
-    }
-  });
-}
-
-function focusFirstError(errors) {
-  const field = document.querySelector(
-    `[name="${Object.keys(errors)[0]}"]`
-  );
-  field?.focus();
-}
-
-/* =====================================================
-  FORM SUBMIT
-===================================================== */
-async function submitForm(url, formData) {
-  const response = await fetch(url, {
-    method: 'POST',
-    body: formData,
-  });
-
-  const contentType = response.headers.get('content-type') || '';
-
-  if (response.status === 204) return null;
-
-  if (response.status === 422 && contentType.includes('application/json')) {
-    return await response.json();
-  }
-
-  if (!contentType.includes('application/json')) {
-    throw new Error(await response.text());
-  }
-
-  if (!response.ok) {
-    throw new Error(await response.text());
-  }
-
-  return await response.json();
-}
-
-/* =====================================================
-  FORM INIT
-===================================================== */
-const form = document.getElementById('kontaktForm');
-if (form) {
-  const button = document.getElementById('submitBtn');
-  button.disabled = true;
-
-  // CSRF Token
-  fetch(API.csrf, { credentials: 'same-origin' })
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('csrf_token').value = data.csrf_token;
-      button.disabled = false;
-    })
-    .catch(() => console.error('CSRF-Token Fehler'));
-
-  form.addEventListener('input', (e) => {
-    e.target.classList.remove('field-error');
-    e.target.removeAttribute('aria-invalid');
-  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    clearFormMessage();
-    setButtonLoading(button);
+
+    submitBtn?.setAttribute('disabled', 'disabled');
+    form.setAttribute('aria-busy', 'true');
 
     try {
-      const result = await submitForm(API.send, new FormData(form));
-      form.setAttribute('aria-busy', 'true');
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' },
+        credentials: 'same-origin',
+      });
 
-      if (!result || result.spam) {
-        resetButton(button);
-        form.removeAttribute('aria-busy');
-        return;
-      }
+      const contentType = response.headers.get('content-type') || '';
+      const data = contentType.includes('application/json')
+        ? await response.json()
+        : null;
 
-      if (result.errors) {
-        showValidationErrors(result.errors);
-        focusFirstError(result.errors);
-        resetButton(button);
-        form.removeAttribute('aria-busy');
-        return;
-      }
-
-      if (result.success) {
+      if (response.ok && data?.ok) {
+        setMessage(data.message || 'Nachricht gesendet.', true);
         form.reset();
-        formMessage.setAttribute('role', 'status');
-        formMessage.setAttribute('aria-live', 'polite');
-        formMessage.textContent = 'Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet.';
-        formMessage.className = 'form-message success';
-        formMessage.classList.add('success');
+
+        // CSRF-Token erneuern (AJAX-Flow)
+        if (data.csrf) {
+          const csrfInput = form.querySelector('input[name="_csrf"]');
+          if (csrfInput) csrfInput.value = data.csrf;
+        }
+      } else {
+        setMessage(
+          data?.message || 'Bitte Eingaben prüfen.',
+          false
+        );
       }
-    }
-    catch {
-      formMessage.setAttribute('role', 'alert');
-      formMessage.setAttribute('aria-live', 'assertive');
-      formMessage.textContent = 'Es ist ein technischer Fehler aufgetreten. Bitte versuchen Sie es später erneut.';
-      formMessage.className = 'form-message error';
-      formMessage.focus();
-      setTimeout(() => { formMessage.setAttribute('role', 'status'); }, 100);
-    }
-    finally {
-      resetButton(button);
+    } catch (err) {
+      setMessage('Netzwerkfehler. Bitte später erneut versuchen.', false);
+    } finally {
+      submitBtn?.removeAttribute('disabled');
       form.removeAttribute('aria-busy');
     }
   });
-
-  form.addEventListener('input', (e) => {
-    e.target.classList.remove('field-error');
-  });
-}
+})();

@@ -1,95 +1,60 @@
 # REVIEW_CHECKLIST.md
 
-Diese Checkliste dient dazu, Änderungen im Projekt schnell und konsistent
-gegen die festgelegten Design- und Architekturregeln zu prüfen.
-
-Sie basiert vollständig auf der `DESIGN_PATTERN.md` und ist als
-**Self-Check oder Review-Grundlage** gedacht.
+Diese Checkliste dient zur schnellen Prüfung von Änderungen
+gegen die definierten Design- und Security-Patterns.
 
 ---
 
-## 1. Projekt- & Ordnerstruktur
+## 1. Projektstruktur
 
-- [ ] Liegt jede neue Datei im dafür vorgesehenen Ordner?
-- [ ] Befindet sich ausschließlich öffentlich erreichbarer Code unter `public/`?
-- [ ] Ist sichergestellt, dass `src/`, `templates/` und `vendor/` nicht direkt erreichbar sind?
-- [ ] Gibt es keine neuen PHP-Dateien im Projekt-Root?
-
----
-
-## 2. Entry Point & Routing
-
-- [ ] Werden Requests ausschließlich über `public/index.php` verarbeitet?
-- [ ] Existiert kein direkter URL-Zugriff auf Templates oder PHP-Klassen?
-- [ ] Wird Routing über Whitelists oder feste Zuordnungen gelöst?
-- [ ] Gibt es kein dynamisches Include auf Basis von User-Input?
+- [ ] Webroot zeigt nur auf `public/`
+- [ ] Kein direkter Zugriff auf `src/`, `templates/`, `vendor/`
+- [ ] Keine PHP-Dateien im Projekt-Root
 
 ---
 
-## 3. PHP-Code & Composer
+## 2. Templates & Rendering
 
-- [ ] Liegt PHP-Logik ausschließlich unter `src/`?
-- [ ] Wird Composer-Autoload (`use App\...`) statt manueller Includes genutzt?
-- [ ] Gibt es keine relativen `require`- oder `include`-Ketten?
-- [ ] Sind neue Abhängigkeiten sinnvoll, minimal und über Composer eingebunden?
-
----
-
-## 4. Templates & Darstellung
-
-- [ ] Enthalten Templates ausschließlich Darstellungslogik?
-- [ ] Gibt es keine Business-, Security- oder Session-Logik in Templates?
-- [ ] Werden Variablen im Template nur zur Ausgabe verwendet?
-- [ ] Sind Layouts, Partials und Seiten klar getrennt?
+- [ ] Layout enthält HTML-Gerüst und `<main>`
+- [ ] Seiten-Templates enthalten nur Inhalt
+- [ ] Keine Security- oder Business-Logik in Templates
+- [ ] Partials sind wiederverwendbar
 
 ---
 
-## 5. Output & Escaping (XSS)
+## 3. Formular & Security
 
-- [ ] Wird jede variable Ausgabe escaped (`e()` oder äquivalent)?
-- [ ] Gibt es keine direkte Ausgabe von `$_GET`, `$_POST`, `$_SESSION`?
-- [ ] Ist unescaped Output explizit begründet und dokumentiert?
-
----
-
-## 6. Security-Grundlagen
-
-- [ ] Erfolgen Sicherheitsentscheidungen ausschließlich serverseitig?
-- [ ] Wird JavaScript nicht zur Durchsetzung von Security verwendet?
-- [ ] Gibt es keine sensiblen Daten im Frontend oder in Assets?
-- [ ] Werden kritische Aktionen nicht direkt aus Templates ausgelöst?
+- [ ] Enthält jedes POST-Formular ein CSRF-Token?
+- [ ] Wird CSRF vor Zugriff auf `$_POST` geprüft?
+- [ ] Ist ein Honeypot-Feld vorhanden?
+- [ ] Wird ein Honeypot-Treffer still verarbeitet?
+- [ ] Gibt es genau einen Endpunkt pro Formular?
+- [ ] Erfolgt Validierung serverseitig?
+- [ ] Werden keine User-Daten ungefiltert ausgegeben?
 
 ---
 
-## 7. Fehlerbehandlung & Debugging
+## 4. Mail & Konfiguration
 
-- [ ] Werden Fehler nicht direkt an den Benutzer ausgegeben?
-- [ ] Gibt es keine `var_dump()`, `print_r()` oder `die()`-Aufrufe in Production-Code?
-- [ ] Erfolgt Debugging über Logging oder kontrollierte Mechanismen?
-
----
-
-## 8. Änderungen an der Architektur
-
-- [ ] Entspricht die Änderung den bestehenden Design-Patterns?
-- [ ] Falls nicht: wurde eine neue Regel in `DESIGN_PATTERN.md` ergänzt?
-- [ ] Ist die Entscheidung dokumentiert und nachvollziehbar?
-- [ ] Wurde Konsistenz im gesamten Projekt geprüft?
+- [ ] Wird PHPMailer statt `mail()` verwendet?
+- [ ] Sind SMTP-Daten ausgelagert (`.env`)?
+- [ ] Ist `.env` in `.gitignore`?
+- [ ] Existiert eine `.env.example`?
+- [ ] Wird `Reply-To` statt `From` verwendet?
+- [ ] Gibt es keine Secrets im Repository?
 
 ---
 
-## 9. Abschluss-Check
+## 5. Security-Header & Sessions
 
-- [ ] Würde ein neuer Entwickler die Struktur intuitiv verstehen?
-- [ ] Ist die Änderung sicherer oder zumindest nicht unsicherer als zuvor?
+- [ ] Security-Header sind gesetzt (CSP, XFO, XCTO, Referrer-Policy)
+- [ ] Sessions werden zentral initialisiert
+- [ ] Keine Security-Logik im Template
+
+---
+
+## 6. Abschluss-Check
+
+- [ ] Würde ein neuer Entwickler die Struktur verstehen?
+- [ ] Ist die Änderung sicherer oder gleich sicher?
 - [ ] Würde die Änderung auch in 6 Monaten noch Sinn ergeben?
-
----
-
-## Hinweis
-
-Diese Checkliste ersetzt kein Denken,
-sondern unterstützt dabei, **bewusst und konsistent** zu entscheiden.
-
-Wenn mehrere Punkte mit „Nein“ beantwortet werden,
-sollte die Änderung überarbeitet werden.
