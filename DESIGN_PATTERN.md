@@ -1,214 +1,114 @@
 # DESIGN_PATTERN.md
 
-## Zweck dieses Dokuments
-
-Dieses Dokument beschreibt die grundlegenden Design- und Architekturregeln
-für dieses Projekt.
-
-Ziel ist:
-- klare Zuständigkeiten
-- hohe Wartbarkeit
-- saubere Sicherheitsgrenzen
-- Vermeidung von impliziten Annahmen und Wildwuchs
-
-Es handelt sich **nicht um ein Framework**, sondern um verbindliche
-Projektregeln für PHP-Projekte mit Composer **ohne Frameworks**.
+## Ziel
+Dieses Dokument definiert verbindliche Architektur-, Security- und Strukturregeln
+für das Projekt. Es dient als Leitplanke für Implementierung, Reviews und Erweiterungen.
 
 ---
 
-## 1. Single Entry Point
+## 1. Grundarchitektur
 
-### Regel
-Alle HTTP-Requests laufen ausschließlich über `public/index.php`.
-
-### Begründung
-- verhindert Direktzugriffe auf interne Dateien
-- ermöglicht zentrale Kontrolle über Routing und Security
-- reduziert Angriffsfläche
-
-### Erlaubt
-```
-/public/index.php
-```
-
-### Verboten
-```
-/templates/*.php per URL aufrufen
-/src/*.php direkt erreichbar
-```
+- Single Entry Point über `public/index.php`
+- Webroot zeigt ausschließlich auf `public/`
+- Nicht-öffentlicher Code liegt in:
+  - `src/`
+  - `templates/`
+  - `vendor/`
+- URLs sind stabil, Dateinamen sind intern
 
 ---
 
-## 2. Öffentlicher und nicht-öffentlicher Code
+## 2. Templates & Rendering
 
-### Regel
-Der Ordner `public/` ist der **einzige** Webroot.
-Alle anderen Ordner sind nicht öffentlich zugänglich.
-
-### Begründung
-- schützt Konfiguration, Logik und Vendor-Code
-- verhindert versehentliche Datei-Leaks
-
-### Struktur
-```
-/public      → öffentlich
-/src         → nicht öffentlich
-/templates   → nicht öffentlich
-/vendor      → nicht öffentlich
-```
+- Layout (`templates/layout/base.php`) enthält:
+  - HTML-Grundgerüst
+  - `<main>`-Element
+  - Einbindung von Header & Footer
+- Seiten-Templates (`templates/pages/*`):
+  - enthalten ausschließlich Inhalt
+  - kein `<html>`, `<body>`, `<main>`, `<header>`, `<footer>`
+- Partials (`templates/partials/*`) sind wiederverwendbar und logikfrei
 
 ---
 
-## 3. Trennung von Zuständigkeiten (Separation of Concerns)
+## 3. Security – Grundsatz
 
-### Regel
-Jeder Hauptordner hat eine klar definierte Verantwortung.
-
-| Ordner       | Verantwortung |
-|--------------|---------------|
-| `public/`    | Einstiegspunkt, Routing, Assets |
-| `src/`       | PHP-Logik, Security, Helper |
-| `templates/` | Darstellung (HTML) |
-| `vendor/`    | Drittanbieter-Code |
-
-### Begründung
-- bessere Lesbarkeit
-- einfacheres Refactoring
-- klarere Sicherheitsgrenzen
+Security wird ausschließlich **serverseitig** umgesetzt.
+Frontend (HTML/JS) dient nur der Usability, nicht der Durchsetzung von Security.
 
 ---
 
-## 4. PHP-Logik gehört nach `src/`
+## 4. CSRF-Schutz
 
-### Regel
-Alle PHP-Logik liegt unter `src/` und wird über Composer autoloaded.
+- Jedes POST-Formular muss ein CSRF-Token enthalten
+- CSRF-Tokens sind:
+  - sessionbasiert
+  - kryptografisch zufällig
+  - serverseitig validiert
+- CSRF-Prüfung erfolgt **vor**:
+  - Zugriff auf `$_POST`
+  - Validierung
+  - Verarbeitung
 
-### Erlaubt
-```php
-use App\Security\Csrf;
-```
-
-### Verboten
-```php
-require '../includes/csrf.php';
-```
-
-### Begründung
-- kein Include-Chaos
-- eindeutige Abhängigkeiten
-- bessere Testbarkeit
+Regel:
+> Kein Zugriff auf Nutzerdaten, bevor CSRF erfolgreich geprüft wurde.
 
 ---
 
-## 5. Templates sind logikfrei
+## 5. Honeypot (Bot-Schutz)
 
-### Regel
-Templates enthalten **keine Business- oder Security-Logik**.
-
-### Erlaubt
-```php
-<h1><?= e($title) ?></h1>
-```
-
-### Verboten
-```php
-<?php
-if ($_SESSION['is_admin']) {
-    deleteUser();
-}
-```
-
-### Begründung
-- verhindert Seiteneffekte
-- vereinfacht Layout-Änderungen
-- reduziert Security-Risiken
+- Jedes Formular enthält ein Honeypot-Feld
+- Wird das Feld ausgefüllt:
+  - Request wird still verworfen
+  - HTTP 200 wird zurückgegeben
+  - keine Fehlermeldung, kein Feedback
 
 ---
 
-## 6. Kein dynamisches Include
+## 6. Formular-Verarbeitung
 
-### Regel
-Dateien dürfen nicht dynamisch aus User-Input inkludiert werden.
+- Jedes Formular hat genau **einen** Endpunkt
+- Reihenfolge der Verarbeitung:
+  1. Request-Methode prüfen (POST)
+  2. CSRF prüfen
+  3. Honeypot prüfen
+  4. Eingaben lesen
+  5. Validieren
+  6. Verarbeiten (z. B. Mail)
+  7. CSRF-Token regenerieren
 
-### Verboten
-```php
-include $_GET['page'] . '.php';
-```
-
-### Erlaubt
-```php
-$pages = [
-    'home' => 'pages/home.php',
-    'about' => 'pages/about.php'
-];
-
-$template = $pages[$page] ?? 'pages/home.php';
-```
-
-### Begründung
-- verhindert Local File Inclusion (LFI)
-- kontrollierte Seitenstruktur
+- Fehlerantworten:
+  - sind generisch
+  - enthalten keine internen Details
+  - enthalten keine Feldnamen
 
 ---
 
-## 7. Output wird immer escaped
+## 7. E-Mail-Versand
 
-### Regel
-Jede variable Ausgabe wird escaped, außer sie ist explizit als sicher definiert.
+- E-Mail-Versand erfolgt ausschließlich über **PHPMailer**
+- SMTP-Zugangsdaten sind ausgelagert (`.env`)
+- `From` ist immer eine feste Systemadresse
+- Benutzer-E-Mail wird ausschließlich als `Reply-To` gesetzt
 
-### Erlaubt
-```php
-<p><?= e($username) ?></p>
-```
-
-### Verboten
-```php
-<p><?= $_GET['name'] ?></p>
-```
-
-### Begründung
-- schützt vor Cross-Site-Scripting (XSS)
-- klarer Standard statt Einzelfallentscheidungen
+Verboten:
+- `mail()`
+- dynamisches Setzen von `From` aus User-Input
 
 ---
 
-## 8. Composer ist die einzige Abhängigkeitsquelle
+## 8. Konfiguration & Secrets (.env)
 
-### Regel
-Externer Code wird ausschließlich über Composer eingebunden.
+- Sensible Konfiguration liegt in einer `.env`-Datei im Projekt-Root
+- `.env` wird niemals committed
+- `.env.example` gehört ins Repository
+- Zugriff auf Konfigurationswerte erfolgt über `$_ENV`
 
-### Begründung
-- reproduzierbare Builds
-- Sicherheitsupdates möglich
-- transparente Abhängigkeiten
-
-### Verboten
-- Kopieren von Libraries ins Projekt
-- Vendor-Code unter `src/` oder `public/`
+Regel:
+> Keine Secrets im Code, keine Secrets im Frontend.
 
 ---
 
-## 9. Fehlerbehandlung ohne Informationsleck
-
-### Regel
-Fehlerdetails werden niemals direkt an den Benutzer ausgegeben.
-
-### Erlaubt
-- Logging
-- generische Fehlermeldungen
-
-### Verboten
-- Stacktraces im Browser
-- `var_dump()` oder `print_r()` in Production
+Siehe SECURITY_APPENDIX.md für Threat Model & Gegenmaßnahmen.
 
 ---
-
-## 10. Änderungen an der Architektur
-
-### Regel
-Neue Struktur- oder Designentscheidungen werden:
-- dokumentiert
-- begründet
-- konsistent angewendet
-
-Dieses Dokument ist verbindlich für alle strukturellen Änderungen.

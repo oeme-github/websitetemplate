@@ -12,11 +12,16 @@
             </ul>
         </nav>
 
-        <div class="footer-col footer-theme">
-            <button id="themeToggle" class="theme-toggle" aria-label="Theme wechseln" aria-pressed="false">
-                🌗 Theme
-            </button>
-        </div>
-
+<div class="footer-col footer-theme">
+    <button
+        type="button"
+        class="theme-toggle"
+        data-theme-toggle
+        aria-label="Theme wechseln"
+        aria-pressed="false"
+    >
+        🌗 Theme
+    </button>
+</div>
     </div>
 </footer>

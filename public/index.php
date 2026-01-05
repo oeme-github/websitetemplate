@@ -13,6 +13,12 @@ error_reporting(E_ALL);
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
+// .env-Datei laden
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->safeLoad();
+
 // erlaubte Seiten (Whitelist!)
 $pages = [
     'home'       => 'home.php',
