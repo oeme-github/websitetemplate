@@ -1,0 +1,54 @@
+# ----------------------------------------------------------------------
+# Rewrite Engine
+# ----------------------------------------------------------------------
+RewriteEngine On
+
+# -------------------------------------------------
+# Erlaube explizite Endpoints
+# -------------------------------------------------
+
+# Kontaktformular Endpoint NICHT umschreiben
+RewriteRule ^send_kontakt\.php$ - [L]
+
+# ----------------------------------------------------------------------
+# Sicherheitsbasis
+# ----------------------------------------------------------------------
+
+# Verhindere Directory Listing
+Options -Indexes
+
+# Blockiere direkten Zugriff auf sensible Verzeichnisse
+RewriteRule ^(templates|src|vendor)/ - [F,L]
+
+# Block direct access to PHP files except index.php
+RewriteCond %{THE_REQUEST} \.php [NC]
+RewriteCond %{REQUEST_URI} !^/index\.php$
+RewriteRule .* - [F,L]
+
+# ----------------------------------------------------------------------
+# Bestehende Dateien & Assets NICHT umschreiben
+# ----------------------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ----------------------------------------------------------------------
+# Saubere URLs → Routing über index.php
+# ----------------------------------------------------------------------
+
+# /impressum → index.php?page=impressum
+RewriteRule ^impressum/?$ index.php?page=impressum [L,QSA]
+
+# /datenschutz → index.php?page=datenschutz
+RewriteRule ^datenschutz/?$ index.php?page=datenschutz [L,QSA]
+
+# / → Startseite
+RewriteRule ^$ index.php?page=home [L,QSA]
+
+# ----------------------------------------------------------------------
+# Fallback: alles andere → index.php (404 im Router)
+# ----------------------------------------------------------------------
+# -> auf index.php umleiten
+# RewriteRule ^ index.php [L,QSA] 
+# -> auf aufgerufene Seite -> wenn nicht da, dann über Routing auf 404
+RewriteRule ^(.+)$ index.php?page=$1 [L,QSA]

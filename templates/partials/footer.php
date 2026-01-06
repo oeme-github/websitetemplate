@@ -7,8 +7,8 @@
 
         <nav class="footer-col footer-legal" aria-label="Rechtliches">
             <ul>
-                <li><a href="impressum.php">Impressum</a></li>
-                <li><a href="datenschutz.php">Datenschutz</a></li>
+                <li><a href="impressum">Impressum</a></li>
+                <li><a href="datenschutz">Datenschutz</a></li>
             </ul>
         </nav>
 

@@ -1,8 +1,28 @@
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__, 2) . '/vendor/autoload.php';
+/*
+|--------------------------------------------------------------------------
+| Bootstrap
+|--------------------------------------------------------------------------
+*/
+require dirname(__DIR__) . '/vendor/autoload.php';
 
+/*
+|--------------------------------------------------------------------------
+| .env laden
+|--------------------------------------------------------------------------
+*/
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->safeLoad();
+
+/*
+|--------------------------------------------------------------------------
+| PHPMailer
+|--------------------------------------------------------------------------
+*/
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -47,7 +67,7 @@ $required = [
 ];
 
 foreach ($required as $key) {
-    if (empty($_ENV[$key] ?? null)) {
+    if (empty(env($key) ?? null)) {
         json_response(500, false, 'ENV', 'Konfiguration unvollständig.');
     }
 }
@@ -114,7 +134,15 @@ if (!$consent) {
 }
 
 if ($errors) {
-    json_response(400, false, 'VALIDATION', 'Bitte Eingaben prüfen.');
+    json_response(
+        400,
+        false,
+        'VALIDATION',
+        'Bitte Eingaben prüfen.',
+        [
+            'errors' => $errors,
+        ]
+    );
 }
 
 /*
@@ -128,16 +156,16 @@ try {
 
     // SMTP (empfohlen)
     $mail->isSMTP();
-    $mail->Host = $_ENV['MAIL_HOST'];
+    $mail->Host = env('MAIL_HOST');
     $mail->SMTPAuth = true;
-    $mail->Username = $_ENV['MAIL_USER'];
-    $mail->Password = $_ENV['MAIL_PASS'];
+    $mail->Username = env('MAIL_USER');
+    $mail->Password = env('MAIL_PASS');
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = (int) $_ENV['MAIL_PORT'];
+    $mail->Port = (int) env('MAIL_PORT');
 
     // Absender & Empfänger
-    $mail->setFrom($_ENV['MAIL_FROM'], 'Website');
-    $mail->addAddress($_ENV['MAIL_TO']);
+    $mail->setFrom(env('MAIL_FROM'), 'Website');
+    $mail->addAddress(env('MAIL_TO'));
 
     // Reply-To vom Absender (wichtig!)
     $mail->addReplyTo($email, $vorname . ' ' . $nachname);

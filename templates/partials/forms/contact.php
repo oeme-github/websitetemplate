@@ -1,17 +1,13 @@
 <?php
 /**
  * Kontaktformular
- *
- * Erwartete Variablen:
- * @var string $action
- * @var string $variant
  */
 
-$action  = $action  ?? '/send_kontakt.php';
-$variant = $variant ?? 'default';
+if (empty($action)) {
+    throw new RuntimeException('Form action not defined.');
+}
 ?>
-
-<form
+<form action="<?= e($action) ?>"
     id="kontaktForm"
     method="post"
     action="<?= e($action) ?>"

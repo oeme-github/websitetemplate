@@ -18,12 +18,18 @@
 </head>
 
 <body>
-
+    <!-- Header einbinden -->
     <?php require __DIR__ . '/../partials/header.php'; ?>
-
+    <!-- Hauptinhalt -->
     <main id="main" tabindex="-1">
         <?php
         $template = ltrim($template, '/');
+        // Sicherheitscheck: Nur Templates aus dem pages-Verzeichnis laden [otional]
+        //if (!str_starts_with($template, 'pages/')) {
+        //    http_response_code(404);
+        //    require __DIR__ . '/../pages/404.php';
+        //    return;
+        //}
         $templatePath = __DIR__ . '/../' . $template;
         if (is_file($templatePath)) {
             require $templatePath;
@@ -33,9 +39,9 @@
         }
         ?>
     </main>
-
+    <!-- Footer einbinden -->
     <?php require __DIR__ . '/../partials/footer.php'; ?>
-
+    <!-- JavaScript-Dateien -->
     <script src="/assets/js/main.js" defer></script>
 </body>
 

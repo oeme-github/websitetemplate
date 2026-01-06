@@ -75,6 +75,7 @@
         : null;
 
       if (response.ok && data?.ok) {
+        // es scheint alles gut gegangen zu sein, jetzt noch sauber beenden
         setMessage(data.message || 'Nachricht gesendet.', true);
         form.reset();
 
@@ -84,10 +85,15 @@
           if (csrfInput) csrfInput.value = data.csrf;
         }
       } else {
-        setMessage(
-          data?.message || 'Bitte Eingaben prüfen.',
-          false
-        );
+        // Meldung aus dem Formular -> hier gab es ein Problem
+        if (data?.errors && Array.isArray(data.errors)) {
+          setMessage(data.errors.join(' · '), false);
+        } else {
+          setMessage(
+            data?.message || 'Bitte Eingaben prüfen. xxx',
+            false
+          );
+        }
       }
     } catch (err) {
       setMessage('Netzwerkfehler. Bitte später erneut versuchen.', false);
