@@ -21,8 +21,6 @@ if (!headers_sent()) {
 }
 
 // @var string $pageH1
-// @var string $navBase  '' oder 'index.php' -->
-$navBase = $navBase ?? '';
 $pageH1 = $pageH1 ?? 'Mein One-Pager';
 ?>
 
@@ -35,7 +33,7 @@ $pageH1 = $pageH1 ?? 'Mein One-Pager';
 
 <header class="header">
     <div class="header-inner">
-        <a href="<?= $navBase ?>#hero" class="logo" aria-label="Startseite">
+        <a href="/#top" class="logo" aria-label="Startseite">
             <img class="logo-img" alt="Mein One-Pager" />
         </a>
 
@@ -43,23 +41,23 @@ $pageH1 = $pageH1 ?? 'Mein One-Pager';
 
         <!-- Desktop Navigation -->
         <nav class="nav-desktop" id="desktopMenu">
-            <a href="<?= $navBase ?>#hero">Hero</a>
-            <a href="<?= $navBase ?>#features">Features</a>
-            <a href="<?= $navBase ?>#about">Über uns</a>
-            <a href="<?= $navBase ?>#contact">Kontakt aufnehmen</a>
+            <a href="/#hero">Hero</a>
+            <a href="/#features">Features</a>
+            <a href="/#about">Über uns</a>
+            <a href="/#contact">Kontakt aufnehmen</a>
         </nav>
 
         <!-- Mobile Button -->
-        <button id="menuToggle" class="menu-toggle" aria-label="Menü öffnen" aria-expanded="false">
+        <button id="menuToggle" class="menu-toggle" data-nav-toggle aria-label="Menü öffnen" aria-expanded="false">
             ☰
         </button>
     </div>
 
     <!-- Mobile Menü -->
-    <nav id="mobileMenu" class="nav-mobile" aria-hidden="true">
-        <a href="<?= $navBase ?>#hero" tabindex="-1">Hero</a>
-        <a href="<?= $navBase ?>#features" tabindex="-1">Features</a>
-        <a href="<?= $navBase ?>#about" tabindex="-1">Über uns</a>
-        <a href="<?= $navBase ?>#contact" tabindex="-1">Kontakt</a>
+    <nav id="mobileMenu" class="nav-mobile" data-nav aria-hidden="true">
+        <a href="/#hero" tabindex="-1">Hero</a>
+        <a href="/#features" tabindex="-1">Features</a>
+        <a href="/#about" tabindex="-1">Über uns</a>
+        <a href="/#contact" tabindex="-1">Kontakt</a>
     </nav>
 </header>

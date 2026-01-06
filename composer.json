@@ -5,6 +5,7 @@
     },
     "files": [
       "src/Helpers/escaper.php",
+      "src/Helpers/env.php",
       "src/Security/session.php",
       "src/Security/headers.php",
       "src/Security/csrf.php"

@@ -102,7 +102,7 @@ Verboten:
 - Sensible Konfiguration liegt in einer `.env`-Datei im Projekt-Root
 - `.env` wird niemals committed
 - `.env.example` gehört ins Repository
-- Zugriff auf Konfigurationswerte erfolgt über `$_ENV`
+- Zugriff auf Konfigurationswerte erfolgt über Helperfunktion `env()`
 
 Regel:
 > Keine Secrets im Code, keine Secrets im Frontend.

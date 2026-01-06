@@ -20,9 +20,6 @@
     <h2>Kontakt</h2>
     <!-- Einbindung des Kontaktformulars -->
     <?php
-    $action  = '/send_kontakt.php';
-    $variant = 'home';
-
     require __DIR__ . '/../partials/forms/contact.php';
     ?>
 </section>
