@@ -7,8 +7,7 @@ if (empty($action)) {
     throw new RuntimeException('Form action not defined.');
 }
 ?>
-<form action="<?= e($action) ?>"
-    id="kontaktForm"
+<form id="kontaktForm"
     method="post"
     action="<?= e($action) ?>"
     class="contact-form contact-form--<?= e($variant) ?>"
