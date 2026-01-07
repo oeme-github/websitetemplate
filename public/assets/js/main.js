@@ -1,5 +1,6 @@
 'use strict';
 
+
 /* =====================================================
   B) Theme (Dark / Light)
 ===================================================== */
@@ -38,8 +39,9 @@
   });
 })();
 
+
 /* =====================================================
-  D) Kontaktformular – AJAX (neu & minimal)
+  D) Kontaktformular – AJAX (final & schlank)
 ===================================================== */
 (function () {
   const form = document.getElementById('kontaktForm');
@@ -57,8 +59,10 @@
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    e.stopPropagation();
 
     submitBtn?.setAttribute('disabled', 'disabled');
+    submitBtn.textContent = 'Sende...';
     form.setAttribute('aria-busy', 'true');
 
     try {
@@ -69,36 +73,35 @@
         credentials: 'same-origin',
       });
 
-      const contentType = response.headers.get('content-type') || '';
-      const data = contentType.includes('application/json')
-        ? await response.json()
-        : null;
+      const data = await response.json(); // jetzt garantiert
 
-      if (response.ok && data?.ok) {
-        // es scheint alles gut gegangen zu sein, jetzt noch sauber beenden
+      if (response.ok && data.ok) {
         setMessage(data.message || 'Nachricht gesendet.', true);
         form.reset();
 
-        // CSRF-Token erneuern (AJAX-Flow)
         if (data.csrf) {
           const csrfInput = form.querySelector('input[name="_csrf"]');
           if (csrfInput) csrfInput.value = data.csrf;
         }
-      } else {
-        // Meldung aus dem Formular -> hier gab es ein Problem
-        if (data?.errors && Array.isArray(data.errors)) {
-          setMessage(data.errors.join(' · '), false);
-        } else {
-          setMessage(
-            data?.message || 'Bitte Eingaben prüfen. xxx',
-            false
-          );
-        }
+        return;
       }
+
+      if (Array.isArray(data.errors)) {
+        setMessage(data.errors.join(' · '), false);
+        return;
+      }
+
+      setMessage(data.message || 'Fehler.', false);
+
     } catch (err) {
-      setMessage('Netzwerkfehler. Bitte später erneut versuchen.', false);
+      console.error('Fetch failed:', err);
+      setMessage(
+        'Netzwerkfehler. Bitte Internetverbindung prüfen.',
+        false
+      );
     } finally {
       submitBtn?.removeAttribute('disabled');
+      submitBtn.textContent = 'Absenden';
       form.removeAttribute('aria-busy');
     }
   });

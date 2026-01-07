@@ -16,40 +16,90 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->safeLoad();
+$dotenv->load();
 
 /*
 |--------------------------------------------------------------------------
-| PHPMailer
+| Global Error & Exception Handling (KERNSTÜCK)
 |--------------------------------------------------------------------------
 */
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-/* -------------------------------------------------
-| JSON-Response Helper (einheitlich)
--------------------------------------------------- */
-function json_response(
-    int $httpCode,
-    bool $ok,
-    string $code,
+set_error_handler(function (
+    int $severity,
     string $message,
-    array $extra = []
-): void {
+    string $file,
+    int $line
+) {
+    throw new ErrorException($message, 0, $severity, $file, $line);
+});
+
+set_exception_handler(function (Throwable $e) {
+    respond(500, [
+        'ok'      => false,
+        'code'    => 'SERVER',
+        'message' => 'Interner Serverfehler.',
+        // DEBUG lokal optional:
+        'debug' => $e->getMessage(),
+    ]);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Response Helper (EINZIGE Output-Stelle)
+|--------------------------------------------------------------------------
+*/
+function respond(int $status, array $payload): never
+{
     if (!headers_sent()) {
         header('Content-Type: application/json; charset=utf-8');
         header('Cache-Control: no-store');
     }
 
-    http_response_code($httpCode);
+    http_response_code($status);
 
-    echo json_encode(array_merge([
-        'ok'      => $ok,
-        'code'    => $code,
-        'message' => $message,
-    ], $extra), JSON_UNESCAPED_UNICODE);
-
+    echo json_encode(
+        $payload,
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR
+    );
     exit;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Guard: Nur POST
+|--------------------------------------------------------------------------
+*/
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    respond(405, [
+        'ok'      => false,
+        'code'    => 'METHOD',
+        'message' => 'Methode nicht erlaubt.',
+    ]);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Security: CSRF
+|--------------------------------------------------------------------------
+*/
+if (!csrf_verify($_POST['_csrf'] ?? null)) {
+    respond(403, [
+        'ok'      => false,
+        'code'    => 'CSRF',
+        'message' => 'Ungültige Anfrage.',
+    ]);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Security: Honeypot
+|--------------------------------------------------------------------------
+*/
+if (!empty($_POST['website'] ?? '')) {
+    respond(200, [
+        'ok'      => true,
+        'message' => 'Danke.',
+    ]);
 }
 
 /*
@@ -67,41 +117,14 @@ $required = [
 ];
 
 foreach ($required as $key) {
-    if (empty(env($key) ?? null)) {
-        json_response(500, false, 'ENV', 'Konfiguration unvollständig.');
+    if (empty($_ENV[$key] ?? null)) {
+        throw new RuntimeException("Missing env variable: $key");
     }
 }
 
 /*
 |--------------------------------------------------------------------------
-| 1. Nur POST erlauben
-|--------------------------------------------------------------------------
-*/
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    json_response(405, false, 'METHOD', 'Methode nicht erlaubt.');
-}
-
-/*
-|--------------------------------------------------------------------------
-| 2. CSRF prüfen (zwingend!)
-|--------------------------------------------------------------------------
-*/
-if (!csrf_verify($_POST['_csrf'] ?? null)) {
-    json_response(403, false, 'CSRF', 'Ungültige Anfrage.');
-}
-
-/*
-|--------------------------------------------------------------------------
-| 3. Website prüfen (still)
-|--------------------------------------------------------------------------
-*/
-if (!empty($_POST['website'] ?? '')) {
-    json_response(200, true, 'OK', 'Danke!');
-}
-
-/*
-|--------------------------------------------------------------------------
-| 4. Eingaben lesen
+| Input lesen
 |--------------------------------------------------------------------------
 */
 $vorname   = trim($_POST['vorname'] ?? '');
@@ -112,7 +135,7 @@ $consent   = isset($_POST['consent']);
 
 /*
 |--------------------------------------------------------------------------
-| 5. Validierung
+| Validierung
 |--------------------------------------------------------------------------
 */
 $errors = [];
@@ -134,65 +157,59 @@ if (!$consent) {
 }
 
 if ($errors) {
-    json_response(
-        400,
-        false,
-        'VALIDATION',
-        'Bitte Eingaben prüfen.',
-        [
-            'errors' => $errors,
-        ]
-    );
+    respond(400, [
+        'ok'      => false,
+        'code'    => 'VALIDATION',
+        'message' => 'Bitte Eingaben prüfen.',
+        'errors'  => $errors,
+    ]);
 }
 
 /*
 |--------------------------------------------------------------------------
-| 6. Verarbeitung: Mail mit PHPMailer
+| Business: Mailversand
 |--------------------------------------------------------------------------
 */
-try {
-    // PHPMailer-Instanz
-    $mail = new PHPMailer(true);
+use PHPMailer\PHPMailer\PHPMailer;
 
-    // SMTP (empfohlen)
-    $mail->isSMTP();
-    $mail->Host = env('MAIL_HOST');
-    $mail->SMTPAuth = true;
-    $mail->Username = env('MAIL_USER');
-    $mail->Password = env('MAIL_PASS');
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = (int) env('MAIL_PORT');
+$mail = new PHPMailer(true);
 
-    // Absender & Empfänger
-    $mail->setFrom(env('MAIL_FROM'), 'Website');
-    $mail->addAddress(env('MAIL_TO'));
+$mail->isSMTP();
+$mail->Host       = $_ENV['MAIL_HOST'];
+$mail->SMTPAuth   = true;
+$mail->Username   = $_ENV['MAIL_USER'];
+$mail->Password   = $_ENV['MAIL_PASS'];
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+$mail->Port       = (int) $_ENV['MAIL_PORT'];
 
-    // Reply-To vom Absender (wichtig!)
-    $mail->addReplyTo($email, $vorname . ' ' . $nachname);
+$mail->CharSet  = 'UTF-8';
+$mail->Encoding = 'base64';
+$mail->isHTML(false);
 
-    // Inhalt
-    $mail->isHTML(false);
-    $mail->Subject = 'Kontaktformular';
-    $mail->Body =
-        "Vorname: $vorname\n" .
-        "Nachname: $nachname\n" .
-        "E-Mail: $email\n\n" .
-        $nachricht;
+$mail->setFrom($_ENV['MAIL_FROM'], 'Website');
+$mail->addAddress($_ENV['MAIL_TO']);
+$mail->addReplyTo($email, "$vorname $nachname");
 
-    $mail->send();
+$mail->Subject = 'Kontaktformular';
+$mail->Body =
+    "Vorname: $vorname\n" .
+    "Nachname: $nachname\n" .
+    "E-Mail: $email\n\n" .
+    $nachricht;
 
-} catch (Exception $e) {
-    // Kein Leak!
-    // error_log($e->getMessage()); // optional
-    json_response(500, false, 'MAIL', 'Leider ist ein Fehler aufgetreten. Bitte später erneut versuchen.');
-}
+$mail->send();
+// Fehler über Exception-Handling
 
 /*
 |--------------------------------------------------------------------------
-| 7. CSRF regenerieren & Erfolg
+| Erfolg
 |--------------------------------------------------------------------------
 */
 csrf_regenerate();
-$newToken = csrf_token();
 
-json_response(200, true, 'SENT', 'Danke! Nachricht wurde gesendet.', ['csrf' => $newToken]);
+respond(200, [
+    'ok'      => true,
+    'code'    => 'SENT',
+    'message' => 'Danke! Nachricht wurde gesendet.',
+    'csrf'    => csrf_token(),
+]);
