@@ -1,60 +1,95 @@
-# REVIEW_CHECKLIST.md
+# Review Checklist – One-Pager Template
 
-Diese Checkliste dient zur schnellen Prüfung von Änderungen
-gegen die definierten Design- und Security-Patterns.
-
----
-
-## 1. Projektstruktur
-
-- [ ] Webroot zeigt nur auf `public/`
-- [ ] Kein direkter Zugriff auf `src/`, `templates/`, `vendor/`
-- [ ] Keine PHP-Dateien im Projekt-Root
+Ziel: Reproduzierbarer Qualitätsstandard
+Status: Finaler UX- & Security-Smoke-Test
 
 ---
 
-## 2. Templates & Rendering
+## 1. Routing & Architektur
 
-- [ ] Layout enthält HTML-Gerüst und `<main>`
-- [ ] Seiten-Templates enthalten nur Inhalt
-- [ ] Keine Security- oder Business-Logik in Templates
-- [ ] Partials sind wiederverwendbar
-
----
-
-## 3. Formular & Security
-
-- [ ] Enthält jedes POST-Formular ein CSRF-Token?
-- [ ] Wird CSRF vor Zugriff auf `$_POST` geprüft?
-- [ ] Ist ein Honeypot-Feld vorhanden?
-- [ ] Wird ein Honeypot-Treffer still verarbeitet?
-- [ ] Gibt es genau einen Endpunkt pro Formular?
-- [ ] Erfolgt Validierung serverseitig?
-- [ ] Werden keine User-Daten ungefiltert ausgegeben?
+- [x] Single Entry Point (`index.php`)
+- [x] Whitelist-Routing
+- [x] Saubere 404-Seite
+- [x] Keine direkten Template-Zugriffe
+- [x] Rewrite-Regeln greifen korrekt
 
 ---
 
-## 4. Mail & Konfiguration
+## 2. Security-Baseline
 
-- [ ] Wird PHPMailer statt `mail()` verwendet?
-- [ ] Sind SMTP-Daten ausgelagert (`.env`)?
-- [ ] Ist `.env` in `.gitignore`?
-- [ ] Existiert eine `.env.example`?
-- [ ] Wird `Reply-To` statt `From` verwendet?
-- [ ] Gibt es keine Secrets im Repository?
-
----
-
-## 5. Security-Header & Sessions
-
-- [ ] Security-Header sind gesetzt (CSP, XFO, XCTO, Referrer-Policy)
-- [ ] Sessions werden zentral initialisiert
-- [ ] Keine Security-Logik im Template
+- [x] X-Powered-By entfernt
+- [x] Security-Header gesetzt
+- [x] CSP aktiv
+- [x] CSRF-Schutz aktiv
+- [x] Honeypot aktiv
+- [x] Keine internen Fehlermeldungen im Frontend
 
 ---
 
-## 6. Abschluss-Check
+## 3. Header / Topbar (UX)
 
-- [ ] Würde ein neuer Entwickler die Struktur verstehen?
-- [ ] Ist die Änderung sicherer oder gleich sicher?
-- [ ] Würde die Änderung auch in 6 Monaten noch Sinn ergeben?
+- [x] Initial sichtbar
+- [x] Verschwindet bei Scroll nach unten
+- [x] Erscheint bei Scroll nach oben
+- [x] Kein Flackern
+- [x] Korrektes Verhalten bei Anchor-Navigation
+
+---
+
+## 4. Mobile Navigation
+
+- [x] Öffnen / Schließen per Toggle
+- [x] Schließt bei Klick auf Menü-Link
+- [x] Schließt bei Klick auf Logo / Home
+- [x] Schließt bei Scroll
+- [x] Edge-Case:
+  - Reload → Menü öffnen → Home klicken
+- [x] `aria-expanded` immer korrekt
+- [x] Kein Fokus- oder Scroll-Bug
+
+---
+
+## 5. Footer
+
+- [x] Immer sichtbar (fixed)
+- [x] Kein Content verdeckt
+- [x] Letzte Section erreichbar
+- [x] Links & Theme-Toggle funktionieren
+
+---
+
+## 6. Kontaktformular
+
+- [x] HTML-Validierung vorhanden
+- [x] Server-Validierung vorhanden
+- [x] CSRF wird geprüft
+- [x] Honeypot greift
+- [x] Einheitliche JSON-Antworten
+- [x] Fehler korrekt im Frontend dargestellt
+- [x] Umlaute korrekt (UTF-8 End-to-End)
+
+---
+
+## 7. JavaScript
+
+- [x] main.js nur einmal eingebunden
+- [x] Keine Inline-Skripte
+- [x] Keine globalen Variablen
+- [x] Defensive Selektoren
+- [x] Fehlerbehandlung vollständig
+
+---
+
+## 8. UX-Fazit
+
+- [x] Erwartbares Verhalten
+- [x] Keine bekannten Edge-Cases offen
+- [x] Mobile & Desktop konsistent
+- [x] Release-fähig
+
+---
+
+## Abschluss
+✔ Zwischenstand freigegeben
+✔ Dokumentation aktuell
+✔ Basis für Erweiterungen stabil

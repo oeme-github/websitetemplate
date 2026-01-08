@@ -1,114 +1,153 @@
-# DESIGN_PATTERN.md
+# Design Patterns – One-Pager Template
 
-## Ziel
-Dieses Dokument definiert verbindliche Architektur-, Security- und Strukturregeln
-für das Projekt. Es dient als Leitplanke für Implementierung, Reviews und Erweiterungen.
-
----
-
-## 1. Grundarchitektur
-
-- Single Entry Point über `public/index.php`
-- Webroot zeigt ausschließlich auf `public/`
-- Nicht-öffentlicher Code liegt in:
-  - `src/`
-  - `templates/`
-  - `vendor/`
-- URLs sind stabil, Dateinamen sind intern
+Stand: UX- & Security-Zwischenstand
+Ziel: Klare Trennung von Struktur, Logik und Darstellung
+Prinzip: Weniger Magie, mehr Vorhersagbarkeit
 
 ---
 
-## 2. Templates & Rendering
+## 1. Grundprinzipien
 
-- Layout (`templates/layout/base.php`) enthält:
-  - HTML-Grundgerüst
-  - `<main>`-Element
-  - Einbindung von Header & Footer
-- Seiten-Templates (`templates/pages/*`):
-  - enthalten ausschließlich Inhalt
-  - kein `<html>`, `<body>`, `<main>`, `<header>`, `<footer>`
-- Partials (`templates/partials/*`) sind wiederverwendbar und logikfrei
+### Single Entry Point
+- Alle Requests laufen über `public/index.php`
+- Ausnahme: explizite Endpoints wie `send_kontakt.php`
 
----
+### Whitelist-Routing
+- Nur explizit definierte Routen sind erreichbar
+- Keine dynamischen Template-Pfade
+- 404 wird bewusst und kontrolliert gerendert
 
-## 3. Security – Grundsatz
-
-Security wird ausschließlich **serverseitig** umgesetzt.
-Frontend (HTML/JS) dient nur der Usability, nicht der Durchsetzung von Security.
-
----
-
-## 4. CSRF-Schutz
-
-- Jedes POST-Formular muss ein CSRF-Token enthalten
-- CSRF-Tokens sind:
-  - sessionbasiert
-  - kryptografisch zufällig
-  - serverseitig validiert
-- CSRF-Prüfung erfolgt **vor**:
-  - Zugriff auf `$_POST`
-  - Validierung
-  - Verarbeitung
-
-Regel:
-> Kein Zugriff auf Nutzerdaten, bevor CSRF erfolgreich geprüft wurde.
+### Trennung der Verantwortlichkeiten
+- **PHP**: Routing, Daten, Security
+- **HTML**: Struktur
+- **CSS**: Darstellung & Zustände
+- **JS**: Interaktion & Zustandswechsel
 
 ---
 
-## 5. Honeypot (Bot-Schutz)
+## 2. Template- & Layout-Struktur
 
-- Jedes Formular enthält ein Honeypot-Feld
-- Wird das Feld ausgefüllt:
-  - Request wird still verworfen
-  - HTTP 200 wird zurückgegeben
-  - keine Fehlermeldung, kein Feedback
+### base.php
+- Enthält ausschließlich:
+  - `<head>`
+  - Header
+  - `<main>`
+  - Footer
+- Kein Inline-JavaScript
+- Keine Business-Logik
 
----
-
-## 6. Formular-Verarbeitung
-
-- Jedes Formular hat genau **einen** Endpunkt
-- Reihenfolge der Verarbeitung:
-  1. Request-Methode prüfen (POST)
-  2. CSRF prüfen
-  3. Honeypot prüfen
-  4. Eingaben lesen
-  5. Validieren
-  6. Verarbeiten (z. B. Mail)
-  7. CSRF-Token regenerieren
-
-- Fehlerantworten:
-  - sind generisch
-  - enthalten keine internen Details
-  - enthalten keine Feldnamen
+### Pages
+- Seiten (`home.php`, `impressum.php`, `datenschutz.php`)
+- Enthalten **nur Content**
+- Kein `<html>`, `<head>`, `<body>`
 
 ---
 
-## 7. E-Mail-Versand
+## 3. Header & Navigation (UX)
 
-- E-Mail-Versand erfolgt ausschließlich über **PHPMailer**
-- SMTP-Zugangsdaten sind ausgelagert (`.env`)
-- `From` ist immer eine feste Systemadresse
-- Benutzer-E-Mail wird ausschließlich als `Reply-To` gesetzt
+### Ziel
+- Header inkl. Topbar:
+  - verschwindet beim Scrollen nach unten
+  - erscheint beim Scrollen nach oben
+- Verhalten muss konsistent sein bei:
+  - Maus
+  - Touch
+  - Anchor-Navigation
 
-Verboten:
-- `mail()`
-- dynamisches Setzen von `From` aus User-Input
+### Umsetzung
+- Header ist in `.site-header` gekapselt
+- Sichtbarkeit wird über `.is-hidden` gesteuert
+- JavaScript wertet `window.scrollY` + Scrollrichtung aus
+- CSS übernimmt ausschließlich die Darstellung
+
+### Regeln
+- ❌ kein `position: fixed` für Header
+- ❌ kein Scroll-Container (`overflow: auto`)
+- ❌ keine Inline-JS-Logik
+- ✅ CSS = Zustand, JS = Entscheidung
+
+---
+
+## 4. Mobile Navigation
+
+### Ziel
+- Mobile Menü darf **nie in einem inkonsistenten Zustand bleiben**
+
+### Schließbedingungen (verbindlich)
+Das Menü **muss schließen**, wenn:
+- ein Menü-Link angeklickt wird
+- ein Anchor-Link (`#` oder `/#`) geklickt wird
+- der Benutzer scrollt
+- das Logo / Home-Link geklickt wird
+- Edge-Case:
+  - Seite neu laden
+  - Menü öffnen
+  - Home klicken
+
+### Umsetzung
+- Zustand über `.is-open`
+- ARIA-State (`aria-expanded`) wird synchron gepflegt
+- Menü schließt **vor** Navigation
+- Keine Abhängigkeit von `hashchange`
+
+### Anti-Patterns
+- ❌ doppelte Zustände (JS + CSS)
+- ❌ Sonderlogik nur für das Logo
+- ❌ Menü offen lassen bei Scroll
 
 ---
 
-## 8. Konfiguration & Secrets (.env)
+## 5. Footer
 
-- Sensible Konfiguration liegt in einer `.env`-Datei im Projekt-Root
-- `.env` wird niemals committed
-- `.env.example` gehört ins Repository
-- Zugriff auf Konfigurationswerte erfolgt über Helperfunktion `$_ENV`
+### Ziel
+- Footer immer am unteren sichtbaren Rand
+- Kein Überdecken von Content
+- Immer bedienbar
 
-Regel:
-> Keine Secrets im Code, keine Secrets im Frontend.
+### Umsetzung
+- `position: fixed`
+- Body / Layout berücksichtigt Footer-Höhe
+- Keine Scroll-Logik im Footer
+
+---
+
+## 6. Kontaktformular
+
+### Architektur
+- Formular-HTML: Template
+- Validierung:
+  - Client: UX
+  - Server: verbindlich
+- Versand: PHPMailer
+- Konfiguration ausschließlich über `.env`
+
+### Security
+- CSRF-Token (Pflicht)
+- Honeypot-Feld
+- Einheitliche JSON-Responses
+- Keine internen Fehlerdetails im Frontend
 
 ---
 
-Siehe SECURITY_APPENDIX.md für Threat Model & Gegenmaßnahmen.
+## 7. JavaScript-Philosophie
+
+- IIFE pro Feature
+- Kein globaler State
+- Defensive Selektoren (`if (!el) return`)
+- Eine Verantwortung pro Block
 
 ---
+
+## 8. Was bewusst **nicht** gemacht wird
+
+- Kein Framework
+- Kein State-Management
+- Keine Magie im Autoload
+- Keine impliziten Abhängigkeiten
+
+---
+
+## Status
+✔ UX stabil
+✔ Security-Baseline aktiv
+✔ Release-tauglich

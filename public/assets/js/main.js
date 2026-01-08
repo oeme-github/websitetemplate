@@ -71,6 +71,103 @@
   });
 })();
 
+/* =====================================================
+  C1) Close on Link Click
+===================================================== */
+(function () {
+  const toggle = document.querySelector('[data-nav-toggle]');
+  const nav = document.querySelector('[data-nav]');
+
+  if (!toggle || !nav) return;
+
+  nav.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
+
+    // Menü schließen
+    nav.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  });
+})();
+
+/* =====================================================
+  C2) Mobile Navigation – Close on Scroll Down
+===================================================== */
+(function () {
+  const toggle = document.querySelector('[data-nav-toggle]');
+  const nav = document.querySelector('[data-nav]');
+  if (!toggle || !nav) return;
+
+  let lastY = window.scrollY;
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      const currentY = window.scrollY;
+
+      // nur reagieren, wenn Menü offen ist
+      if (!nav.classList.contains('is-open')) {
+        lastY = currentY;
+        return;
+      }
+
+      // nur bei Scroll nach unten
+      if (currentY > lastY + 5) {
+        nav.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+
+      lastY = currentY;
+    },
+    { passive: true }
+  );
+})();
+
+/* =====================================================
+  C3) Mobile Navigation – Close on Hash Navigation
+===================================================== */
+(function () {
+  const toggle = document.querySelector('[data-nav-toggle]');
+  const nav = document.querySelector('[data-nav]');
+  if (!toggle || !nav) return;
+
+  window.addEventListener('hashchange', () => {
+    if (!nav.classList.contains('is-open')) return;
+
+    nav.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  });
+})();
+
+/* =====================================================
+  C4) Mobile Navigation – Close on Internal Anchor Click (robust)
+===================================================== */
+(function () {
+  const toggle = document.querySelector('[data-nav-toggle]');
+  const nav = document.querySelector('[data-nav]');
+  if (!toggle || !nav) return;
+
+  function closeMenu() {
+    if (!nav.classList.contains('is-open')) return;
+    nav.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+
+  // Schließt bei Klick auf interne Anchor-Links überall auf der Seite
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+
+    const href = a.getAttribute('href') || '';
+    // interne Anchors: "#..." oder "/#..."
+    const isInternalAnchor =
+      href.startsWith('#') || href.startsWith('/#');
+
+    if (!isInternalAnchor) return;
+
+    closeMenu();
+  });
+})();
 
 /* =====================================================
   D) Kontaktformular – AJAX (final & schlank)
