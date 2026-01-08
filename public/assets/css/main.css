@@ -16,24 +16,27 @@
 /* CSS Variablen */
 :root {
   /* Fabrschema mit Haupt, Neben, Akzent Farben */
-  --color-haupt: #0C4A6E;
-  --color-neben: #F8FAFC;
-  --color-accent: #FFD166;
+  --color-haupt:      #0C4A6E;
+  --color-haupt-kmpl: #f3b591;
+  --color-neben:      #F8FAFC;
+  --color-neben-kmpl: #070503;
+  --color-accent:     #FFD166;
+  --color-accent-kmpl:#002e99;
 
   /* Grundfarben */
-  --color-bg-body: var(--color-neben);
-  --color-bg-header: var(--color-neben);
+  --color-bg-body:        var(--color-neben);
+  --color-bg-header:      var(--color-neben);
   --color-bg-section-alt: var(--color-neben);
-  --color-bg-hero-start: var(--color-neben);
-  --color-bg-hero-end: var(--color-haupt);
-  --color-bg-footer: var(--color-neben);
+  --color-bg-hero-start:  var(--color-neben);
+  --color-bg-hero-end:    var(--color-haupt);
+  --color-bg-footer:      var(--color-neben);
 
 
   /* Textfarben */
-  --color-text-main: #111111;
+  --color-text-main:    var(--color-neben-kmpl);
   --color-text-light: #0b0d1a;
   --color-text-muted: #303030;
-  --color-text-footer: #666666;
+  --color-text-footer:#666666;
 
   /* Akzent */
   --color-accent: #504e77;
@@ -49,6 +52,8 @@
   /* Layout */
   --max-width: 1200px;
   --max-width-narrow: 800px;
+
+  --footer-height: 3.75rem; /* aus CSS abgeleitet */
 
   /* Font Families */
   --font-base: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -83,6 +88,7 @@
 
   /* Logo URLs */
   --logo-src: url("../logo/logo_mark.svg");
+  --logo_hight: 3rem;
 
 }
 
@@ -90,6 +96,7 @@
   Dunkelmodus Styles
 ===================================================== */
 [data-theme="dark"] {
+
   /* Grundfarben */
   --color-bg-body: #0f0f0f;
   --color-bg-header: #000000;
@@ -201,6 +208,7 @@ body {
 
 .layout-main {
   flex: 1;
+  padding-bottom: var(--footer-height);
 }
 
 /* Layout */
@@ -250,7 +258,7 @@ body {
 
 .logo-img {
   display: block;
-  height: 2.5rem;
+  height: var(--logo_hight);
   width: auto;
 }
 
@@ -299,6 +307,11 @@ body {
   Footer
 ===================================================== */
 .footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 900;
   margin-top: auto;
   background: var(--color-bg-footer);
   color: var(--color-text-footer);
@@ -359,8 +372,6 @@ body {
   order: 2;
   justify-self: end;
 }
-
-
 
 /* =====================================================
   Navigation Styles
