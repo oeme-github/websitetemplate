@@ -20,7 +20,9 @@
 <body class="layout-root">
     <div class="layout-main">
         <!-- Header einbinden -->
-        <?php require __DIR__ . '/../partials/header.php'; ?>
+        <div class="site-header">
+            <?php require __DIR__ . '/../partials/header.php'; ?>
+        </div>
         <!-- Hauptinhalt -->
         <main id="main" tabindex="-1">
             <?php

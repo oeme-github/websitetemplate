@@ -1,5 +1,5 @@
 /* =====================================================
-  styles.css
+  main.css
   Haupt-CSS Datei für das One-Pager Website Template
   Erstellt von Jörg Römhild mit Unterstütztung von ChatGPT
   Datum: 2024-06-12
@@ -183,10 +183,7 @@ small {
 
 html,
 body {
-  /* Vollbild */
-  height: 100%;
   margin: 0;
-  overflow-x: hidden;
   /* Schrift */
   font-family: var(--font-base);
   font-size: var(--fs-200);
@@ -209,7 +206,6 @@ body {
 /* Layout */
 body {
   margin: 0;
-  overflow-x: hidden;
 
   font-family: var(--font-base);
   font-size: var(--fs-200);
@@ -496,7 +492,6 @@ body {
   left: -9999px;
   width: 1px;
   height: 1px;
-  overflow: hidden;
 }
 
 
