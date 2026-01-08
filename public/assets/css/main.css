@@ -15,12 +15,19 @@
 ===================================================== */
 /* CSS Variablen */
 :root {
+  /* Fabrschema mit Haupt, Neben, Akzent Farben */
+  --color-haupt: #0C4A6E;
+  --color-neben: #F8FAFC;
+  --color-accent: #FFD166;
+
   /* Grundfarben */
-  --color-bg-body: #ffffff;
-  --color-bg-header: #d8f1c7;
-  --color-bg-section-alt: #f5f5f5;
-  --color-bg-hero-start: #fce7e7;
-  --color-bg-hero-end: #fff7f7;
+  --color-bg-body: var(--color-neben);
+  --color-bg-header: var(--color-neben);
+  --color-bg-section-alt: var(--color-neben);
+  --color-bg-hero-start: var(--color-neben);
+  --color-bg-hero-end: var(--color-haupt);
+  --color-bg-footer: var(--color-neben);
+
 
   /* Textfarben */
   --color-text-main: #111111;
@@ -29,7 +36,7 @@
   --color-text-footer: #666666;
 
   /* Akzent */
-  --color-accent: #1d1c30;
+  --color-accent: #504e77;
 
   /* Button */
   --color-bg-btn: var(--color-accent);
@@ -89,6 +96,7 @@
   --color-bg-section-alt: #1a1a1a;
   --color-bg-hero-start: #222222;
   --color-bg-hero-end: #444444;
+  --color-bg-footer: var(--color-neben);
   /* Textfarben */
   --color-text-main: #f5f5f5;
   --color-text-light: #ffffff;
@@ -103,8 +111,12 @@
   --color-text-btn: var(--color-text-light);
   /* Topbar */
   --color-bg-topbar: #1f2937;
+
   /* logo */
-  --logo-src: url("../logo/logo_mark_white.svg");
+  .logo-img {
+    content: url("../logo/logo_mark_white.svg");
+  }
+
 }
 
 /* =====================================================
@@ -173,7 +185,6 @@ html,
 body {
   /* Vollbild */
   height: 100%;
-  width: 100%;
   margin: 0;
   overflow-x: hidden;
   /* Schrift */
@@ -185,16 +196,43 @@ body {
   color: var(--color-text-main);
 }
 
-/* Layout */
-body {
+.layout-root {
   min-height: 100vh;
-  min-height: 100svh;
-  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
 
-/* Header */
+.layout-main {
+  flex: 1;
+}
+
+/* Layout */
+body {
+  margin: 0;
+  overflow-x: hidden;
+
+  font-family: var(--font-base);
+  font-size: var(--fs-200);
+  line-height: var(--lh-body);
+
+  background: var(--color-bg-body);
+  color: var(--color-text-main);
+}
+
+
+/* Header Wrapper */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: transform 0.25s ease;
+}
+
+/* ausgeblendet */
+.site-header.is-hidden {
+  transform: translateY(-100%);
+}
+
 .header {
   /* Layout */
   position: relative;
@@ -215,14 +253,10 @@ body {
 }
 
 .logo-img {
-  /* Layout */
   display: block;
+  height: 2.5rem;
   width: auto;
-  height: clamp(100px, 3vw, 2.5rem);
-  /* Logo Bild */
-  content: var(--logo-src);
 }
-
 
 .header nav a {
   color: var(--color-text-light);
@@ -238,10 +272,6 @@ body {
 .content {
   /* Flexibles Wachstum */
   flex: 1;
-  overflow-y: auto;
-  /* Sanftes Scrollen */
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
 }
 
 /* Sections */
@@ -251,9 +281,6 @@ body {
   padding: var(--space-6) var(--space-3);
   max-width: var(--max-width);
   margin: 0 auto;
-  /* Scroll Snap */
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 .section.alt {
@@ -277,7 +304,7 @@ body {
 ===================================================== */
 .footer {
   margin-top: auto;
-  background: var(--color-footer-bg);
+  background: var(--color-bg-footer);
   color: var(--color-text-footer);
 }
 
@@ -344,10 +371,12 @@ body {
 ===================================================== */
 /* Theme Toggle Button */
 .theme-toggle {
-  background: none;
   border: 1px solid currentColor;
-  color: var(--color-text-muted);
-  padding: var(--space-1) var(--space-1);
+
+  background: var(--color-bg-btn);
+  color: var(--color-text-btn);
+
+  padding: var(--space-1) var(--space-2);
   border-radius: 0.5rem;
   cursor: pointer;
 }
@@ -550,6 +579,11 @@ body {
   cursor: not-allowed;
 }
 
+#kontaktForm .btn-primary:hover {
+  background-color: var(--color-text-light);
+  color: var(--color-accent);
+}
+
 /* ------------------------------
   Form Messages
 ------------------------------ */
@@ -557,18 +591,18 @@ body {
   font-size: var(--fs-100);
 }
 
-#kontaktForm .form-message.error {
+#kontaktForm .form-message.is-error {
   color: #b91c1c;
 }
 
-#kontaktForm .form-message.success {
+#kontaktForm .form-message.is-ok {
   color: #15803d;
 }
 
 /* =====================================================
   Legal Content Layout
 ===================================================== */
-.section-legal{
+.section-legal {
   /* Layout */
   min-height: 10vh;
   padding: var(--space-1) var(--space-2);
@@ -729,6 +763,6 @@ body {
 
   .section-legal {
     margin-bottom: var(--space-4);
-  }  
+  }
 
 }
