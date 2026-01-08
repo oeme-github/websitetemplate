@@ -1,5 +1,37 @@
 'use strict';
 
+/* =====================================================
+  Header / Topbar – Scroll Verhalten
+===================================================== */
+(function () {
+  const header = document.querySelector('.site-header');
+  if (!header) return;
+
+  let lastY = window.scrollY;
+  const threshold = 10;
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      const currentY = window.scrollY;
+      const delta = currentY - lastY;
+
+      if (Math.abs(delta) < threshold) return;
+
+      if (delta > 0 && currentY > 100) {
+        // scroll down
+        header.classList.add('is-hidden');
+      } else {
+        // scroll up
+        header.classList.remove('is-hidden');
+      }
+
+      lastY = currentY;
+    },
+    { passive: true }
+  );
+})();
+
 
 /* =====================================================
   B) Theme (Dark / Light)

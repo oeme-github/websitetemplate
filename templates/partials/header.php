@@ -12,10 +12,10 @@ if (!headers_sent()) {
     header('Referrer-Policy: strict-origin-when-cross-origin');
 
     header(
-        "Content-Security-Policy: ".
-        "default-src 'self'; ".
-        "img-src 'self' data:; ".
-        "style-src 'self'; ".
+        "Content-Security-Policy: " .
+        "default-src 'self'; " .
+        "img-src 'self' data:; " .
+        "style-src 'self'; " .
         "script-src 'self';"
     );
 }
@@ -24,40 +24,43 @@ if (!headers_sent()) {
 $pageH1 = $pageH1 ?? 'Mein One-Pager';
 ?>
 
-<!-- Topbar -->
-<div class="topbar">
-    <div class="topbar-inner">
-        <span>One-Pager Template</span>
+<!-- site header with topbar and header -->
+<div class="site-header">
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-inner">
+            <span>One-Pager Template</span>
+        </div>
     </div>
-</div>
 
-<header class="header">
-    <div class="header-inner">
-        <a href="/#top" class="logo" aria-label="Startseite">
-            <img class="logo-img" alt="Mein One-Pager" />
-        </a>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/#top" class="logo" aria-label="Startseite">
+                <img class="logo-img" src="/assets/logo/logo_mark.svg" alt="Mein One-Pager" width="40" height="40"/>
+            </a>
 
-        <h1><?= htmlspecialchars($pageH1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></h1>
+            <h1><?= htmlspecialchars($pageH1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></h1>
 
-        <!-- Desktop Navigation -->
-        <nav class="nav-desktop" id="desktopMenu">
-            <a href="/#hero">Hero</a>
-            <a href="/#features">Features</a>
-            <a href="/#about">Über uns</a>
-            <a href="/#contact">Kontakt aufnehmen</a>
+            <!-- Desktop Navigation -->
+            <nav class="nav-desktop" id="desktopMenu">
+                <a href="/#hero">Hero</a>
+                <a href="/#features">Features</a>
+                <a href="/#about">Über uns</a>
+                <a href="/#contact">Kontakt aufnehmen</a>
+            </nav>
+
+            <!-- Mobile Button -->
+            <button id="menuToggle" class="menu-toggle" data-nav-toggle aria-label="Menü öffnen" aria-expanded="false">
+                ☰
+            </button>
+        </div>
+
+        <!-- Mobile Menü -->
+        <nav id="mobileMenu" class="nav-mobile" data-nav aria-hidden="true">
+            <a href="/#hero" tabindex="-1">Hero</a>
+            <a href="/#features" tabindex="-1">Features</a>
+            <a href="/#about" tabindex="-1">Über uns</a>
+            <a href="/#contact" tabindex="-1">Kontakt</a>
         </nav>
-
-        <!-- Mobile Button -->
-        <button id="menuToggle" class="menu-toggle" data-nav-toggle aria-label="Menü öffnen" aria-expanded="false">
-            ☰
-        </button>
-    </div>
-
-    <!-- Mobile Menü -->
-    <nav id="mobileMenu" class="nav-mobile" data-nav aria-hidden="true">
-        <a href="/#hero" tabindex="-1">Hero</a>
-        <a href="/#features" tabindex="-1">Features</a>
-        <a href="/#about" tabindex="-1">Über uns</a>
-        <a href="/#contact" tabindex="-1">Kontakt</a>
-    </nav>
-</header>
+    </header>
+</div>
