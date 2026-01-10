@@ -16,38 +16,36 @@
 /* CSS Variablen */
 :root {
   /* Fabrschema mit Haupt, Neben, Akzent Farben */
-  --color-haupt:      #0C4A6E;
-  --color-haupt-kmpl: #f3b591;
-  --color-neben:      #F8FAFC;
-  --color-neben-kmpl: #070503;
-  --color-accent:     #FFD166;
-  --color-accent-kmpl:#002e99;
+  --color-haupt:          #0C4A6E;
+  --color-haupt-kmpl:     #f3b591;
+  --color-neben:          #F8FAFC;
+  --color-neben-alt:      #E0F2FE;
+  --color-neben-kmpl:     #070503;
+  --color-neben-alt-kmpl: #1f0d01;
+  --color-accent:         #FFD166;
+  --color-accent-kmpl:    #002e99;
 
   /* Grundfarben */
   --color-bg-body:        var(--color-neben);
   --color-bg-header:      var(--color-neben);
-  --color-bg-section-alt: var(--color-neben);
+  --color-bg-section-alt: var(--color-neben-alt);
   --color-bg-hero-start:  var(--color-neben);
   --color-bg-hero-end:    var(--color-haupt);
   --color-bg-footer:      var(--color-neben);
 
-
   /* Textfarben */
   --color-text-main:    var(--color-neben-kmpl);
-  --color-text-light: #0b0d1a;
-  --color-text-muted: #303030;
-  --color-text-footer:#666666;
-
-  /* Akzent */
-  --color-accent: #504e77;
+  --color-text-light:   var(--color-haupt);
+  --color-text-muted:   var(--color-haupt);
+  --color-text-footer:  var(--color-haupt);
 
   /* Button */
-  --color-bg-btn: var(--color-accent);
-  --color-text-btn: var(--color-bg-section-alt);
+  --color-bg-btn:       var(--color-accent);
+  --color-text-btn:     var(--color-accent-kmpl);
 
   /* Topbar */
-  --color-bg-topbar: var(--color-accent);
-  --color-text-topbar: #ffffff;
+  --color-bg-topbar:    var(--color-accent);
+  --color-text-topbar:  var(--color-accent-kmpl);
 
   /* Layout */
   --max-width: 1200px;
@@ -98,26 +96,26 @@
 [data-theme="dark"] {
 
   /* Grundfarben */
-  --color-bg-body: #0f0f0f;
-  --color-bg-header: #000000;
-  --color-bg-section-alt: #1a1a1a;
-  --color-bg-hero-start: #222222;
-  --color-bg-hero-end: #444444;
-  --color-bg-footer: var(--color-neben);
-  /* Textfarben */
-  --color-text-main: #f5f5f5;
-  --color-text-light: #ffffff;
-  --color-text-muted: #999999;
-  --color-text-footer: #cacaca;
+  --color-bg-body:        var(--color-neben-kmpl);
+  --color-bg-header:      var(--color-neben-kmpl);
+  --color-bg-section-alt: var(--color-neben-alt-kmpl);
+  --color-bg-hero-start:  var(--color-neben-kmpl);
+  --color-bg-hero-end:    var(--color-haupt-kmpl);
+  --color-bg-footer:      var(--color-neben-kmpl);
 
-  /* Akzent */
-  --color-accent: #0b0c16;
+  /* Textfarben */
+  --color-text-main:    var(--color-neben);
+  --color-text-light:   var(--color-haupt-kmpl);
+  --color-text-muted:   var(--color-haupt-kmpl);
+  --color-text-footer:  var(--color-haupt-kmpl);
 
   /* Button */
-  --color-bg-btn: var(--color-bg-hero-end);
-  --color-text-btn: var(--color-text-light);
+  --color-bg-btn:       var(--color-accent-kmpl);
+  --color-text-btn:     var(--color-accent);
+
   /* Topbar */
-  --color-bg-topbar: #1f2937;
+  --color-bg-topbar:    var(--color-accent-kmpl);
+  --color-text-topbar:  var(--color-accent);
 
   /* logo */
   .logo-img {
