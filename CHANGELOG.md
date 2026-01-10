@@ -1,3 +1,54 @@
+## v1.2.0 – Forms, Security & UX Finalization
+
+### Added
+- Optionales **SEPA-Formular** als Alternative zum Kontaktformular
+  - Umschaltbar über `.env` (`FORM_TYPE=contact|sepa`)
+  - Gemeinsame Formular-Architektur mit austauschbaren Partials
+- SEPA-Mailversand mit:
+  - serverseitiger Validierung
+  - IBAN-Prüfung
+  - automatisch generiertem **SEPA-PDF** als E-Mail-Anhang
+- Zentrale Environment-Steuerung (DEV / PROD) über `APP_ENV`
+- Einheitliche JSON-Response-Architektur für alle Formular-Endpunkte
+
+### Improved
+- UX-Feinschliff für Header & Navigation:
+  - Header blendet sich beim Scrollen aus/ein (scroll down / up)
+  - Mobile Menü schließt zuverlässig bei:
+    - Scroll
+    - Seitenwechsel
+    - Navigation über Logo/Home-Link
+- Footer dauerhaft am unteren sichtbaren Rand fixiert
+- Formular-UX:
+  - konsistentes ARIA-Feedback bei Fehlern & Erfolg
+  - robuster AJAX-Flow mit klarer Fehlerbehandlung
+- Klarere Trennung von:
+  - Routing
+  - Layout
+  - Formular-Logik
+  - Business-Logik (Mail, PDF)
+
+### Security
+- Vereinheitlichte Security-Baseline:
+  - CSRF-Schutz mit Token-Rotation
+  - Honeypot-Mechanismus
+  - Whitelist-basiertes Routing
+  - konsistente HTTP-Statuscodes
+- Globale Error- & Exception-Handler für API-Endpunkte
+- Kein Information Leakage in Produktionsumgebung
+
+### Quality
+- Stabiler Formular-Flow für Kontakt **und** SEPA
+- Alle bekannten Edge-Cases im Mobile-Menü behoben
+- Codebasis bereinigt und dokumentiert
+- Keine Breaking Changes für bestehende Nutzer
+
+---
+
+**Status:** Stable
+
+---
+
 ## v1.1.0 – Legal Pages & Layout Refinement
 
 ### Added

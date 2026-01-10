@@ -1,12 +1,13 @@
-# One-Pager Website
+# One-Pager Website Template
 
 Diese One-Page-Website ist als **Template** gedacht.
-Sie bietet einen soliden Ausgangspunkt für eine einfache, barrierearme Website mit mehreren Sektionen und einem Kontaktformular.
+Sie bietet einen soliden Ausgangspunkt für eine einfache, barrierearme Website mit mehreren Sektionen und Formularen.
 
 Das Template erhebt **keinen Anspruch auf Vollständigkeit**, legt jedoch Wert auf:
 - saubere Struktur
 - gute Wartbarkeit
 - Barrierefreiheit (WCAG-orientiert)
+- Security by default
 
 ⚠️ Hinweis:
 Nach eigenen Anpassungen (z. B. Farben, Schriften, Inhalte) sollte die Barrierefreiheit erneut geprüft werden.
@@ -15,8 +16,14 @@ Nach eigenen Anpassungen (z. B. Farben, Schriften, Inhalte) sollte die Barrieref
 
 ## Features
 - Responsive One-Pager
-- Barrierefreies Mobile-Menü
-- Kontaktformular mit CSRF- & Honeypot-Schutz
+- Barrierefreies Desktop- & Mobile-Menü
+- Scroll-abhängiger Header (hide on scroll down / show on scroll up)
+- Footer fixiert am unteren sichtbaren Rand
+- Formular-System:
+  - Kontaktformular **oder**
+  - alternatives **SEPA-Formular**
+- Umschaltbares Formular über `.env`
+- CSRF- & Honeypot-Schutz
 - AJAX-Submit mit ARIA-Feedback
 - Legal-Pages für Impressum und Datenschutz
 
@@ -25,25 +32,63 @@ Nach eigenen Anpassungen (z. B. Farben, Schriften, Inhalte) sollte die Barrieref
 ## Technik
 - HTML5 / CSS3
 - Vanilla JavaScript
-- PHP 8 (PHPMailer)
-  - Konfiguration über `/PHP/.env`
-- Lighthouse:
-  - Performance: 98
+- PHP ≥ 8.0
+- Composer (PHPMailer, TCPDF)
+- Konfiguration über `.env`
+- Lighthouse (Referenzwerte):
+  - Performance: ~98
   - Accessibility: 100
   - Best Practices: 100
   - SEO: 100
 
 ---
 
-## Entwicklung
-- Lokal getestet mit XAMPP
-- Composer ('composer install' im PHP-Verzeichnis ausführen)
+## Formular-Typen
+
+Das verwendete Formular kann über die `.env` gesteuert werden:
+
+```env
+FORM_TYPE=contact
+# oder
+FORM_TYPE=sepa
+```
+
+### Kontaktformular
+- Klassisches Kontaktformular
+- Serverseitige Validierung
+- Mailversand via SMTP
+
+### SEPA-Formular
+- Erweiterte Felder (Adresse, IBAN, Beitrag, Rhythmus)
+- IBAN-Validierung
+- Automatische Generierung eines **SEPA-PDF**
+- PDF wird als E-Mail-Anhang versendet
+- Elektronische Mandatserteilung (ohne Unterschrift)
 
 ---
 
-## Customizing
-- Zentrale Design-Tokens über `:root`
-- Theme-Wechsel über `data-theme="dark"`
+## Environment Handling (DEV / PROD)
+
+Das Verhalten von PHP-Fehlerausgaben wird über `APP_ENV` gesteuert:
+
+```env
+APP_ENV=dev
+# oder
+APP_ENV=prod
+```
+
+- **dev**: Fehlerausgabe aktiviert
+- **prod**: Fehlerausgabe deaktiviert, Logging aktiv
+
+---
+
+## Entwicklung
+- Lokal getestet mit XAMPP
+- Composer:
+  ```bash
+  composer install
+  ```
+- Kein Build-Step für CSS oder JavaScript erforderlich
 
 ---
 
@@ -51,48 +96,39 @@ Nach eigenen Anpassungen (z. B. Farben, Schriften, Inhalte) sollte die Barrieref
 
 ### Voraussetzungen
 - Webserver mit PHP ≥ 8.0
-- Aktiviertes `mod_rewrite` (Apache)
-- Composer [optional, wenn PHP-Module mit deployed werden]
-- SMTP-Zugang für den Mailversand
+- Apache mit aktiviertem `mod_rewrite`
+- SMTP-Zugang für Mailversand
+- HTTPS empfohlen
 
 ### Schritte
 1. Projekt auf den Webserver hochladen
 2. Abhängigkeiten installieren:
-    cd /PHP
-    composer install
-2. `.env`-Datei in `/PHP/` anlegen und konfigurieren
-3. Schreibrechte für Session-Handling sicherstellen
-4. HTTPS aktivieren (empfohlen)
-5. Formular testen (Mailversand & Validierung)
+   ```bash
+   composer install
+   ```
+3. `.env` anlegen und konfigurieren
+4. Schreibrechte für Sessions & temporäre Dateien sicherstellen
+5. Formular-Flow testen (Kontakt / SEPA)
 
 ### Hinweise
-- Die PHP-Endpunkte sind über `.htaccess` abgesichert
-- JavaScript und CSS benötigen keine Build-Schritte
+- PHP-Endpunkte sind über `.htaccess` abgesichert
+- Keine Framework-Abhängigkeiten
+- Klare Trennung von Layout, Routing, Formular- & Business-Logik
 
 ---
 
 ## Philosophy & Goals
 
-Dieses Projekt verfolgt einen pragmatischen Ansatz:
-
-- **Barrierefreiheit ist kein Add-on**, sondern Teil der Grundarchitektur.
-- **Einfachheit vor Komplexität**: Kein Framework-Zwang, kein Build-Overhead.
-- **Verständlicher Code** statt cleverer, aber schwer wartbarer Lösungen.
-- **Security by default** bei Formularen (CSRF, Honeypot, serverseitige Validierung).
-- **Gute Standards statt Overengineering**.
-
-### Ziele
-- Einen soliden, barrierearmen Ausgangspunkt für kleine bis mittlere Websites bieten
-- Als Lern- und Referenzprojekt für modernes, sauberes Web-Development dienen
-- Ohne Abhängigkeit von großen Frameworks einsetzbar sein
-- Lokal wie auch produktiv reproduzierbar funktionieren
+- **Barrierefreiheit ist Teil der Architektur**
+- **Einfachheit vor Komplexität**
+- **Kein Framework-Zwang**
+- **Security by default**
+- **Nachvollziehbarer Code statt Overengineering**
 
 ### Nicht-Ziele
-- Kein vollständiges Framework
-- Kein CMS-Ersatz
+- Kein CMS
+- Kein Full-Framework
 - Keine Garantie für vollständige WCAG-Konformität nach individuellen Anpassungen
-
-Dieses Template soll **Orientierung geben**, nicht einschränken.
 
 ---
 
