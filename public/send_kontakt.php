@@ -63,7 +63,6 @@ function respond(int $status, array $payload): never
     exit;
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | Guard: Nur POST
@@ -127,10 +126,11 @@ foreach ($required as $key) {
 | Input lesen
 |--------------------------------------------------------------------------
 */
-$vorname   = trim($_POST['vorname'] ?? '');
-$nachname  = trim($_POST['nachname'] ?? '');
-$email     = trim($_POST['email'] ?? '');
-$nachricht = trim($_POST['nachricht'] ?? '');
+use app\Helpers\Helpers;
+$vorname   = Helpers::clean($_POST['vorname']);
+$nachname  = Helpers::clean($_POST['nachname']);
+$email     = Helpers::clean($_POST['email']);
+$nachricht = Helpers::clean($_POST['nachricht']);
 $consent   = isset($_POST['consent']);
 
 /*
