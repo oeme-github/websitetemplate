@@ -18,8 +18,8 @@
 <!-- Contact Section -->
 <section id="contact" class="section">
     <h2>Kontakt</h2>
-    <!-- Einbindung des Kontaktformulars -->
-    <?php
-    require __DIR__ . '/../partials/forms/contact.php';
-    ?>
+    <!-- prüfen ob SEAP oder Kontaktformular -->
+    <?php if (!empty($formPartial)): ?>
+        <?php require __DIR__ . '/../' . $formPartial; ?>
+    <?php endif; ?>
 </section>

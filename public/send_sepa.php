@@ -1,208 +1,336 @@
 <?php
-
-// =======================
-// typsicherheit
-// =======================
 declare(strict_types=1);
-// =======================
-// init section
-// =======================
-ini_set('session.cookie_httponly', '1');
-ini_set('session.cookie_samesite', 'Strict');
-ini_set('session.cookie_secure', '1');
-ini_set('display_errors', '0');       // nichts an Browser ausgeben
-ini_set('display_startup_errors', 0); 
-ini_set('log_errors', '0');           // Fehler ins Error-Log
-//ini_set('error_log', __DIR__ . '/logs/php_errors.log');   //eignes Log-File
-//error_reporting(E_ALL);
-// =======================
-// Session
-// =======================
-session_start();
-//error_log('SEND SESSION ID: ' . session_id());
 
-// =======================
-// Basis-Header
-// =======================
-header('Content-Type: application/json; charset=utf-8');
+/*
+|--------------------------------------------------------------------------
+| Bootstrap
+|--------------------------------------------------------------------------
+*/
+require dirname(__DIR__) . '/vendor/autoload.php';
 
-// =======================
-// Request Check
-// =======================
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode([
-        'success' => false,
-        'message' => 'Method not allowed'
-    ]);
-    exit;
-}
-// =======================
-// CSRF-Prüfung
-// =======================
-if (
-    empty($_POST['csrf_token']) ||
-    empty($_SESSION['csrf_token']) ||
-    !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+/*
+|--------------------------------------------------------------------------
+| .env laden
+|--------------------------------------------------------------------------
+*/
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
+
+/*
+|--------------------------------------------------------------------------
+| Global Error & Exception Handling (KERNSTÜCK)
+|--------------------------------------------------------------------------
+*/
+set_error_handler(function (
+    int $severity,
+    string $message,
+    string $file,
+    int $line
 ) {
-    http_response_code(403);
-    echo json_encode([
-        'success' => false,
-        'error'   => 'Invalid CSRF token'
+    throw new ErrorException($message, 0, $severity, $file, $line);
+});
+
+set_exception_handler(function (Throwable $e) {
+    respond(500, [
+        'ok'      => false,
+        'code'    => 'SERVER',
+        'message' => 'Interner Serverfehler.',
+        // DEBUG lokal optional:
+        'debug' => $e->getMessage(),
     ]);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Response Helper (EINZIGE Output-Stelle)
+|--------------------------------------------------------------------------
+*/
+function respond(int $status, array $payload): never
+{
+    if (!headers_sent()) {
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: no-store');
+    }
+
+    http_response_code($status);
+
+    echo json_encode(
+        $payload,
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR
+    );
     exit;
 }
-// =======================
-// Includes
-// =======================
-require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/src/Helpers.php';
-require __DIR__ . '/src/SepaPdf.php';
 
-use App\Env;
-use App\Helpers;
-use App\SepaPdf;;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+/*
+|--------------------------------------------------------------------------
+| IBAN-Lookup
+|--------------------------------------------------------------------------
+*/
+function ibanLookupAllowed(): bool
+{
+    $_SESSION['iban_lookup'] ??= [
+        'count' => 0,
+        'time'  => time(),
+    ];
 
-Env::load(__DIR__ . '/.env');
+    // Reset nach 1 Stunde
+    if (time() - $_SESSION['iban_lookup']['time'] > 3600) {
+        $_SESSION['iban_lookup'] = [
+            'count' => 0,
+            'time'  => time(),
+        ];
+    }
 
-$mailConfig = require __DIR__ . '/config/mail.php';
+    if ($_SESSION['iban_lookup']['count'] >= 10) {
+        return false;
+    }
 
-// =======================
-// Serverseitige Validierung
-// =======================
+    $_SESSION['iban_lookup']['count']++;
+    return true;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Guard: Nur POST
+|--------------------------------------------------------------------------
+*/
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    respond(405, [
+        'ok'      => false,
+        'code'    => 'METHOD',
+        'message' => 'Methode nicht erlaubt.',
+    ]);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Security: CSRF
+|--------------------------------------------------------------------------
+*/
+if (!csrf_verify($_POST['_csrf'] ?? null)) {
+    respond(403, [
+        'ok'      => false,
+        'code'    => 'CSRF',
+        'message' => 'Ungültige Anfrage.',
+    ]);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Security: Honeypot
+|--------------------------------------------------------------------------
+*/
+if (!empty($_POST['website'] ?? '')) {
+    respond(200, [
+        'ok'      => true,
+        'message' => 'Danke.',
+    ]);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Voraussetzungen prüfen
+|--------------------------------------------------------------------------
+*/
+$required = [
+    'MAIL_HOST',
+    'MAIL_PORT',
+    'MAIL_USER',
+    'MAIL_PASS',
+    'MAIL_FROM',
+    'MAIL_TO',
+];
+
+foreach ($required as $key) {
+    if (empty($_ENV[$key] ?? null)) {
+        throw new RuntimeException("Missing env variable: $key");
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Input lesen
+|--------------------------------------------------------------------------
+*/
+use app\Helpers\Helpers;
+
+$vorname            = Helpers::clean($_POST['vorname'] ?? '');
+$nachname           = Helpers::clean($_POST['nachname'] ?? '');
+$email              = Helpers::clean($_POST['email'] ?? '');
+
+$strasse            = Helpers::clean($_POST['strasse'] ?? '');
+$plz                = Helpers::clean($_POST['plz'] ?? '');
+$ort                = Helpers::clean($_POST['ort'] ?? '');
+
+$iban               = Helpers::clean($_POST['iban'] ?? '');
+$bank               = Helpers::clean($_POST['bank'] ?? '');
+
+$beitrag            = Helpers::clean($_POST['betrag'] ?? '');
+$zahlungsrhythmus   = Helpers::clean($_POST['zahlungsrhythmus'] ?? '');
+$mitgliedschaft     = Helpers::clean($_POST['mitgliedschaft'] ?? '');
+$nachricht          = Helpers::clean($_POST['nachricht'] ?? '');
+
+$consent            = isset($_POST['consent']);
+$consentdatenschutz = isset($_POST['consent-datenschutz']);
+$consentsepa        = isset($_POST['consent-sepa']);
+
+/*
+|--------------------------------------------------------------------------
+| Validierung
+|--------------------------------------------------------------------------
+*/
 $errors = [];
 
-// =======================
-// Honypot -> muss leer bleiben
-// =======================
-if (!empty($_POST['website'] ?? '')) {
-    echo json_encode(['spam' => true]);
-    exit;
+if ($vorname === '') {
+    $errors[] = 'Vorname fehlt';
 }
 
-// =======================
-// Daten
-// =======================
-$helpers = new Helpers();
-
-$vorname  = $helpers->clean($_POST['Vorname'] ?? '');
-$nachname = $helpers->clean($_POST['Nachname'] ?? '');
-$email    = filter_var($_POST['E-Mail'] ?? '', FILTER_VALIDATE_EMAIL);
-// Fehler behandeln / zurückleiten
-if (!$email) {
-    $errors['email'] = 'Ungültige E-Mail-Adresse';
+if ($nachname === '') {
+    $errors[] = 'Nachname fehlt';
 }
 
-$adresse  = $helpers->clean($_POST['Adresse'] ?? '');
-$ort      = $helpers->clean($_POST['Ort'] ?? '');
-$iban     = $helpers->clean($_POST['IBAN'] ?? '');
-
-// check IBAN
-if (!$helpers->isValidIban($iban)) {
-    $errors['iban'] = 'Die eingegebene IBAN ist ungültig';
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors[] = 'E-Mail ungültig';
 }
 
-$bank     = $helpers->clean($_POST['Bank'] ?? '');
-$beitrag  = $helpers->clean($_POST['Betrag'] ?? '');
+if ($strasse === '' || $plz == '' || $ort === '') {
+    $errors[] = 'Adresse nicht vollständig';
+}
 
-$zahlungsrhythmus = $helpers->clean($_POST['Zahlungsrhythmus'] ?? '');
-$mitgliedschaft = $helpers->clean($_POST['Mitgliedschaft'] ?? '');
-$nachricht = $helpers->clean($_POST['Nachricht'] ?? '');
+if (!$consent || !$consentdatenschutz || !$consentsepa ) {
+    $errors[] = 'Einwilligung fehlt';
+}
 
-if (!empty($errors)) {
-    http_response_code(422);
-    echo json_encode([
-        'success' => false,
-        'errors'  => $errors
+if ($zahlungsrhythmus === '') {
+    $errors[] = 'Zahlungsrhythmus fehlt';
+}
+
+if ($nachricht === '' ){
+    $nachricht = 'keine';
+} 
+
+// IBAN Lookup
+use App\Services\IbanLookup;
+$bankFromApi = null;
+
+if (ibanLookupAllowed()) {
+    $bankFromApi = IbanLookup::lookup($iban);
+}
+
+if ($bankFromApi !== null) {
+    $bank = $bankFromApi; // überschreibt Formularwert
+}
+
+// IBAN-Validator
+use App\Security\IbanValidator;
+$ibanValidator = new IbanValidator();
+
+// final check IBAN
+if (!$ibanValidator->isValid($iban)) {
+    $errors[] = 'Die eingegebene IBAN ist ungültig';
+}
+
+if ($errors) {
+    respond(400, [
+        'ok'      => false,
+        'code'    => 'VALIDATION',
+        'message' => 'Bitte Eingaben prüfen.',
+        'errors'  => $errors,
     ]);
-    exit;
 }
+
+// Mandats-ID
+$mandateId = 'SEPA-' . date('Ymd') . '-' . bin2hex(random_bytes(4));
+
 // =======================
 // SEPA PDF
 // =======================
+use App\Helpers\SepaPdf;
 $pdf = new SepaPdf();
 $pdfPath = $pdf->create([
-    'name'    => $vorname . ' ' . $nachname,
-    'address' => $adresse . ', ' . $ort,
-    'email'   => $email,
-    'iban'    => $iban,
-    'bank'    => $bank,
-    'fee'     => $beitrag,
-    'frequ'   => $zahlungsrhythmus,
-    'memship' => $mitgliedschaft,
-    'mes'     => $nachricht
+    'place'             => $_ENV['PLACE'],
+    'date'              => date('d.m.Y'),
+    'creditor_name'     => $_ENV['SEPA_CREDITOR_NAME'],
+    'creditor_adress'   => $_ENV['SEPA_CREDITOR_ADRESS'],
+    'creditor_id'       => $_ENV['SEPA_CREDITOR_ID'],
+    'name'              => $vorname . ' ' . $nachname,
+    'strasse'           => $strasse,
+    'plz'               => $plz,
+    'ort'               => $ort,
+    'email'             => $email,
+    'iban'              => $iban,
+    'bank'              => $bank,
+    'fee'               => $beitrag,
+    'frequ'             => $zahlungsrhythmus,
+    'memship'           => $mitgliedschaft,
+    'mes'               => $nachricht,
+    'mandate_id'        => $mandateId,
+    'consent_ts'        => date('c'),
+    'consent'           => $consent,
+    'consentds'         => $consentdatenschutz,
+    'consentsepa'       => $consentsepa,
 ]);
 
-// =======================
-// Mail an Verein
-// =======================
+/*
+|--------------------------------------------------------------------------
+| Business: Mailversand
+|--------------------------------------------------------------------------
+*/
+use PHPMailer\PHPMailer\PHPMailer;
+
 $mail = new PHPMailer(true);
 
-// =======================
-// DEBUG - NICHT AUF PRODUKTION !!!!
-// =======================
-$mail->SMTPDebug = 0;   // E-Mail-Debug aus
+$mail->isSMTP();
+$mail->Host       = $_ENV['MAIL_HOST'];
+$mail->SMTPAuth   = true;
+$mail->Username   = $_ENV['MAIL_USER'];
+$mail->Password   = $_ENV['MAIL_PASS'];
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+$mail->Port       = (int) $_ENV['MAIL_PORT'];
+
+$mail->CharSet  = 'UTF-8';
+$mail->Encoding = 'base64';
+$mail->isHTML(false);
+
+$mail->setFrom($_ENV['MAIL_FROM'], 'Website');
+$mail->addAddress($_ENV['MAIL_TO']);
+$mail->addReplyTo($email, "$vorname $nachname");
+
+$mail->Subject = 'Neue Förderung (SEPA)';
+
+$mail->Body =
+"Förderung\n\n".
+"Name: $vorname $nachname\n".
+"Beitrag: $beitrag\n".
+"IBAN (maskiert): ".Helpers::maskIBAN($iban)."\n\n".
+"Mitgliedschaft: $mitgliedschaft\n".
+"Nachricht: $nachricht\n\n".
+"SEPA-Mandat siehe PDF-Anhang.";
+
+$mail->addAttachment($pdfPath, 'SEPA-Mandat.pdf');
 
 try {
-    $mail->isSMTP();
-    $mail->Host       = $mailConfig['host'];
-    $mail->SMTPAuth   = true;
-    $mail->Username   = $mailConfig['user'];
-    $mail->Password   = $mailConfig['pass'];
-    $mail->SMTPSecure = $mailConfig['secure'];
-    $mail->Port       = $mailConfig['port'];
-    $mail->CharSet    = 'UTF-8';
-
-    $mail->setFrom($mailConfig['from'], $mailConfig['from_name']);
-    $mail->addAddress($mailConfig['from']);
-    $mail->addReplyTo($email, "$vorname $nachname");
-
-    $mail->isHTML(true);
-    $mail->Subject = 'Neue Förderung (SEPA)';
-
-    $mail->Body = '
-    <p>Förderung</p>
-    <p>
-    Name: '.$vorname.' '.$nachname.'<br>
-    Beitrag: '.$beitrag.'<br>
-    IBAN (maskiert): '.$helpers->maskIBAN($iban).'<br><br>
-    Antrag Mitglieschaft: '.$mitgliedschaft.'<br>
-    Nachricht: '.$nachricht.'
-    </p>
-    <p>SEPA-Mandat siehe PDF-Anhang.</p>
-    ';
-
-    $mail->addAttachment($pdfPath, 'SEPA-Mandat.pdf');
-    // Ergbnis von send() merken
-    $sent = false;
-    try {
-        $sent = $mail->send();
-    } catch (Exception $e) {
-        $sent = false;
-    }
+    $mail->send();
+    // Errorhandling über Exception
 } finally {
     if (file_exists($pdfPath)) {
         unlink($pdfPath);
     }
 }
 
-// =======================
-// Erfolg
-// =======================
-if ($sent) {
-    echo json_encode([
-        'success' => true
-    ]);
-} else {
-    http_response_code(500);
-    error_log($mail->ErrorInfo); // 🔧 LOGGEN, nicht ausgeben
+/*
+|--------------------------------------------------------------------------
+| Erfolg
+|--------------------------------------------------------------------------
+*/
+csrf_regenerate();
 
-    echo json_encode([
-        'success' => false,
-        'message' => 'Mailversand fehlgeschlagen, bitte später nochmal versuchen.'
-    ]);
-}
-
-exit;
+respond(200, [
+    'ok'      => true,
+    'code'    => 'SENT',
+    'message' => 'Danke! Nachricht wurde gesendet.',
+    'csrf'    => csrf_token(),
+]);
