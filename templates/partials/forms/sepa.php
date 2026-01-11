@@ -92,46 +92,47 @@ if (empty($action)) {
     >
 
     <!-- Beitrag -->
-    <label for="beitrag">Mein Beitrag*
-        <select
-            name="betrag"
-            required
-            aria-required="true"
-        >
-            <option value="">Bitte auswählen</option>
-            <option value="10 €">10 €</option>
-            <option value="25 €">25 €</option>
-            <option value="50 €">50 €</option>
-            <option value="100 €">100 €</option>
-            <option value="Nachricht">s. Nachricht</option>
-        </select>
-    </label>
-    <label for="zahlungsrhytmus">Zahlungsrhythmus*
-        <select
-            name="zahlungsrhythmus"
-            required
-            aria-required="true"
-        >
-            <option value="">Bitte auswählen</option>
-            <option value="Spende einmalig">Spende einmalig</option>
-            <option value="Jahr">Jahr</option>
-            <option value="Qurtal">Quartal</option>
-            <option value="Monat">Monat</option>
-            <option value="Nachricht">s. Nachricht</option>
-        </select>
-    </label>
-    <label for="mitgliedschaft">Ich beantrage die Mitgliedschaft*
-        <select
-            name="mitgliedschaft"
-            required
-            aria-required="true"
-        >
-            <option value="">Bitte auswählen</option>
-            <option value="Ja">Ja</option>
-            <option value="Nein">Nein</option>
-            <option value="Nachricht">s. Nachricht</option>
-        </select>
-    </label>
+    <label for="beitrag">Mein Beitrag*</label>
+    <select
+        name="betrag"
+        required
+        aria-required="true"
+    >
+        <option value="">Bitte auswählen</option>
+        <option value="10 €">10 €</option>
+        <option value="25 €">25 €</option>
+        <option value="50 €">50 €</option>
+        <option value="100 €">100 €</option>
+        <option value="Nachricht">s. Nachricht</option>
+    </select>
+
+    <!-- Zahluingsrhytmus -->
+    <label for="zahlungsrhytmus">Zahlungsrhythmus*</label>
+    <select
+        name="zahlungsrhythmus"
+        required
+        aria-required="true"
+    >
+        <option value="">Bitte auswählen</option>
+        <option value="Spende einmalig">Spende einmalig</option>
+        <option value="Jahr">Jahr</option>
+        <option value="Qurtal">Quartal</option>
+        <option value="Monat">Monat</option>
+        <option value="Nachricht">s. Nachricht</option>
+    </select>
+
+    <!-- Antrag Mitgleidschaft -->
+    <label for="mitgliedschaft">Ich beantrage die Mitgliedschaft*</label>
+    <select
+        name="mitgliedschaft"
+        required
+        aria-required="true"
+    >
+        <option value="">Bitte auswählen</option>
+        <option value="Ja">Ja</option>
+        <option value="Nein">Nein</option>
+        <option value="Nachricht">s. Nachricht</option>
+    </select>
 
     <!-- Nachricht -->
     <label for="nachricht">Nachricht (optional)</label>
@@ -142,7 +143,7 @@ if (empty($action)) {
     </textarea>
 
     <!-- DSGVO -->
-    <div class="consent">
+    <div class="consent cta-grid">
         <label class="consent-row">
             <span class="consent-label">DSGVO-Einverständnis*</span>
             <input
@@ -199,35 +200,27 @@ if (empty($action)) {
         beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen.
     </p>
 
-    <div class="cta-grid">
-        <div class="consent-datenschutz">
-            <label class="consent-row">
-                <span>Ich habe die
-                    <a class="form" href="/datenschutz">Datenschutzerklärung</a>
-                    gelesen und stimme zu.
-                </span>
-                <input
-                    id="consentDatenschutzCheckbox"
-                    name="consent-datenschutz"
-                    type="checkbox"
-                    required
-                    aria-required="true">
-            </label>
-        </div>
-
-        <div class="consent-sepa">
-            <label class="consent-row">
-                <span>
-                    Ich erteile ein SEPA-Lastschriftmandat.
-                </span>
-                <input
-                    id="consentSepaCheckbox"
-                    name="consent-sepa"
-                    type="checkbox"
-                    required
-                    aria-required="true">
-            </label>
-        </div>
+    <div class="consent-datenschutz cta-grid">
+        <label class="consent-row">
+            <span class="consent-label">Ich habe die <a class="form" href="/datenschutz">Datenschutzerklärung</a> gelesen und stimme zu.</span>
+            <input
+                id="consentDatenschutzCheckbox"
+                name="consent-datenschutz"
+                type="checkbox"
+                required
+                aria-required="true">
+        </label>
+    </div>
+    <div class="consent-sepa cta-grid">
+        <label class="consent-row">
+            <span class="consent-label">Ich erteile ein SEPA-Lastschriftmandat.</span>
+            <input
+                id="consentSepaCheckbox"
+                name="consent-sepa"
+                type="checkbox"
+                required
+                aria-required="true">
+        </label>
     </div>
 
     <button type="submit" class="btn-primary">Absenden</button>
