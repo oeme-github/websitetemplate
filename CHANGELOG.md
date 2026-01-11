@@ -1,3 +1,22 @@
+## v1.2.1 – SEPA Form Layout & UX Fixes
+
+### Fixed
+- Incorrect desktop layout of SEPA form fields
+- Misaligned select fields due to nested label/select markup
+- Inconsistent consent checkbox alignment in SEPA form
+
+### Improved
+- Unified form field structure between contact and SEPA forms
+- Robust grid behavior for desktop view without layout side effects
+- Consent checkboxes now stack vertically and behave consistently across viewports
+
+### Quality
+- No breaking changes
+- No JavaScript changes required
+- Accessibility preserved (label wrapping, focus order, click targets)
+
+---
+
 ## v1.2.0 – Forms, Security & UX Finalization
 
 ### Added

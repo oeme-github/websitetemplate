@@ -60,7 +60,7 @@ if (empty($action)) {
     <textarea id="nachricht" name="nachricht" rows="4"></textarea>
 
     <!-- DSGVO -->
-    <div class="consent">
+    <div class="consent cta-grid">
         <label class="consent-row">
             <span class="consent-label">DSGVO-Einverständnis*</span>
             <input
