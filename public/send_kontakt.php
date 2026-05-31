@@ -1,138 +1,31 @@
 <?php
 declare(strict_types=1);
 
-/*
-|--------------------------------------------------------------------------
-| Bootstrap
-|--------------------------------------------------------------------------
-*/
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 setApiSecurityHeaders();
 
-/*
-|--------------------------------------------------------------------------
-| .env laden
-|--------------------------------------------------------------------------
-*/
 use Dotenv\Dotenv;
-
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
-/*
-|--------------------------------------------------------------------------
-| Global Error & Exception Handling (KERNSTÜCK)
-|--------------------------------------------------------------------------
-*/
-set_error_handler(function (
-    int $severity,
-    string $message,
-    string $file,
-    int $line
-) {
-    throw new ErrorException($message, 0, $severity, $file, $line);
-});
-
-set_exception_handler(function (Throwable $e) {
-    respond(500, [
-        'ok'      => false,
-        'code'    => 'SERVER',
-        'message' => 'Interner Serverfehler.',
-        // DEBUG lokal optional:
-        'debug' => $e->getMessage(),
-    ]);
-});
-
-/*
-|--------------------------------------------------------------------------
-| Response Helper (EINZIGE Output-Stelle)
-|--------------------------------------------------------------------------
-*/
-function respond(int $status, array $payload): never
-{
-    if (!headers_sent()) {
-        header('Content-Type: application/json; charset=utf-8');
-        header('Cache-Control: no-store');
-    }
-
-    http_response_code($status);
-
-    echo json_encode(
-        $payload,
-        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR
-    );
-    exit;
-}
-
-/*
-|--------------------------------------------------------------------------
-| Guard: Nur POST
-|--------------------------------------------------------------------------
-*/
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    respond(405, [
-        'ok'      => false,
-        'code'    => 'METHOD',
-        'message' => 'Methode nicht erlaubt.',
-    ]);
-}
-
-/*
-|--------------------------------------------------------------------------
-| Security: CSRF
-|--------------------------------------------------------------------------
-*/
-if (!csrf_verify($_POST['_csrf'] ?? null)) {
-    respond(403, [
-        'ok'      => false,
-        'code'    => 'CSRF',
-        'message' => 'Ungültige Anfrage.',
-    ]);
-}
-
-/*
-|--------------------------------------------------------------------------
-| Security: Honeypot
-|--------------------------------------------------------------------------
-*/
-if (!empty($_POST['website'] ?? '')) {
-    respond(200, [
-        'ok'      => true,
-        'message' => 'Danke.',
-    ]);
-}
-
-/*
-|--------------------------------------------------------------------------
-| Voraussetzungen prüfen
-|--------------------------------------------------------------------------
-*/
-$required = [
-    'MAIL_HOST',
-    'MAIL_PORT',
-    'MAIL_USER',
-    'MAIL_PASS',
-    'MAIL_FROM',
-    'MAIL_TO',
-];
-
-foreach ($required as $key) {
-    if (empty($_ENV[$key] ?? null)) {
-        throw new RuntimeException("Missing env variable: $key");
-    }
-}
+formBootstrap();
+guardMethod();
+guardCsrf();
+guardHoneypot();
+requireEnvKeys(['MAIL_HOST', 'MAIL_PORT', 'MAIL_USER', 'MAIL_PASS', 'MAIL_FROM', 'MAIL_TO']);
 
 /*
 |--------------------------------------------------------------------------
 | Input lesen
 |--------------------------------------------------------------------------
 */
-use app\Helpers\Helpers;
-$vorname   = Helpers::clean($_POST['vorname']);
-$nachname  = Helpers::clean($_POST['nachname']);
-$email     = Helpers::clean($_POST['email']);
-$nachricht = Helpers::clean($_POST['nachricht']);
+use App\Helpers\Helpers;
+
+$vorname   = Helpers::clean($_POST['vorname']   ?? '');
+$nachname  = Helpers::clean($_POST['nachname']  ?? '');
+$email     = Helpers::clean($_POST['email']     ?? '');
+$nachricht = Helpers::clean($_POST['nachricht'] ?? '');
 $consent   = isset($_POST['consent']);
 
 /*
@@ -200,7 +93,6 @@ $mail->Body =
     $nachricht;
 
 $mail->send();
-// Fehler über Exception-Handling
 
 /*
 |--------------------------------------------------------------------------
