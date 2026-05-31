@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
+setHtmlSecurityHeaders();
+
 $metaDescription = null;
 $metaRobots = null;
 $action = null;
@@ -34,6 +36,30 @@ if ( Helpers::is_dev() ) {
     ini_set('log_errors', '1');
     error_reporting(E_ALL);
 }
+
+/*
+|--------------------------------------------------------------------------
+| Content-Loader (Markdown + JSON)
+|--------------------------------------------------------------------------
+*/
+$parsedown   = new \Parsedown();
+$contentRoot = dirname(__DIR__) . '/content';
+
+$md = static function (string $name) use ($parsedown, $contentRoot): string {
+    $safe = preg_replace('/[^a-z0-9\/\-_]/', '', strtolower($name));
+    $path = $contentRoot . '/' . $safe . '.md';
+    return is_file($path) ? $parsedown->text(file_get_contents($path)) : '';
+};
+
+$gallery = static function (string $name) use ($contentRoot): array {
+    $safe = preg_replace('/[^a-z0-9\/\-_]/', '', strtolower($name));
+    $path = $contentRoot . '/' . $safe . '.json';
+    if (!is_file($path)) {
+        return [];
+    }
+    $data = json_decode(file_get_contents($path), true);
+    return is_array($data) ? $data : [];
+};
 
 /*
 |--------------------------------------------------------------------------

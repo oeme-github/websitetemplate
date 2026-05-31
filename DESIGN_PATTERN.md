@@ -1,6 +1,6 @@
 # Design Patterns – One-Pager Template
 
-Stand: UX- & Security-Zwischenstand
+Stand: v1.3.0
 Ziel: Klare Trennung von Struktur, Logik und Darstellung
 Prinzip: Weniger Magie, mehr Vorhersagbarkeit
 
@@ -10,7 +10,7 @@ Prinzip: Weniger Magie, mehr Vorhersagbarkeit
 
 ### Single Entry Point
 - Alle Requests laufen über `public/index.php`
-- Ausnahme: explizite Endpoints wie `send_kontakt.php`
+- Ausnahme: explizite Endpoints wie `send_kontakt.php`, `send_sepa.php`
 
 ### Whitelist-Routing
 - Nur explizit definierte Routen sind erreichbar
@@ -29,9 +29,10 @@ Prinzip: Weniger Magie, mehr Vorhersagbarkeit
 
 ### base.php
 - Enthält ausschließlich:
-  - `<head>`
+  - `<head>` (inkl. FOUC-Script synchron, kein defer)
   - Header
   - `<main>`
+  - Cookie Notice
   - Footer
 - Kein Inline-JavaScript
 - Keine Business-Logik
@@ -43,7 +44,45 @@ Prinzip: Weniger Magie, mehr Vorhersagbarkeit
 
 ---
 
-## 3. Header & Navigation (UX)
+## 3. Security Headers
+
+### Architektur
+Security Headers werden in `src/Security/headers.php` als benannte Funktionen definiert:
+
+- `setBaseSecurityHeaders()` — gemeinsame Header für alle Antworten
+- `setApiSecurityHeaders()` — für JSON-Endpoints (`send_*.php`)
+- `setHtmlSecurityHeaders()` — für HTML-Seiten inkl. CSP
+
+### Regel
+- Jeder Entry Point ruft die passende Funktion als **erste Aktion** nach `require autoload.php` auf
+- Nie inline, nie implizit
+
+---
+
+## 4. FOUC Prevention & Color Scheme
+
+### Problem
+Beim Laden liest JS localStorage und setzt `data-theme` / `data-color-scheme` — aber erst nach CSS-Render → sichtbarer Flash.
+
+### Lösung
+`public/assets/js/fouc-prevention.js` wird **synchron im `<head>` geladen** (kein `defer`, kein `async`).
+Es liest localStorage und setzt die Attribute auf `<html>`, bevor CSS gerendert wird.
+
+### Color Scheme Architektur
+- CSS definiert RGB-Tupel-Variablen pro Schema (`[data-color-scheme="..."]`)
+- Semantische Tokens (`--color-bg-body` etc.) bleiben schema-agnostisch in `:root`
+- Alle Komponenten-Styles verwenden ausschließlich semantische Tokens
+- Neues Schema: neuen `[data-color-scheme="..."]`-Block in `main.css` ergänzen
+
+### Regeln
+- ❌ keine Hex-Farben direkt in Komponenten
+- ❌ kein direkter Zugriff auf Primitive (`--color-primary` etc.) in Komponenten-CSS
+- ✅ Primitive nur in Schema-Blöcken
+- ✅ Komponenten nur auf semantische Tokens
+
+---
+
+## 5. Header & Navigation (UX)
 
 ### Ziel
 - Header inkl. Topbar:
@@ -68,7 +107,7 @@ Prinzip: Weniger Magie, mehr Vorhersagbarkeit
 
 ---
 
-## 4. Mobile Navigation
+## 6. Mobile Navigation
 
 ### Ziel
 - Mobile Menü darf **nie in einem inkonsistenten Zustand bleiben**
@@ -79,16 +118,11 @@ Das Menü **muss schließen**, wenn:
 - ein Anchor-Link (`#` oder `/#`) geklickt wird
 - der Benutzer scrollt
 - das Logo / Home-Link geklickt wird
-- Edge-Case:
-  - Seite neu laden
-  - Menü öffnen
-  - Home klicken
 
 ### Umsetzung
 - Zustand über `.is-open`
 - ARIA-State (`aria-expanded`) wird synchron gepflegt
 - Menü schließt **vor** Navigation
-- Keine Abhängigkeit von `hashchange`
 
 ### Anti-Patterns
 - ❌ doppelte Zustände (JS + CSS)
@@ -97,7 +131,7 @@ Das Menü **muss schließen**, wenn:
 
 ---
 
-## 5. Footer
+## 7. Footer
 
 ### Ziel
 - Footer immer am unteren sichtbaren Rand
@@ -106,12 +140,28 @@ Das Menü **muss schließen**, wenn:
 
 ### Umsetzung
 - `position: fixed`
-- Body / Layout berücksichtigt Footer-Höhe
-- Keine Scroll-Logik im Footer
+- Body / Layout berücksichtigt Footer-Höhe mit `padding-bottom`
+- Color Scheme Selector im Footer: `<select data-color-scheme-select>`
 
 ---
 
-## 6. Kontaktformular
+## 8. Cookie Notice
+
+### Zweck
+DSGVO-Hinweis auf Session-Cookie für CSRF-Schutz.
+
+### Verhalten
+1. FOUC-Script prüft localStorage beim Laden — bereits dismisste Notice wird via `[data-cookie-dismissed="true"]` sofort ausgeblendet (kein Flash)
+2. Nach Klick auf "Verstanden": CSS-Transition → `transitionend` → DOM-Entfernung
+3. Wert bleibt dauerhaft in localStorage
+
+### Regeln
+- ❌ keine echte Cookie-Consent-Logik (das Template setzt nur technisch notwendige Cookies)
+- ✅ Text anpassen wenn zusätzliche Cookies eingesetzt werden
+
+---
+
+## 9. Kontaktformular
 
 ### Architektur
 - Formular-HTML: Template
@@ -119,7 +169,7 @@ Das Menü **muss schließen**, wenn:
   - Client: UX
   - Server: verbindlich
 - Versand: PHPMailer
-- Konfiguration ausschließlich über `.env`
+- Konfiguration ausschließlich über `.env` (`MAIL_*`-Variablen)
 
 ### Security
 - CSRF-Token (Pflicht)
@@ -127,18 +177,72 @@ Das Menü **muss schließen**, wenn:
 - Einheitliche JSON-Responses
 - Keine internen Fehlerdetails im Frontend
 
+### UX
+- Erfolgsmeldung faded nach 5 Sekunden automatisch aus (`is-fading`-Klasse + `transitionend`)
+- Fehlerfarbe bleibt stehen bis zur nächsten Aktion
+
 ---
 
-## 7. JavaScript-Philosophie
+## 10. UI-Komponenten
 
-- IIFE pro Feature
+### Stats Counter
+- HTML: `<span data-count-target="42">0</span>`
+- JS: Count-Up-Animation via `requestAnimationFrame` + Intersection Observer
+- `prefers-reduced-motion`: zeigt Endwert sofort, keine Animation
+
+### Image Gallery + Lightbox
+- HTML: `<ul id="galleryGrid">` mit `data-gallery-index`, `data-gallery-src`, `data-gallery-alt`
+- Lightbox: `<div id="galleryLightbox">` mit `data-lightbox-close/prev/next`
+- Keyboard: Pfeiltasten, Escape, Tab (Focus-Trap)
+- Tabs: werden dynamisch aus `data-gallery-category` generiert — kein statisches Tab-HTML nötig
+- `data-gallery-show-all="false"` unterdrückt den "Alle"-Tab
+
+---
+
+## 11. Content-Management
+
+### Pattern
+Markdown- und JSON-Dateien in `content/` werden über zwei Closure-Funktionen in `index.php` geladen:
+
+- `$md('home/hero')` — lädt `content/home/hero.md` und rendert HTML
+- `$gallery('home/gallery')` — lädt `content/home/gallery.json` und gibt Array zurück
+
+### Sicherheit
+- Pfadnamen werden vor dem Laden sanitiert (nur `a-z0-9/-_` erlaubt)
+- Kein direkter Nutzerzugriff auf `content/`-Dateien
+
+---
+
+## 12. JavaScript-Philosophie
+
+- IIFE pro Feature (A, B, B2, C, C1–C4, D, E, F, G, H)
 - Kein globaler State
 - Defensive Selektoren (`if (!el) return`)
 - Eine Verantwortung pro Block
+- Alle Feature-Module sind optional (fehlende DOM-Elemente lösen kein Error aus)
 
 ---
 
-## 8. Was bewusst **nicht** gemacht wird
+## 13. Testing
+
+### PHP (PHPUnit 10)
+- Testklassen in `tests/` (Namespace `Tests\`)
+- Abgedeckt: CSRF, Escaper, Helpers, IbanValidator
+- Ausführen: `composer test`
+
+### JavaScript (Jest 29)
+- Tests in `tests/js/`
+- Abgedeckt: alle IIFE-Module (A, B, B2, C, D, E, F, G, H) + FOUC-Prevention
+- Ausführen: `npm test`
+
+### Philosophie
+- Neue JS-Module: zugehörigen Test anlegen
+- Neue PHP-Klassen/Funktionen: zugehörigen PHPUnit-Test anlegen
+- Tests laufen ohne Netzwerk, ohne Datenbank, ohne Dateiystem-Abhängigkeiten
+
+---
+
+## 14. Was bewusst **nicht** gemacht wird
 
 - Kein Framework
 - Kein State-Management
@@ -150,4 +254,6 @@ Das Menü **muss schließen**, wenn:
 ## Status
 ✔ UX stabil
 ✔ Security-Baseline aktiv
-✔ Release-tauglich
+✔ Color Scheme System aktiv
+✔ Testing-Infrastruktur eingerichtet
+✔ Release-tauglich (v1.3.0)

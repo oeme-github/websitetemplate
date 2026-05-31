@@ -12,8 +12,20 @@
         <meta name="robots" content="<?= e($metaRobots) ?>">
     <?php endif; ?>
 
-
     <title><?= e($title ?? 'Website') ?></title>
+
+    <link rel="icon" type="image/x-icon" href="/assets/icons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="/assets/icons/site.webmanifest">
+
+    <!-- Preloads für LCP (Bildpfad ggf. anpassen) -->
+    <link rel="preload" href="/assets/css/main.css" as="style">
+    <link rel="preload" href="/assets/images/hero/hero_background.png" as="image">
+
+    <!-- FOUC Prevention (synchron, kein defer) -->
+    <script src="/assets/js/fouc-prevention.js"></script>
     <link rel="stylesheet" href="/assets/css/main.css">
 </head>
 
@@ -27,7 +39,7 @@
         <main id="main" tabindex="-1">
             <?php
             $template = ltrim($template, '/');
-            // Sicherheitscheck: Nur Templates aus dem pages-Verzeichnis laden [otional]
+            // Sicherheitscheck: Nur Templates aus dem pages-Verzeichnis laden [optional]
             //if (!str_starts_with($template, 'pages/')) {
             //    http_response_code(404);
             //    require __DIR__ . '/../pages/404.php';
@@ -42,6 +54,8 @@
             }
             ?>
         </main>
+        <!-- Cookie-Hinweis -->
+        <?php require __DIR__ . '/../partials/cookie-notice.php'; ?>
     </div>
     <!-- Footer einbinden -->
     <?php require __DIR__ . '/../partials/footer.php'; ?>

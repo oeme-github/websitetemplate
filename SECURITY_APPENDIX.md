@@ -1,5 +1,7 @@
 # SECURITY_APPENDIX.md
 
+Stand: v1.3.0
+
 ## Zweck
 Dieser Appendix beschreibt relevante Bedrohungen, Angriffsvektoren
 und die im Projekt umgesetzten Gegenmaßnahmen. Er ergänzt die
@@ -25,6 +27,16 @@ DESIGN_PATTERN.md um eine praxisnahe Security-Betrachtung.
 ---
 
 ## B. Angriffsklassen & Gegenmaßnahmen
+
+### 0. Security Headers Architektur
+
+Security Headers werden in `src/Security/headers.php` als explizite Funktionen definiert:
+- `setHtmlSecurityHeaders()` — für HTML-Seiten (inkl. CSP), aufgerufen in `index.php`
+- `setApiSecurityHeaders()` — für JSON-Endpoints, aufgerufen in `send_kontakt.php` / `send_sepa.php`
+
+Jeder Entry Point setzt seine Header als **erste Aktion** — vor Ausgabe, vor Fehlerbehandlung.
+
+---
 
 ### 1. Cross-Site Request Forgery (CSRF)
 
@@ -126,6 +138,19 @@ Direkter Zugriff auf interne PHP-Dateien (`src/`, `templates/`).
 - Keine Logik in Templates
 
 **Status:** vollständig mitigiert
+
+---
+
+### 8. localStorage-Nutzung
+
+localStorage wird für UI-Präferenzen verwendet (Theme, Color Scheme, Cookie-Notice-Status). Diese Daten sind:
+- nicht sicherheitskritisch
+- clientseitig und vom Nutzer einsehbar/löschbar
+- nie zur Authentifizierung oder Autorisierung genutzt
+
+Serverseitige Sicherheitsentscheidungen basieren ausschließlich auf Session und CSRF-Token — nie auf localStorage.
+
+**Status:** kein Risiko
 
 ---
 

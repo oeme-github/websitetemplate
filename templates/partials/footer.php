@@ -17,6 +17,12 @@
                 aria-pressed="false">
                 🌗 Theme
             </button>
+            <label class="visually-hidden" for="colorSchemeSelect">Farbschema</label>
+            <select id="colorSchemeSelect" class="color-scheme-select" data-color-scheme-select aria-label="Farbschema wählen">
+                <option value="default">Default</option>
+                <option value="warm">Warm</option>
+                <option value="nature">Nature</option>
+            </select>
         </div>
     </div>
 </footer>

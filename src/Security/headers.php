@@ -1,19 +1,32 @@
 <?php
 declare(strict_types=1);
 
-// Nur setzen, wenn noch nichts gesendet wurde
-if (!headers_sent()) {
+function setBaseSecurityHeaders(): void
+{
+    if (headers_sent()) {
+        return;
+    }
 
+    header_remove('X-Powered-By');
     header('X-Frame-Options: SAMEORIGIN');
     header('X-Content-Type-Options: nosniff');
     header('Referrer-Policy: strict-origin-when-cross-origin');
+}
 
-    // CSP bewusst minimal (kein JS-Block!)
+function setApiSecurityHeaders(): void
+{
+    setBaseSecurityHeaders();
+    header('Content-Type: application/json; charset=utf-8');
+}
+
+function setHtmlSecurityHeaders(): void
+{
+    setBaseSecurityHeaders();
     header(
-        "Content-Security-Policy: ".
-        "default-src 'self'; ".
-        "img-src 'self' data:; ".
-        "style-src 'self'; ".
+        "Content-Security-Policy: " .
+        "default-src 'self'; " .
+        "img-src 'self' data:; " .
+        "style-src 'self'; " .
         "script-src 'self';"
     );
 }

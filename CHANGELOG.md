@@ -1,3 +1,31 @@
+## v1.3.0 – Color Schemes, Cookie Notice, Gallery, Stats & Testing
+
+### Added
+- **Color Scheme System**: RGB-basierte CSS Custom Properties mit 3 austauschbaren Schemas (Default, Warm, Nature)
+- **FOUC Prevention**: `fouc-prevention.js` verhindert Theme-/Schema-Flash beim Laden
+- **Cookie Notice**: DSGVO-konformer Cookie-Hinweis mit Dismiss-Button und localStorage-Persistenz
+- **Color Scheme Selector**: `<select data-color-scheme-select>` im Footer, persistent via localStorage
+- **Stats Counter**: Count-Up-Animation mit Intersection Observer und `prefers-reduced-motion`-Support
+- **Image Gallery + Lightbox**: Vollständige Galerie-Komponente mit Keyboard-Navigation, Focus-Trap und Tabs
+- **Gallery Tabs**: Dynamischer Kategoriefilter aus `data-gallery-category` Attributen
+- **Content-Management**: Parsedown-Dependency + `$md()` / `$gallery()` Loader in `index.php`; `content/`-Verzeichnis mit Placeholder-Dateien
+- **Testing-Infrastruktur**: PHPUnit 10 (48 Tests) + Jest 29 (86 Tests); `phpunit.xml`, `package.json`
+- Favicon-Links und LCP-Preloads in `base.php`
+
+### Changed
+- **Security Headers**: `headers.php` refaktoriert zu `setBaseSecurityHeaders()`, `setApiSecurityHeaders()`, `setHtmlSecurityHeaders()`
+- `index.php`: ruft `setHtmlSecurityHeaders()` als erste Aktion auf
+- `send_kontakt.php` / `send_sepa.php`: rufen `setApiSecurityHeaders()` als erste Aktion auf
+- `.env.example`: SMTP_* → MAIL_*, neue Variable `MAIL_TO`, Typo-Fixes
+- Form-Erfolgsmeldung faded nach 5 Sekunden automatisch aus
+- CSS Custom Properties auf RGB-Tupel-System umgestellt (Alpha-Support)
+
+### Quality
+- Alle bestehenden Features erhalten (kein Breaking Change für Browser-Nutzer)
+- `.env`-Nutzer: `SMTP_*` → `MAIL_*` umbenennen (Breaking)
+
+---
+
 ## v1.2.1 – SEPA Form Layout & UX Fixes
 
 ### Fixed

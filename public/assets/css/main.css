@@ -11,70 +11,88 @@
 /* clamp(MIN, VAL, MAX) */
 
 /* =====================================================
+  Color Schemes
+===================================================== */
+/* Default (blau / gold) */
+[data-color-scheme="default"],
+:root:not([data-color-scheme]) {
+  --color-primary:            12, 74, 110;
+  --color-primary-comp:       243, 181, 145;
+  --color-secondary:          248, 250, 252;
+  --color-secondary-alt:      224, 242, 254;
+  --color-secondary-comp:     7, 5, 3;
+  --color-secondary-alt-comp: 31, 13, 1;
+  --color-accent:             255, 209, 102;
+  --color-accent-comp:        0, 46, 153;
+}
+
+/* Warm (rot / warm) */
+[data-color-scheme="warm"] {
+  --color-primary:            139, 35, 50;
+  --color-primary-comp:       255, 220, 210;
+  --color-secondary:          250, 248, 246;
+  --color-secondary-alt:      245, 235, 228;
+  --color-secondary-comp:     30, 20, 15;
+  --color-secondary-alt-comp: 50, 30, 20;
+  --color-accent:             200, 180, 140;
+  --color-accent-comp:        60, 40, 30;
+}
+
+/* Nature (grün) */
+[data-color-scheme="nature"] {
+  --color-primary:            45, 87, 44;
+  --color-primary-comp:       210, 248, 210;
+  --color-secondary:          248, 252, 248;
+  --color-secondary-alt:      230, 245, 230;
+  --color-secondary-comp:     15, 25, 15;
+  --color-secondary-alt-comp: 25, 40, 25;
+  --color-accent:             255, 198, 39;
+  --color-accent-comp:        40, 60, 40;
+}
+
+/* =====================================================
   Basis Styles & Variablen
 ===================================================== */
-/* CSS Variablen */
 :root {
-  /* Fabrschema mit Haupt, Neben, Akzent Farben */
-  --color-haupt: #0C4A6E;
-  --color-haupt-kmpl: #f3b591;
-  --color-neben: #F8FAFC;
-  --color-neben-alt: #E0F2FE;
-  --color-neben-kmpl: #070503;
-  --color-neben-alt-kmpl: #1f0d01;
-  --color-accent: #FFD166;
-  --color-accent-kmpl: #002e99;
+  /* Semantische Farbzuordnungen */
+  --color-bg-body:        rgb(var(--color-secondary));
+  --color-bg-header:      rgb(var(--color-secondary));
+  --color-bg-section-alt: rgb(var(--color-secondary-alt));
+  --color-bg-hero-start:  rgb(var(--color-secondary));
+  --color-bg-hero-end:    rgb(var(--color-primary));
+  --color-bg-footer:      rgb(var(--color-secondary));
 
-  /* Grundfarben */
-  --color-bg-body: var(--color-neben);
-  --color-bg-header: var(--color-neben);
-  --color-bg-section-alt: var(--color-neben-alt);
-  --color-bg-hero-start: var(--color-neben);
-  --color-bg-hero-end: var(--color-haupt);
-  --color-bg-footer: var(--color-neben);
+  --color-text-main:   rgb(var(--color-secondary-comp));
+  --color-text-light:  rgb(var(--color-primary));
+  --color-text-muted:  rgb(var(--color-primary));
+  --color-text-footer: rgb(var(--color-primary));
 
-  /* Textfarben */
-  --color-text-main: var(--color-neben-kmpl);
-  --color-text-light: var(--color-haupt);
-  --color-text-muted: var(--color-haupt);
-  --color-text-footer: var(--color-haupt);
+  --color-bg-btn:   rgb(var(--color-accent));
+  --color-text-btn: rgb(var(--color-accent-comp));
 
-  /* Button */
-  --color-bg-btn: var(--color-accent);
-  --color-text-btn: var(--color-accent-kmpl);
-
-  /* Topbar */
-  --color-bg-topbar: var(--color-accent);
-  --color-text-topbar: var(--color-accent-kmpl);
+  --color-bg-topbar:   rgb(var(--color-accent));
+  --color-text-topbar: rgb(var(--color-accent-comp));
 
   /* Layout */
-  --max-width: 1200px;
-  --max-width-narrow: 800px;
-
-  --footer-height: 3.75rem;
-  /* aus CSS abgeleitet */
+  --max-width:        1200px;
+  --max-width-narrow:  800px;
+  --footer-height:     3.75rem;
 
   /* Font Families */
-  --font-base: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-base:    "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: "Inter", system-ui, sans-serif;
 
   /* Font Sizes */
   --fs-100: clamp(0.875rem, 0.85vw, 0.95rem);
-  /* Small */
   --fs-200: clamp(1rem, 1vw, 1.125rem);
-  /* Body */
   --fs-300: clamp(1.25rem, 1.5vw, 1.5rem);
-  /* H3 */
   --fs-400: clamp(1.75rem, 3vw, 2.25rem);
-  /* H2 */
   --fs-500: clamp(2.5rem, 5vw, 4rem);
-  /* H1 */
-  /* Topbar */
-  --fs-topbar: var(--fs-100);
+  --fs-topbar:      var(--fs-100);
   --space-topbar-y: var(--space-2);
 
   /* Line Heights */
-  --lh-body: 1.6;
+  --lh-body:    1.6;
   --lh-heading: 1.2;
 
   /* Spacing Scale */
@@ -85,10 +103,9 @@
   --space-5: 4rem;
   --space-6: 6rem;
 
-  /* Logo URLs */
-  --logo-src: url("../logo/logo_mark.svg");
-  --logo_hight: 3rem;
-
+  /* Logo */
+  --logo-src:    url("../logo/logo_mark.svg");
+  --logo_hight:  3rem;
 }
 
 /* =====================================================
@@ -96,29 +113,24 @@
 ===================================================== */
 [data-theme="dark"] {
 
-  /* Grundfarben */
-  --color-bg-body: var(--color-neben-kmpl);
-  --color-bg-header: var(--color-neben-kmpl);
-  --color-bg-section-alt: var(--color-neben-alt-kmpl);
-  --color-bg-hero-start: var(--color-neben-kmpl);
-  --color-bg-hero-end: var(--color-haupt-kmpl);
-  --color-bg-footer: var(--color-neben-kmpl);
+  --color-bg-body:        rgb(var(--color-secondary-comp));
+  --color-bg-header:      rgb(var(--color-secondary-comp));
+  --color-bg-section-alt: rgb(var(--color-secondary-alt-comp));
+  --color-bg-hero-start:  rgb(var(--color-secondary-comp));
+  --color-bg-hero-end:    rgb(var(--color-primary-comp));
+  --color-bg-footer:      rgb(var(--color-secondary-comp));
 
-  /* Textfarben */
-  --color-text-main: var(--color-neben);
-  --color-text-light: var(--color-haupt-kmpl);
-  --color-text-muted: var(--color-haupt-kmpl);
-  --color-text-footer: var(--color-haupt-kmpl);
+  --color-text-main:   rgb(var(--color-secondary));
+  --color-text-light:  rgb(var(--color-primary-comp));
+  --color-text-muted:  rgb(var(--color-primary-comp));
+  --color-text-footer: rgb(var(--color-primary-comp));
 
-  /* Button */
-  --color-bg-btn: var(--color-accent-kmpl);
-  --color-text-btn: var(--color-accent);
+  --color-bg-btn:   rgb(var(--color-accent-comp));
+  --color-text-btn: rgb(var(--color-accent));
 
-  /* Topbar */
-  --color-bg-topbar: var(--color-accent-kmpl);
-  --color-text-topbar: var(--color-accent);
+  --color-bg-topbar:   rgb(var(--color-accent-comp));
+  --color-text-topbar: rgb(var(--color-accent));
 
-  /* logo */
   .logo-img {
     content: url("../logo/logo_mark_white.svg");
   }
@@ -268,7 +280,7 @@ body {
 }
 
 .header nav a:hover {
-  color: var(--color-accent);
+  color: rgb(var(--color-accent));
 }
 
 /* Scrollbarer Bereich */
@@ -388,7 +400,7 @@ body {
 }
 
 .theme-toggle:hover {
-  color: var(--color-accent);
+  color: rgb(var(--color-accent));
 }
 
 /* Navigation Desktop */
@@ -514,9 +526,9 @@ body {
 #kontaktForm input:focus,
 #kontaktForm textarea:focus {
   outline: none;
-  border-color: var(--color-accent);
+  border-color: rgb(var(--color-accent));
   box-shadow: 0 0 0 2px color-mix(in srgb,
-      var(--color-accent) 30%,
+      rgb(var(--color-accent)) 30%,
       transparent);
 }
 
@@ -553,7 +565,7 @@ body {
 }
 
 #kontaktForm .consent-row input:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid rgb(var(--color-accent));
   outline-offset: 2px;
 }
 
@@ -593,7 +605,7 @@ body {
 
 #kontaktForm .btn-primary:hover {
   background-color: var(--color-text-light);
-  color: var(--color-accent);
+  color: rgb(var(--color-accent));
 }
 
 /* ------------------------------
@@ -797,4 +809,325 @@ body {
     margin-bottom: var(--space-4);
   }
 
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lightbox-dialog {
+    flex-direction: column;
+    padding: var(--space-2);
+  }
+}
+
+/* =====================================================
+  Color Scheme Selector
+===================================================== */
+.color-scheme-select {
+  font-family: inherit;
+  font-size: var(--fs-100);
+  padding: var(--space-1) var(--space-2);
+  border-radius: 0.5rem;
+  border: 1px solid currentColor;
+  background: var(--color-bg-btn);
+  color: var(--color-text-btn);
+  cursor: pointer;
+  margin-left: var(--space-2);
+}
+
+/* =====================================================
+  Form Message Fade-out
+===================================================== */
+#kontaktForm .form-message {
+  transition: opacity 0.5s ease;
+}
+
+#kontaktForm .form-message.is-fading {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #kontaktForm .form-message {
+    transition-duration: 0s;
+  }
+}
+
+/* =====================================================
+  Cookie Notice
+===================================================== */
+[data-cookie-dismissed="true"] .cookie-notice {
+  display: none;
+}
+
+.cookie-notice {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 950;
+  background: rgba(var(--color-primary), 0.95);
+  color: rgb(var(--color-secondary));
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.cookie-notice.is-hidden {
+  opacity: 0;
+  transform: translateY(100%);
+  pointer-events: none;
+}
+
+.cookie-notice-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.cookie-notice-text {
+  margin: 0;
+  font-size: var(--fs-100);
+  line-height: var(--lh-body);
+}
+
+.cookie-notice-text a {
+  color: rgb(var(--color-accent));
+  text-decoration: underline;
+}
+
+.cookie-notice-text a:hover,
+.cookie-notice-text a:focus-visible {
+  text-decoration: none;
+}
+
+.cookie-notice-btn {
+  flex-shrink: 0;
+  padding: var(--space-2) var(--space-3);
+  font-family: inherit;
+  font-size: var(--fs-100);
+  font-weight: 600;
+  background: rgb(var(--color-accent));
+  color: rgb(var(--color-accent-comp));
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.cookie-notice-btn:hover {
+  opacity: 0.85;
+}
+
+.cookie-notice-btn:focus-visible {
+  outline: 2px solid rgb(var(--color-accent));
+  outline-offset: 2px;
+}
+
+/* =====================================================
+  Stats Counter
+===================================================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  text-align: center;
+  padding: var(--space-5) 0;
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.stats-number {
+  font-size: var(--fs-500);
+  font-weight: 700;
+  line-height: var(--lh-heading);
+  color: var(--color-text-light);
+}
+
+.stats-label {
+  font-size: var(--fs-200);
+  color: var(--color-text-muted);
+}
+
+/* =====================================================
+  Image Gallery
+===================================================== */
+.gallery-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.gallery-tab {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid rgba(var(--color-primary), 0.3);
+  border-radius: 2rem;
+  background: transparent;
+  color: var(--color-text-main);
+  font-size: var(--fs-100);
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.gallery-tab:hover {
+  border-color: rgb(var(--color-accent));
+  color: rgb(var(--color-accent));
+}
+
+.gallery-tab[aria-pressed="true"] {
+  background: rgb(var(--color-accent));
+  border-color: rgb(var(--color-accent));
+  color: rgb(var(--color-primary));
+}
+
+.gallery-tab:focus-visible {
+  outline: 2px solid rgb(var(--color-accent));
+  outline-offset: 2px;
+}
+
+.gallery-grid {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.gallery-thumb-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  outline-offset: 3px;
+}
+
+.gallery-thumb-btn:focus-visible {
+  outline: 2px solid rgb(var(--color-accent));
+}
+
+.gallery-thumb-btn:hover .gallery-thumb {
+  transform: scale(1.04);
+  filter: brightness(0.9);
+}
+
+.gallery-thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+/* =====================================================
+  Lightbox
+===================================================== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.25s ease, visibility 0s;
+}
+
+.lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  cursor: pointer;
+}
+
+.lightbox-dialog {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 90vw;
+  max-height: 90vh;
+  padding: var(--space-3);
+}
+
+.lightbox-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.lightbox-img {
+  display: block;
+  max-width: 80vw;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.25rem;
+}
+
+.lightbox-caption {
+  font-size: var(--fs-100);
+  color: rgb(var(--color-secondary));
+  text-align: center;
+  max-width: 60ch;
+}
+
+.lightbox-btn {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-300);
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: rgb(var(--color-secondary));
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.lightbox-btn:hover {
+  background: rgba(var(--color-primary), 0.8);
+  border-color: rgb(var(--color-accent));
+}
+
+.lightbox-btn:focus-visible {
+  outline: 2px solid rgb(var(--color-accent));
+  outline-offset: 3px;
+}
+
+.lightbox-btn--close {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
 }

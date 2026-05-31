@@ -3,3 +3,5 @@ settings.*
 *.lock
 *.log
 /vendor/
+/node_modules/
+/.phpunit.cache/
