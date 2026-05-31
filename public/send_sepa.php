@@ -14,7 +14,7 @@ guardMethod();
 guardCsrf();
 guardHoneypot();
 requireEnvKeys([
-    'MAIL_HOST', 'MAIL_PORT', 'MAIL_USER', 'MAIL_PASS', 'MAIL_FROM', 'MAIL_TO',
+    'MAIL_HOST', 'MAIL_PORT', 'MAIL_FROM', 'MAIL_TO',
     'PLACE', 'SEPA_CREDITOR_NAME', 'SEPA_CREDITOR_ADRESS', 'SEPA_CREDITOR_ID',
 ]);
 
@@ -199,11 +199,13 @@ $mail = new PHPMailer(true);
 
 $mail->isSMTP();
 $mail->Host       = $_ENV['MAIL_HOST'];
-$mail->SMTPAuth   = true;
-$mail->Username   = $_ENV['MAIL_USER'];
-$mail->Password   = $_ENV['MAIL_PASS'];
-$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 $mail->Port       = (int) $_ENV['MAIL_PORT'];
+$mail->SMTPSecure = $_ENV['MAIL_SECURE'] ?? '';
+$mail->SMTPAuth   = !empty($_ENV['MAIL_USER'] ?? '');
+if ($mail->SMTPAuth) {
+    $mail->Username = $_ENV['MAIL_USER'];
+    $mail->Password = $_ENV['MAIL_PASS'];
+}
 
 $mail->CharSet  = 'UTF-8';
 $mail->Encoding = 'base64';

@@ -86,13 +86,36 @@ cd ~/git_repos/websitetemplate
 sudo service apache2 status
 sudo service apache2 start   # falls nicht aktiv
 
-# 3. VS Code mit Remote-WSL öffnen:
+# 3. Mailpit starten (lokaler SMTP-Catcher für Formular-Tests):
+mailpit &
+# → SMTP auf localhost:1025 (kein TLS, kein Auth)
+# → Web-UI: http://localhost:8025
+
+# 4. VS Code mit Remote-WSL öffnen:
 code .
 # → VS Code öffnet sich verbunden mit WSL2
 # → Terminal in VS Code ist direkt das WSL2-Terminal
 ```
 
-Browser-Test (von Windows): `http://websitetemplate.local`
+Browser-Test (von Windows): `http://websitetemplate.local`  
+Mail-Inbox (lokal): `http://localhost:8025`
+
+### Mailpit – lokale .env (DEV)
+
+```env
+APP_ENV=dev
+MAIL_HOST=127.0.0.1
+MAIL_PORT=1025
+MAIL_SECURE=
+MAIL_USER=
+MAIL_PASS=
+MAIL_FROM=dev@localhost
+MAIL_FROM_NAME=Dev
+MAIL_TO=inbox@localhost
+```
+
+PHPMailer sendet dann an Mailpit statt an einen echten SMTP-Server.
+Alle Mails (inkl. SEPA-PDF-Anhang) sind in der Web-UI sichtbar.
 
 ### Einmaliges Setup (WSL2-Seite)
 
