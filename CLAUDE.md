@@ -109,9 +109,9 @@ MAIL_PORT=1025
 MAIL_SECURE=
 MAIL_USER=
 MAIL_PASS=
-MAIL_FROM=dev@localhost
+MAIL_FROM=dev@websitetemplate.local
 MAIL_FROM_NAME=Dev
-MAIL_TO=inbox@localhost
+MAIL_TO=inbox@websitetemplate.local
 ```
 
 PHPMailer sendet dann an Mailpit statt an einen echten SMTP-Server.

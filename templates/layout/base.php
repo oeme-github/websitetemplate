@@ -20,9 +20,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
     <link rel="manifest" href="/assets/icons/site.webmanifest">
 
-    <!-- Preloads für LCP (Bildpfad ggf. anpassen) -->
+    <!-- Preloads für LCP -->
     <link rel="preload" href="/assets/css/main.css" as="style">
-    <link rel="preload" href="/assets/images/hero/hero_background.png" as="image">
 
     <!-- FOUC Prevention (synchron, kein defer) -->
     <script src="/assets/js/fouc-prevention.js"></script>

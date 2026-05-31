@@ -70,10 +70,11 @@ use PHPMailer\PHPMailer\PHPMailer;
 $mail = new PHPMailer(true);
 
 $mail->isSMTP();
-$mail->Host       = $_ENV['MAIL_HOST'];
-$mail->Port       = (int) $_ENV['MAIL_PORT'];
-$mail->SMTPSecure = $_ENV['MAIL_SECURE'] ?? '';
-$mail->SMTPAuth   = !empty($_ENV['MAIL_USER'] ?? '');
+$mail->Host        = $_ENV['MAIL_HOST'];
+$mail->Port        = (int) $_ENV['MAIL_PORT'];
+$mail->SMTPSecure  = $_ENV['MAIL_SECURE'] ?? '';
+$mail->SMTPAutoTLS = !empty($_ENV['MAIL_SECURE'] ?? '');
+$mail->SMTPAuth    = !empty($_ENV['MAIL_USER'] ?? '');
 if ($mail->SMTPAuth) {
     $mail->Username = $_ENV['MAIL_USER'];
     $mail->Password = $_ENV['MAIL_PASS'];
