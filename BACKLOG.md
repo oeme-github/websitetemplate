@@ -2,20 +2,34 @@
 
 ## Letzter Stand
 
-**Version:** v1.4.0 (in Arbeit)  
-**Zuletzt abgeschlossen:** Paket A — Formular-Bootstrap vereinheitlicht + Backend-Validierung vervollständigt
+**Version:** v1.4.0 (gepusht)  
+**Zuletzt abgeschlossen:** Paket A + B + Mailpit-Setup + Integration-Tests
 
-### Abgeschlossen in der letzten Session (Paket A)
-- `src/http/FormEndpoint.php` neu: `respond()`, `formBootstrap()`, `guardMethod()`, `guardCsrf()`, `guardHoneypot()`, `requireEnvKeys()`
-- Bootstrap-Duplikat aus beiden Endpoints entfernt (Issue #2 ✅)
-- `send_kontakt.php` auf gemeinsame Bootstrap-Logik umgestellt
-- `send_sepa.php` auf gemeinsame Bootstrap-Logik umgestellt
-- `debug`-Feld im Exception-Handler nur noch in `APP_ENV=dev`
-- `?? ''` für alle `$_POST`-Zugriffe ergänzt (keine PHP-Warnings mehr)
-- SEPA: Whitelist-Validierung für `betrag`, `zahlungsrhythmus`, `mitgliedschaft` (Issue #3 ✅)
-- SEPA: `$plz == ''` → `=== ''` korrigiert
-- Issue #6 auf GitHub geschlossen ✅
-- Alle Tests grün: PHPUnit 48, Jest 86
+### Abgeschlossen in dieser Session
+
+**Paket A — Formular-Bootstrap vereinheitlicht (Issues #2, #3, #6)**
+- `src/http/FormEndpoint.php`: `respond()`, `formBootstrap()`, `guardMethod()`, `guardCsrf()`, `guardHoneypot()`, `requireEnvKeys()`
+- Bootstrap-Duplikat aus beiden Endpoints entfernt
+- `debug`-Feld nur noch bei `APP_ENV=dev`
+- SEPA: Whitelist-Validierung für `betrag`, `zahlungsrhythmus`, `mitgliedschaft`
+
+**Paket B — Feldbezogene Fehleranzeige (Issues #4, #9 teilweise)**
+- Backend: `errors` als `{field: message}`-Map statt flat Array
+- Frontend: `clearFieldErrors()`, `showFieldErrors()` mit `aria-invalid` + `aria-describedby`
+- Scroll-to + Fokus auf erstes Fehlerfeld
+- CSS: `.field-error-msg` für inline Fehlertexte
+- JS-Tests: +3 Tests (field-level behavior)
+
+**Mailpit-Setup**
+- `.env` für Dev angelegt (Mailpit auf `127.0.0.1:1025`)
+- PHPMailer: `SMTPAutoTLS` und `SMTPAuth` env-gesteuert (kein Hardcode mehr)
+- `MAIL_SECURE`, `MAIL_USER`, `MAIL_PASS` optional (nicht in `requireEnvKeys`)
+- `.env.example` + `CLAUDE.md` mit Mailpit-Anleitung aktualisiert
+- Stale hero-Preload aus `base.php` entfernt
+
+**Integration-Tests**
+- `tests/Integration/KontaktFormTest.php`: 3 E2E-Tests via HTTP → Apache → Mailpit
+- `composer test` (Unit, 48 Tests) vs. `composer test-integration` (E2E, 3 Tests) sauber getrennt
 
 ---
 
@@ -23,8 +37,8 @@
 
 | # | Titel | Priorität | Nächste Session |
 |---|-------|-----------|-----------------|
-| #4 | Formular-UX verfeinern | Mittel | Paket B |
-| #9 | Accessibility Feinschliff | Mittel | Paket B |
+| #4 | Formular-UX verfeinern | Mittel | Paket B Rest / Paket C |
+| #9 | Accessibility Feinschliff | Mittel | Paket B Rest |
 | #7 | Rate Limiting für Formulare | Mittel | Paket C |
 | #8 | IBAN UX-Verbesserung (Frontend) | Mittel | Paket C |
 | #1 | SEPA-Flow rechtlich finalisieren | Offen | Wartet auf User-Input |
@@ -32,24 +46,17 @@
 
 ---
 
-## Nächste Session: Paket B
+## Nächste Session: Paket C
 
-**Ziel:** Feldbezogene Fehleranzeige + Accessibility-Feinschliff
+**Ziel:** Rate Limiting + IBAN Live-Validierung im Frontend
 
 ### Aufgaben
-- [ ] Server-Fehler auf Felder mappen (JSON `errors` Array → Feldname als Key)
-- [ ] Frontend: Fehler per `aria-describedby` mit dem zugehörigen Feld verknüpfen
-- [ ] Scroll-to-first-error bei Validierungsfehler
-- [ ] Fokus-Management: nach Fehler → erstes Fehlerfeld, nach Erfolg → Erfolgsmeldung
-- [ ] Screenreader-Test SEPA-Form (Issue #9)
-- [ ] Issues #2, #3 auf GitHub schließen
+- [ ] Rate Limiting (Session-basiert) für Formular-Endpoints (Issue #7)
+- [ ] IBAN Live-Validierung im Frontend: Eingabe prüfen, Bankname per API nachladen (Issue #8)
+- [ ] SEPA Integration-Test analog zu KontaktFormTest
+- [ ] Issues #4, #9 reviewen ob noch offen
 
 ---
-
-## Danach: Paket C
-
-- Rate Limiting (Session-basiert, Issue #7)
-- IBAN Live-Validierung im Frontend (Issue #8)
 
 ## Zurückgestellt
 
