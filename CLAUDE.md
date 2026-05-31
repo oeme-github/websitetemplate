@@ -4,6 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Startup
 
+> Claude Code wird aus WSL2 gestartet: `cd ~/git_repos/websitetemplate && claude`
+
 The following files are automatically loaded at startup (via `@` import):
 - @BACKLOG.md - **Check first**: Contains last session status and where to continue work
 - @README.md - Project overview and setup instructions
@@ -14,12 +16,21 @@ The following files are automatically loaded at startup (via `@` import):
 
 ## Session End
 
-Before ending a session, update `BACKLOG.md` with:
-- Current work status
-- What was completed
-- Where to continue next session
-- Run `git status` and `git diff origin/main..HEAD` to check for uncommitted or unpushed changes
-- Commit and push everything that is still open (`git push origin main`)
+Before ending a session:
+
+1. Update `BACKLOG.md` with current status, what was completed, where to continue
+2. Commit and push all open changes:
+   ```bash
+   git add -p
+   git commit -m "..."
+   git push origin main
+   ```
+3. Windows-Kopie synchronisieren (WSL2 ist primär — Windows zieht nach):
+   ```bash
+   git -C /mnt/f/git_repos/websitetemplate pull
+   ```
+
+Das stellt sicher dass `F:\git_repos\websitetemplate` auf Windows immer aktuell ist.
 
 ## Project Overview
 
@@ -54,6 +65,8 @@ vendor/bin/phpunit --filter testValidIbanReturnsTrue
 
 ## Local Environment (WSL2)
 
+Die primäre Entwicklungsumgebung ist **WSL2 (Ubuntu)**. VS Code verbindet sich per Remote-WSL direkt in das WSL2-Dateisystem. Alle Befehle (PHP, Composer, npm, Git, Apache) laufen in WSL2.
+
 - **OS**: Ubuntu on WSL2
 - **Server**: Apache2 with `mod_rewrite` enabled
 - **PHP**: 8.x (installed via apt)
@@ -63,20 +76,69 @@ vendor/bin/phpunit --filter testValidIbanReturnsTrue
 - URL rewrites via `.htaccess` work out of the box
 - **GitHub CLI**: `gh` (on PATH in WSL2)
 
-### Apache VirtualHost (example)
+### Session-Start (täglich)
 
-```apache
-<VirtualHost *:80>
-    ServerName websitetemplate.local
-    DocumentRoot /home/oeme/git_repos/websitetemplate/public
-    <Directory /home/oeme/git_repos/websitetemplate/public>
-        AllowOverride All
-        Require all granted
-    </Directory>
-</VirtualHost>
+```bash
+# 1. In WSL2-Terminal:
+cd ~/git_repos/websitetemplate
+
+# 2. Apache läuft? (WSL2 startet Dienste nicht automatisch)
+sudo service apache2 status
+sudo service apache2 start   # falls nicht aktiv
+
+# 3. VS Code mit Remote-WSL öffnen:
+code .
+# → VS Code öffnet sich verbunden mit WSL2
+# → Terminal in VS Code ist direkt das WSL2-Terminal
 ```
 
-Add `127.0.0.1 websitetemplate.local` to `/etc/hosts`.
+Browser-Test (von Windows): `http://websitetemplate.local`
+
+### Einmaliges Setup (WSL2-Seite)
+
+```bash
+# Traversal-Rechte für www-data (WSL2-spezifisch, sonst 403):
+chmod o+x /home/oeme
+chmod o+x /home/oeme/git_repos
+
+# Apache-Konfiguration:
+sudo cp setup/apache/websitetemplate.conf /etc/apache2/sites-available/
+sudo a2ensite websitetemplate.conf
+sudo a2enmod rewrite
+sudo service apache2 restart
+
+# Abhängigkeiten:
+composer install
+npm install
+```
+
+### Einmaliges Setup (Windows-Seite)
+
+**`C:\Users\jroem\.wslconfig`** (WSL2 Mirrored Networking — damit `localhost` von Windows auf WSL2 zeigt):
+```ini
+[wsl2]
+networkingMode=mirrored
+```
+Nach Änderung: `wsl --shutdown` in PowerShell, dann WSL2 neu starten.
+
+**`C:\Windows\System32\drivers\etc\hosts`** (einmalig, als Admin):
+```
+127.0.0.1 websitetemplate.local
+```
+
+### Apache-Konfiguration
+
+Template: `setup/apache/websitetemplate.conf`
+Auf dem Server: `/etc/apache2/sites-available/websitetemplate.conf`
+
+### Template-Einsatz (Referenz)
+
+Dieses Template wird bereits in folgenden Projekten eingesetzt:
+
+| Projekt | Pfad (WSL2) | URL (lokal) |
+|---------|-------------|-------------|
+| friendsofthehawks | `/home/oeme/git_repos/friendsofthehawks/` | `http://friendsofthehawks.localhost` |
+| beatmungswg-ofterdingen | `/home/oeme/git_repos/beatmungswg-ofterdingen/` | `http://beatmungswg-ofterdingen.local` |
 
 ## Architecture
 
