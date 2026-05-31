@@ -27,7 +27,8 @@
     "phpunit/phpunit": "^10.0"
   },
   "scripts": {
-    "test": "phpunit",
-    "test-js": "npm test"
+    "test": "phpunit --exclude-group integration",
+    "test-js": "npm test",
+    "test-integration": "phpunit --testsuite integration"
   }
 }
