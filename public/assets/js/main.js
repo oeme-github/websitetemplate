@@ -291,9 +291,46 @@
     }
   }
 
+  function clearFieldErrors() {
+    form.querySelectorAll('.field-error-msg').forEach((el) => el.remove());
+    form.querySelectorAll('.field-error').forEach((el) => {
+      el.classList.remove('field-error');
+      el.removeAttribute('aria-invalid');
+      el.removeAttribute('aria-describedby');
+    });
+  }
+
+  function showFieldErrors(errors) {
+    let firstErrorEl = null;
+
+    Object.entries(errors).forEach(([field, message]) => {
+      const input = form.querySelector('[name="' + field + '"]');
+      if (!input) return;
+
+      const errorId = field.replace(/[^a-zA-Z0-9]/g, '-') + '-error';
+      const insertAfter = input.closest('label') || input;
+
+      input.classList.add('field-error');
+      input.setAttribute('aria-invalid', 'true');
+      input.setAttribute('aria-describedby', errorId);
+
+      const errorEl = document.createElement('span');
+      errorEl.id = errorId;
+      errorEl.className = 'field-error-msg';
+      errorEl.textContent = message;
+      insertAfter.insertAdjacentElement('afterend', errorEl);
+
+      if (!firstErrorEl) firstErrorEl = input;
+    });
+
+    return firstErrorEl;
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    clearFieldErrors();
 
     submitBtn?.setAttribute('disabled', 'disabled');
     submitBtn.textContent = 'Sende...';
@@ -320,8 +357,15 @@
         return;
       }
 
-      if (Array.isArray(data.errors)) {
-        setMessage(data.errors.join(' · '), false);
+      if (data.errors && typeof data.errors === 'object' && !Array.isArray(data.errors)) {
+        setMessage(data.message || 'Bitte Eingaben prüfen.', false);
+        const firstErrorEl = showFieldErrors(data.errors);
+        if (firstErrorEl) {
+          if (firstErrorEl.scrollIntoView) {
+            firstErrorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          firstErrorEl.focus();
+        }
         return;
       }
 

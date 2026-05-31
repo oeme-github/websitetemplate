@@ -36,19 +36,19 @@ $consent   = isset($_POST['consent']);
 $errors = [];
 
 if ($vorname === '') {
-    $errors[] = 'Vorname fehlt';
+    $errors['vorname'] = 'Vorname fehlt';
 }
 
 if ($nachname === '') {
-    $errors[] = 'Nachname fehlt';
+    $errors['nachname'] = 'Nachname fehlt';
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors[] = 'E-Mail ungültig';
+    $errors['email'] = 'E-Mail ungültig';
 }
 
 if (!$consent) {
-    $errors[] = 'Einwilligung fehlt';
+    $errors['consent'] = 'Einwilligung fehlt';
 }
 
 if ($errors) {

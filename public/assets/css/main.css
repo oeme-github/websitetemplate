@@ -537,6 +537,13 @@ body {
   border-color: #b91c1c;
 }
 
+#kontaktForm .field-error-msg {
+  display: block;
+  font-size: var(--fs-100);
+  color: #b91c1c;
+  margin-top: calc(var(--space-1) * 0.5);
+}
+
 /* ------------------------------
   Consent / Checkbox
 ------------------------------ */

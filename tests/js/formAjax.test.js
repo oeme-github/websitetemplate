@@ -9,7 +9,8 @@ beforeEach(() => {
   document.body.innerHTML = `
     <form id="kontaktForm" action="/send_kontakt.php">
       <input name="_csrf" value="token123">
-      <input name="name" value="Test User">
+      <input name="vorname" value="">
+      <input name="email" value="">
       <button type="submit">Absenden</button>
     </form>
     <div id="formMessage" tabindex="-1"></div>
@@ -74,19 +75,97 @@ describe('Form AJAX', () => {
     ).toBe('newtoken456');
   });
 
-  test('shows joined error messages from response errors array', async () => {
+  test('shows field-level errors and summary message on validation failure', async () => {
     global.fetch.mockResolvedValue({
       ok: false,
-      json: async () => ({ ok: false, errors: ['Name fehlt.', 'E-Mail ungültig.'] }),
+      json: async () => ({
+        ok: false,
+        code: 'VALIDATION',
+        message: 'Bitte Eingaben prüfen.',
+        errors: { vorname: 'Vorname fehlt', email: 'E-Mail ungültig' },
+      }),
     });
 
     loadMain();
     submitForm();
     await flushPromises();
 
+    const vornameInput = document.querySelector('[name="vorname"]');
+    expect(vornameInput.getAttribute('aria-invalid')).toBe('true');
+    expect(vornameInput.getAttribute('aria-describedby')).toBe('vorname-error');
+    expect(document.getElementById('vorname-error').textContent).toBe('Vorname fehlt');
+    expect(vornameInput.classList.contains('field-error')).toBe(true);
+
+    const emailInput = document.querySelector('[name="email"]');
+    expect(emailInput.getAttribute('aria-invalid')).toBe('true');
+    expect(document.getElementById('email-error').textContent).toBe('E-Mail ungültig');
+
     const msg = document.getElementById('formMessage');
-    expect(msg.textContent).toBe('Name fehlt. · E-Mail ungültig.');
+    expect(msg.textContent).toBe('Bitte Eingaben prüfen.');
     expect(msg.classList.contains('is-error')).toBe(true);
+  });
+
+  test('focuses first errored field on validation failure', async () => {
+    global.fetch.mockResolvedValue({
+      ok: false,
+      json: async () => ({
+        ok: false,
+        message: 'Bitte Eingaben prüfen.',
+        errors: { vorname: 'Vorname fehlt' },
+      }),
+    });
+
+    loadMain();
+    submitForm();
+    await flushPromises();
+
+    expect(document.activeElement).toBe(document.querySelector('[name="vorname"]'));
+  });
+
+  test('clears field errors on subsequent submit', async () => {
+    global.fetch
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({
+          ok: false,
+          message: 'Bitte Eingaben prüfen.',
+          errors: { vorname: 'Vorname fehlt' },
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ ok: true, message: 'Gesendet.' }),
+      });
+
+    loadMain();
+    submitForm();
+    await flushPromises();
+
+    expect(document.getElementById('vorname-error')).not.toBeNull();
+    expect(document.querySelector('[name="vorname"]').getAttribute('aria-invalid')).toBe('true');
+
+    submitForm();
+    await flushPromises();
+
+    expect(document.getElementById('vorname-error')).toBeNull();
+    expect(document.querySelector('[name="vorname"]').getAttribute('aria-invalid')).toBeNull();
+  });
+
+  test('ignores unknown field names in errors object gracefully', async () => {
+    global.fetch.mockResolvedValue({
+      ok: false,
+      json: async () => ({
+        ok: false,
+        message: 'Bitte Eingaben prüfen.',
+        errors: { nonexistent: 'Fehler' },
+      }),
+    });
+
+    loadMain();
+    expect(() => submitForm()).not.toThrow();
+    await flushPromises();
+
+    expect(document.querySelectorAll('.field-error-msg').length).toBe(0);
   });
 
   test('shows generic error message from response message field', async () => {

@@ -75,35 +75,51 @@ $validRhythmus = ['Spende einmalig', 'Jahr', 'Qurtal', 'Monat', 'Nachricht'];
 $validMitgliedschaft = ['Ja', 'Nein', 'Nachricht'];
 
 if ($vorname === '') {
-    $errors[] = 'Vorname fehlt';
+    $errors['vorname'] = 'Vorname fehlt';
 }
 
 if ($nachname === '') {
-    $errors[] = 'Nachname fehlt';
+    $errors['nachname'] = 'Nachname fehlt';
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors[] = 'E-Mail ungültig';
+    $errors['email'] = 'E-Mail ungültig';
 }
 
-if ($strasse === '' || $plz === '' || $ort === '') {
-    $errors[] = 'Adresse nicht vollständig';
+if ($strasse === '') {
+    $errors['strasse'] = 'Straße fehlt';
+}
+
+if ($plz === '') {
+    $errors['plz'] = 'PLZ fehlt';
+}
+
+if ($ort === '') {
+    $errors['ort'] = 'Ort fehlt';
 }
 
 if (!in_array($beitrag, $validBeitrag, true)) {
-    $errors[] = 'Beitrag ungültig';
+    $errors['betrag'] = 'Beitrag ungültig';
 }
 
 if (!in_array($zahlungsrhythmus, $validRhythmus, true)) {
-    $errors[] = 'Zahlungsrhythmus ungültig';
+    $errors['zahlungsrhythmus'] = 'Zahlungsrhythmus ungültig';
 }
 
 if (!in_array($mitgliedschaft, $validMitgliedschaft, true)) {
-    $errors[] = 'Mitgliedschaft ungültig';
+    $errors['mitgliedschaft'] = 'Mitgliedschaft ungültig';
 }
 
-if (!$consent || !$consentdatenschutz || !$consentsepa) {
-    $errors[] = 'Einwilligung fehlt';
+if (!$consent) {
+    $errors['consent'] = 'DSGVO-Einwilligung fehlt';
+}
+
+if (!$consentdatenschutz) {
+    $errors['consent-datenschutz'] = 'Datenschutz-Einwilligung fehlt';
+}
+
+if (!$consentsepa) {
+    $errors['consent-sepa'] = 'SEPA-Einwilligung fehlt';
 }
 
 if ($nachricht === '') {
@@ -127,7 +143,7 @@ use App\Security\IbanValidator;
 $ibanValidator = new IbanValidator();
 
 if (!$ibanValidator->isValid($iban)) {
-    $errors[] = 'Die eingegebene IBAN ist ungültig';
+    $errors['iban'] = 'Die eingegebene IBAN ist ungültig';
 }
 
 if ($errors) {
