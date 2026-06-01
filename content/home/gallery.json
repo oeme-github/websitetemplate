@@ -1,1 +1,6 @@
-[]
+[
+    { "file": "placeholder-1", "alt": "Platzhalterbild 1", "category": "Kategorie A" },
+    { "file": "placeholder-2", "alt": "Platzhalterbild 2", "category": "Kategorie A" },
+    { "file": "placeholder-3", "alt": "Platzhalterbild 3", "category": "Kategorie B" },
+    { "file": "placeholder-4", "alt": "Platzhalterbild 4", "category": "Kategorie B" }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "icon": "info",
+        "svg": "<svg class=\"about-card-icon-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><circle cx=\"12\" cy=\"12\" r=\"9\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><line x1=\"12\" y1=\"11\" x2=\"12\" y2=\"17\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/><circle cx=\"12\" cy=\"8\" r=\"0.5\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"1.5\"/></svg>",
+        "title": "Karte 1",
+        "text": "Beschreibungstext zur ersten Karte. Hier das wichtigste Merkmal erläutern."
+    },
+    {
+        "icon": "gear",
+        "svg": "<svg class=\"about-card-icon-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><circle cx=\"12\" cy=\"12\" r=\"3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>",
+        "title": "Karte 2",
+        "text": "Beschreibungstext zur zweiten Karte. Hier das zweite Merkmal erläutern."
+    },
+    {
+        "icon": "community",
+        "svg": "<svg class=\"about-card-icon-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><circle cx=\"9\" cy=\"7\" r=\"3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><circle cx=\"17\" cy=\"9\" r=\"2.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/><path d=\"M17 14c2 0 4 1.3 4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>",
+        "title": "Karte 3",
+        "text": "Beschreibungstext zur dritten Karte. Hier Gemeinschaft oder Engagement beschreiben."
+    },
+    {
+        "icon": "star",
+        "svg": "<svg class=\"about-card-icon-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><polygon points=\"12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>",
+        "title": "Karte 4",
+        "text": "Beschreibungstext zur vierten Karte. Hier Erfolge oder Auszeichnungen nennen."
+    }
+]

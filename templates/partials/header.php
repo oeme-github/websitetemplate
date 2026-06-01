@@ -1,24 +1,7 @@
 <?php
 declare(strict_types=1);
 
-// Information Leakage vermeiden
-header_remove('X-Powered-By');
-
-// Nur setzen, wenn noch nichts gesendet wurde
-if (!headers_sent()) {
-
-    header('X-Frame-Options: SAMEORIGIN');
-    header('X-Content-Type-Options: nosniff');
-    header('Referrer-Policy: strict-origin-when-cross-origin');
-
-    header(
-        "Content-Security-Policy: " .
-        "default-src 'self'; " .
-        "img-src 'self' data:; " .
-        "style-src 'self'; " .
-        "script-src 'self';"
-    );
-}
+// Security headers are set in public/index.php
 
 // @var string $pageH1
 $pageH1 = $pageH1 ?? 'Mein One-Pager';
@@ -28,6 +11,21 @@ $pageH1 = $pageH1 ?? 'Mein One-Pager';
 <div class="topbar">
     <div class="topbar-inner">
         <span>One-Pager Template</span>
+        <?php $topbarLinks = $gallery('home/topbar-links'); if ($topbarLinks): ?>
+        <nav class="topbar-links" aria-label="Externe Links">
+            <?php foreach ($topbarLinks as $link):
+                $url   = htmlspecialchars($link['url']   ?? '', ENT_QUOTES, 'UTF-8');
+                $label = htmlspecialchars($link['label'] ?? '', ENT_QUOTES, 'UTF-8');
+                $aria  = htmlspecialchars($link['aria']  ?? $label, ENT_QUOTES, 'UTF-8');
+                $svg   = $link['svg'] ?? '';
+            ?>
+            <a href="<?= $url ?>" class="topbar-link" target="_blank" rel="noopener noreferrer" aria-label="<?= $aria ?>">
+                <?= $svg ?>
+                <?= $label ?>
+            </a>
+            <?php endforeach; ?>
+        </nav>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -41,10 +39,11 @@ $pageH1 = $pageH1 ?? 'Mein One-Pager';
 
         <!-- Desktop Navigation -->
         <nav class="nav-desktop" id="desktopMenu">
-            <a href="/#hero">Hero</a>
-            <a href="/#features">Features</a>
+            <a href="/#hero">Start</a>
+            <a href="/#features">Galerie</a>
+            <a href="/#stats">Zahlen</a>
             <a href="/#about">Über uns</a>
-            <a href="/#contact">Kontakt aufnehmen</a>
+            <a href="/#contact">Kontakt</a>
         </nav>
 
         <!-- Mobile Button -->
@@ -54,10 +53,11 @@ $pageH1 = $pageH1 ?? 'Mein One-Pager';
     </div>
 
     <!-- Mobile Menü -->
-    <nav id="mobileMenu" class="nav-mobile" data-nav aria-hidden="true">
-        <a href="/#hero" tabindex="-1">Hero</a>
-        <a href="/#features" tabindex="-1">Features</a>
-        <a href="/#about" tabindex="-1">Über uns</a>
-        <a href="/#contact" tabindex="-1">Kontakt</a>
+    <nav id="mobileMenu" class="nav-mobile" data-nav>
+        <a href="/#hero">Start</a>
+        <a href="/#features">Galerie</a>
+        <a href="/#stats">Zahlen</a>
+        <a href="/#about">Über uns</a>
+        <a href="/#contact">Kontakt</a>
     </nav>
 </header>

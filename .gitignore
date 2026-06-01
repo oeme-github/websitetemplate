@@ -5,3 +5,6 @@ settings.*
 /vendor/
 /node_modules/
 /.phpunit.cache/
+public/assets/videos/*.mp4
+public/assets/videos/*.webm
+public/assets/videos/*.mov
