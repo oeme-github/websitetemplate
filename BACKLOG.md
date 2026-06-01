@@ -2,33 +2,21 @@
 
 ## Letzter Stand
 
-**Version:** v1.5.0 (gepusht)  
-**Zuletzt abgeschlossen:** Paket C — Rate Limiting + IBAN Live-Validierung + SEPA Integration-Tests
+**Version:** v1.5.0 + History-Bereinigung (gepusht)  
+**Zuletzt abgeschlossen:** B-WG-Bilder aus gesamter Git-History entfernt
 
 ### Abgeschlossen in dieser Session
 
-**Paket C — Rate Limiting (Issue #7)**
-- `src/http/FormEndpoint.php`: `rateLimitCheck()` (pure, testbar) + `guardRateLimit()`
-- `guardRateLimit('kontakt')` / `guardRateLimit('sepa')` in beiden Endpoints (nach `guardHoneypot()`)
-- Default: 5 Versuche / 15 Minuten, HTTP 429 bei Überschreitung
-- `ibanLookupAllowed()` aus `send_sepa.php` entfernt → `rateLimitCheck()` direkt
-- `tests/RateLimitTest.php`: 7 Tests
+**Git-History-Bereinigung**
+- 12 projektspezifische B-WG-Bilder via `git filter-repo --force --invert-paths` aus **gesamter History** entfernt
+- 11 graue 800×600 Placeholder-Bilder (ImageMagick) eingecheckt — `.xcf` ohne Ersatz
+- GitHub force-gepusht, alle Commit-SHAs neu geschrieben
+- Windows-Kopie via `git reset --hard origin/main` synchronisiert
+- ⚠️ Hinweis: echte Bilder für `beatmungswg-ofterdingen` lokal aufbewahren, **nicht** in Git einchecken
 
-**Paket C — IBAN Live-Validierung (Issue #8)**
-- `public/iban_lookup.php`: neuer GET-Endpoint, session-rate-limited (10/h)
-- `public/.htaccess`: `iban_lookup.php` in Allow-Liste
-- `sepa.php`: `id="iban"`, `id="bank"` ergänzt, `name="Bank"` → `name="bank"` gefixt, Status-Span
-- `main.css`: `.iban-status` mit `is-loading` / `is-valid` / `is-invalid`
-- `main.js`: IIFE „I" — debounced Input (600ms), Format-Check, Fetch, Bankfeld + Status
-- `tests/js/ibanLookup.test.js`: 12 Tests
-
-**SEPA Integration-Tests**
-- `tests/Integration/SepaFormTest.php`: 4 E2E-Tests via HTTP → Apache → Mailpit
-  - Mail mit PDF-Anhang (SEPA-Mandat.pdf)
-  - Validierungsfehler → keine Mail
-  - Ungültige IBAN → Feldfehler
-  - CSRF-Rotation nach Erfolg
-- `composer test-integration` jetzt: 7 Tests (3 Kontakt + 4 SEPA)
+**Issues geschlossen**
+- Issue #4 (Formular-UX): alle Punkte durch Paket B/C abgedeckt — geschlossen
+- Issue #9 (Accessibility): `aria-describedby` + Fokus-Management durch Paket B abgedeckt — geschlossen; Screenreader-Test ins Backlog
 
 **Testzahlen gesamt:**
 - PHP Unit: 55 Tests
@@ -41,8 +29,6 @@
 
 | # | Titel | Priorität | Nächste Session |
 |---|-------|-----------|-----------------|
-| #4 | Formular-UX verfeinern | Mittel | Nächste Session reviewen |
-| #9 | Accessibility Feinschliff | Mittel | Nächste Session reviewen |
 | #1 | SEPA-Flow rechtlich finalisieren | Offen | Wartet auf User-Input |
 | #5 | Logging-Strategie (DEV vs PROD) | Offen | Wartet auf User-Input |
 
