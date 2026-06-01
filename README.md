@@ -1,99 +1,130 @@
 # One-Pager Website Template
 
-Diese One-Page-Website ist als **Template** gedacht.
-Sie bietet einen soliden Ausgangspunkt für eine einfache, barrierearme Website mit mehreren Sektionen und Formularen.
+Solider Ausgangspunkt für eine einfache, barrierearme One-Page-Website mit Kontakt- oder SEPA-Formular. Framework-frei, PHP 8+, Security by default.
 
-Das Template erhebt **keinen Anspruch auf Vollständigkeit**, legt jedoch Wert auf:
-- saubere Struktur
-- gute Wartbarkeit
-- Barrierefreiheit (WCAG-orientiert)
-- Security by default
+> Nach eigenen Anpassungen (Farben, Schriften, Inhalte) sollte die Barrierefreiheit erneut geprüft werden.
 
-⚠️ Hinweis:
-Nach eigenen Anpassungen (z. B. Farben, Schriften, Inhalte) sollte die Barrierefreiheit erneut geprüft werden.
+---
+
+## Schnellstart: Von Template zur laufenden Seite
+
+### 1. Neues Repo anlegen
+
+Auf GitHub oben rechts **„Use this template"** klicken → „Create a new repository".  
+Das erzeugt ein eigenes Repo mit dem Template-Code — kein Fork, eigene History.
+
+```bash
+# Neues Repo lokal klonen
+git clone git@github.com:<user>/<neues-repo>.git
+cd <neues-repo>
+```
+
+### 2. Lokal einrichten
+
+```bash
+# PHP-Abhängigkeiten
+composer install
+
+# JS-Abhängigkeiten (nur für Tests)
+npm install
+
+# .env anlegen
+cp .env.example .env
+# .env öffnen und ausfüllen (APP_ENV=dev, MAIL_*, FORM_TYPE)
+```
+
+Lokaler Webserver (Apache mit `mod_rewrite`) muss auf das `public/`-Verzeichnis zeigen.  
+Für lokalen Mailversand empfiehlt sich [Mailpit](https://mailpit.axllent.org/) (`MAIL_HOST=127.0.0.1`, `MAIL_PORT=1025`).
+
+### 3. Anpassen
+
+| Was | Wo |
+|-----|----|
+| Texte & Inhalte | `content/home/` (Markdown), `templates/pages/home.php` |
+| Impressum / Datenschutz | `content/legal/impressum.md`, `content/legal/datenschutz.md` |
+| Galerie-Bilder | `public/assets/images/content/`, `content/home/gallery.json` |
+| Hero-Bild | `public/assets/images/hero/` |
+| Logo | `public/assets/logo/` |
+| Farben & Farbschema | `public/assets/css/main.css` → `[data-color-scheme="..."]`-Blöcke |
+| Formulartyp (Kontakt / SEPA) | `.env` → `FORM_TYPE=contact` oder `FORM_TYPE=sepa` |
+| SEPA-Gläubigerdaten | `.env` → `SEPA_CREDITOR_*`, `PLACE` |
+| Favicon & App-Icons | `public/assets/icons/` |
+
+**Nicht anfassen** (es sei denn, du weißt was du tust): `src/Security/`, `src/http/FormEndpoint.php`, `.htaccess`.
+
+### 4. Deployen
+
+Für die Ersteinrichtung auf einem VPS → **[DEPLOY.md](DEPLOY.md)**
+
+```bash
+# Auf dem Server (einmalig):
+sudo bash setup/setup.sh
+```
+
+Das Skript installiert alle Abhängigkeiten, richtet Apache und SSL ein und führt durch die `.env`-Konfiguration.
+
+### 5. Weiterentwickeln
+
+```
+lokal entwickeln → testen → git push → auf dem Server: bash setup/update.sh
+```
+
+```bash
+# Änderungen auf den Server bringen:
+ssh user@server
+cd /var/www/<domain>
+bash setup/update.sh
+sudo systemctl reload apache2
+```
 
 ---
 
 ## Features
 
-- Responsive One-Pager
-- Barrierefreies Desktop- & Mobile-Menü
-- Scroll-abhängiger Header (hide on scroll down / show on scroll up)
-- Footer fixiert am unteren sichtbaren Rand
-- **FOUC Prevention** – kein Theme-/Farbschema-Flash beim Laden
-- **Color Scheme System** – 3 umschaltbare Farbschemata (Default, Warm, Nature), persistent via localStorage
-- **Cookie Notice** – DSGVO-konformer Hinweis mit Dismiss (localStorage)
-- **Stats Counter** – Count-Up-Animation beim Scrollen (`data-count-target`)
-- **Image Gallery + Lightbox** – mit Keyboard-Navigation, Focus-Trap und Kategorie-Tabs
-- Formular-System:
-  - Kontaktformular **oder**
-  - alternatives **SEPA-Formular**
-- Umschaltbares Formular über `.env`
-- CSRF- & Honeypot-Schutz
-- AJAX-Submit mit ARIA-Feedback (Erfolgsmeldung faded nach 5 s)
-- Legal-Pages für Impressum und Datenschutz
-
----
-
-## Technik
-
-- HTML5 / CSS3
-- Vanilla JavaScript
-- PHP ≥ 8.0
-- Composer (PHPMailer, TCPDF, Parsedown)
-- Testing: PHPUnit 10 + Jest 29
-- Konfiguration über `.env`
-- Lighthouse (Referenzwerte):
-  - Performance: ~98
-  - Accessibility: 100
-  - Best Practices: 100
-  - SEO: 100
+- Responsive One-Pager mit barrierefreiem Desktop- & Mobile-Menü
+- Scroll-abhängiger Header, Footer fixiert am unteren Rand
+- **FOUC Prevention** — kein Theme-/Farbschema-Flash beim Laden
+- **Color Scheme System** — 3 umschaltbare Farbschemata (Default, Warm, Nature)
+- **Cookie Notice** — DSGVO-konformer Hinweis mit Dismiss
+- **Stats Counter** — Count-Up-Animation beim Scrollen in die Sektion
+- **Image Gallery + Lightbox** — Keyboard-Navigation, Focus-Trap, Kategorie-Tabs
+- **Kontaktformular** oder **SEPA-Formular** (umschaltbar per `.env`)
+- CSRF- & Honeypot-Schutz, AJAX-Submit mit ARIA-Feedback
+- Legal-Pages (Impressum, Datenschutz)
+- Rate Limiting für Formular-Endpoints (Session-basiert)
+- IBAN Live-Validierung mit Bankname-Lookup (SEPA)
 
 ---
 
 ## Formular-Typen
 
-Das verwendete Formular kann über die `.env` gesteuert werden:
-
 ```env
-FORM_TYPE=contact
-# oder
-FORM_TYPE=sepa
+FORM_TYPE=contact   # Klassisches Kontaktformular
+FORM_TYPE=sepa      # SEPA-Lastschriftmandat mit PDF-Anhang
 ```
 
-### Kontaktformular
-- Klassisches Kontaktformular
-- Serverseitige Validierung
-- Mailversand via SMTP
-
-### SEPA-Formular
-- Erweiterte Felder (Adresse, IBAN, Beitrag, Rhythmus)
-- IBAN-Validierung
-- Automatische Generierung eines **SEPA-PDF**
-- PDF wird als E-Mail-Anhang versendet
-- Elektronische Mandatserteilung (ohne Unterschrift)
+Das SEPA-Formular erzeugt automatisch ein PDF-Mandat und versendet es per E-Mail.  
+IBAN-Prüfziffer wird serverseitig validiert; Bankname wird live per API nachgeladen.
 
 ---
 
 ## Color Scheme System
 
-Das CSS nutzt RGB-basierte Custom Properties. Drei Schemas sind vorkonfiguriert:
+RGB-basierte CSS Custom Properties, drei Schemas vorkonfiguriert:
 
-| Schema | Beschreibung |
-|--------|-------------|
-| `default` | Blau / Gold (Standard) |
+| Schema | Farben |
+|--------|--------|
+| `default` | Blau / Gold |
 | `warm` | Rot / Warm |
 | `nature` | Grün |
 
-Schemas werden per `<select data-color-scheme-select>` im Footer umgeschaltet und via `localStorage` gespeichert. Der aktive Wert wird im `data-color-scheme`-Attribut auf `<html>` gesetzt.
-
-Eigene Schemas: In `main.css` neue `[data-color-scheme="..."]`-Blöcke ergänzen, die RGB-Tupel-Variablen definieren.
+Eigenes Schema: neuen `[data-color-scheme="..."]`-Block in `main.css` mit RGB-Tupel-Variablen ergänzen.
 
 ---
 
 ## Content-Management
 
-Texte und Galerien können wahlweise als Markdown- bzw. JSON-Dateien im `content/`-Verzeichnis gepflegt werden:
+Texte als Markdown, Galerien als JSON im `content/`-Verzeichnis:
 
 ```
 content/
@@ -106,107 +137,44 @@ content/
     └── datenschutz.md
 ```
 
-In Templates stehen `$md('home/hero')` und `$gallery('home/gallery')` zur Verfügung.
+In Templates: `$md('home/hero')` und `$gallery('home/gallery')`.
 
 ---
 
-## Environment Handling (DEV / PROD)
-
-```env
-APP_ENV=dev
-# oder
-APP_ENV=prod
-```
-
-- **dev**: Fehlerausgabe aktiviert
-- **prod**: Fehlerausgabe deaktiviert, Logging aktiv
-
----
-
-## Entwicklung
-
-- Lokal getestet mit XAMPP
-- Composer:
-  ```bash
-  composer install
-  ```
-- NPM (für JS-Tests):
-  ```bash
-  npm install
-  ```
-- Kein Build-Step für CSS oder JavaScript erforderlich
-
-### Tests ausführen
+## Lokale Entwicklung & Tests
 
 ```bash
-composer test   # PHPUnit (PHP)
-npm test        # Jest (JavaScript)
+composer test        # PHPUnit — 55 Unit-Tests
+npm test             # Jest   — 101 JS-Tests
+composer test-integration  # E2E via HTTP + Mailpit (Apache muss laufen)
 ```
+
+Kein Build-Step erforderlich — CSS und JS werden direkt ausgeliefert.
 
 ---
 
-## Deployment
+## Technik
 
-### Voraussetzungen
-- Webserver mit PHP ≥ 8.0
-- Apache mit aktiviertem `mod_rewrite`
-- SMTP-Zugang für Mailversand
-- HTTPS empfohlen
-
-### Schritte
-1. Projekt auf den Webserver hochladen
-2. Abhängigkeiten installieren:
-   ```bash
-   composer install --no-dev
-   ```
-3. `.env` anlegen und konfigurieren (Vorlage: `.env.example`)
-4. Schreibrechte für Sessions & temporäre Dateien sicherstellen
-5. Formular-Flow testen (Kontakt / SEPA)
-
-### .env Konfiguration
-
-```env
-APP_ENV=prod
-FORM_TYPE=contact
-
-MAIL_HOST=<smtp-server>
-MAIL_PORT=<smtp-port>
-MAIL_USER=<smtp-username>
-MAIL_PASS=<smtp-password>
-MAIL_FROM=<smtp-from-address>
-MAIL_FROM_NAME=<smtp-from-name>
-MAIL_TO=<recipient-email>
-MAIL_SECURE=<tls|ssl>
-```
-
-### Hinweise
-- PHP-Endpunkte sind über `.htaccess` abgesichert
-- Keine Framework-Abhängigkeiten
-- Klare Trennung von Layout, Routing, Formular- & Business-Logik
+- HTML5 / CSS3 / Vanilla JavaScript
+- PHP ≥ 8.0, Composer
+- Apache mit `mod_rewrite`
+- PHPMailer, TCPDF, Parsedown
+- PHPUnit 10, Jest 29
+- Lighthouse-Referenzwerte: Performance ~98, Accessibility 100, Best Practices 100, SEO 100
 
 ---
 
-## Philosophy & Goals
+## Philosophy
 
-- **Barrierefreiheit ist Teil der Architektur**
-- **Einfachheit vor Komplexität**
-- **Kein Framework-Zwang**
-- **Security by default**
-- **Nachvollziehbarer Code statt Overengineering**
-- **Testbarkeit von Anfang an**
+- Barrierefreiheit ist Teil der Architektur
+- Einfachheit vor Komplexität — kein Framework-Zwang
+- Security by default
+- Testbarkeit von Anfang an
 
-### Nicht-Ziele
-- Kein CMS
-- Kein Full-Framework
-- Keine Garantie für vollständige WCAG-Konformität nach individuellen Anpassungen
+**Nicht-Ziele:** Kein CMS, kein Full-Framework, keine Garantie für vollständige WCAG-Konformität nach individuellen Anpassungen.
 
 ---
 
 ## Lizenz
-MIT License
 
----
-
-## Autor & Unterstützung
-- Jörg Römhild
-- ChatGPT / Claude
+MIT License — Autor: Jörg Römhild
