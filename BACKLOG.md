@@ -50,10 +50,7 @@
 
 ## Nächste Session
 
-**Issues #4 und #9 reviewen** — sind die noch offen oder durch Paket B abgedeckt?
-
-Danach ggf.:
-- Paket D (falls Issues #4/#9 noch offen)
+- **Screenreader-Test SEPA-Formular** (aus Issue #9): manueller Test mit NVDA oder VoiceOver — SEPA-Formular durchspielen, Fehlermeldungen + Fokus-Verhalten prüfen
 - Issue #1 (SEPA rechtlich) — wartet auf User-Input
 - Issue #5 (Logging) — wartet auf User-Input
 
