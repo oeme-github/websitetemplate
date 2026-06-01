@@ -64,6 +64,7 @@
 
   --color-text-main:   rgb(var(--color-secondary-comp));
   --color-text-light:  rgb(var(--color-primary));
+  --color-text-hero:   rgb(var(--color-secondary));
   --color-text-muted:  rgb(var(--color-primary));
   --color-text-footer: rgb(var(--color-primary));
 
@@ -73,6 +74,10 @@
   --color-bg-topbar:   rgb(var(--color-accent));
   --color-text-topbar: rgb(var(--color-accent-comp));
 
+  /* Background Images */
+  --bg-image-body: url("../images/background/body_bg.jpg");
+  --bg-image-hero: url("../images/hero/hero_background.png");
+
   /* Layout */
   --max-width:        1200px;
   --max-width-narrow:  800px;
@@ -81,6 +86,7 @@
   /* Font Families */
   --font-base:    "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: "Inter", system-ui, sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
 
   /* Font Sizes */
   --fs-100: clamp(0.875rem, 0.85vw, 0.95rem);
@@ -122,6 +128,7 @@
 
   --color-text-main:   rgb(var(--color-secondary));
   --color-text-light:  rgb(var(--color-primary-comp));
+  --color-text-hero:   rgb(var(--color-secondary));
   --color-text-muted:  rgb(var(--color-primary-comp));
   --color-text-footer: rgb(var(--color-primary-comp));
 
@@ -135,6 +142,63 @@
     content: url("../logo/logo_mark_white.svg");
   }
 
+}
+
+/* Dark mode background overlays */
+[data-theme="dark"] body {
+  background:
+    linear-gradient(
+      rgba(var(--color-secondary-comp), 0.92),
+      rgba(var(--color-secondary-comp), 0.92)
+    ),
+    var(--bg-image-body);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+[data-theme="dark"] .header {
+  background: rgba(var(--color-secondary-comp), 0.95);
+}
+
+[data-theme="dark"] .nav-mobile {
+  background: rgba(var(--color-secondary-comp), 0.95);
+}
+
+[data-theme="dark"] .section.alt {
+  background:
+    linear-gradient(
+      rgba(var(--color-secondary-alt-comp), 0.90),
+      rgba(var(--color-secondary-alt-comp), 0.90)
+    ),
+    var(--bg-image-body);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+[data-theme="dark"] .footer {
+  background:
+    linear-gradient(
+      rgba(var(--color-secondary-comp), 0.95),
+      rgba(var(--color-secondary-comp), 0.95)
+    ),
+    var(--bg-image-body);
+  background-size: cover;
+  background-position: center bottom;
+}
+
+[data-theme="dark"] #contact.section {
+  background:
+    linear-gradient(
+      rgba(var(--color-secondary-alt-comp), 0.88),
+      rgba(var(--color-secondary-alt-comp), 0.88)
+    ),
+    var(--bg-image-body);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 /* =====================================================
@@ -234,13 +298,20 @@ small {
 html,
 body {
   margin: 0;
-  /* Schrift */
   font-family: var(--font-base);
   font-size: var(--fs-200);
   line-height: var(--lh-body);
-  /* Farben */
-  background: var(--color-bg-body);
   color: var(--color-text-main);
+  background:
+    linear-gradient(
+      rgba(var(--color-secondary), 0.92),
+      rgba(var(--color-secondary), 0.92)
+    ),
+    var(--bg-image-body);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .layout-root {
@@ -252,18 +323,6 @@ body {
 .layout-main {
   flex: 1;
   padding-bottom: var(--footer-height);
-}
-
-/* Layout */
-body {
-  margin: 0;
-
-  font-family: var(--font-base);
-  font-size: var(--fs-200);
-  line-height: var(--lh-body);
-
-  background: var(--color-bg-body);
-  color: var(--color-text-main);
 }
 
 
@@ -331,19 +390,36 @@ body {
 }
 
 .section.alt {
-  background: var(--color-bg-section-alt);
+  background:
+    linear-gradient(
+      rgba(var(--color-secondary-alt), 0.90),
+      rgba(var(--color-secondary-alt), 0.90)
+    ),
+    var(--bg-image-body);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 /* Hero */
 .hero {
   /* Layout */
-  display: grid;
-  place-content: center;
-  /* Farben */
-  background: linear-gradient(135deg,
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-3);
+  /* Hintergrundbild mit Gradient-Overlay */
+  background:
+    linear-gradient(135deg,
       var(--color-bg-hero-start),
-      var(--color-bg-hero-end));
-  color: var(--color-text-light);
+      var(--color-bg-hero-end)),
+    var(--bg-image-hero);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: var(--color-text-hero);
 }
 
 /* =====================================================
@@ -817,6 +893,12 @@ body {
 /* =====================================================
   Mobile Layout
 ===================================================== */
+@media (max-width: 900px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 600px) {
   .gallery-grid {
     grid-template-columns: 1fr;
@@ -881,10 +963,6 @@ body {
   }
 
   .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .gallery-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 

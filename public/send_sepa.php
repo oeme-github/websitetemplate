@@ -213,7 +213,7 @@ $mail->CharSet  = 'UTF-8';
 $mail->Encoding = 'base64';
 $mail->isHTML(false);
 
-$mail->setFrom($_ENV['MAIL_FROM'], 'Website');
+$mail->setFrom($_ENV['MAIL_FROM'], $_ENV['MAIL_FROM_NAME'] ?? 'Website');
 $mail->addAddress($_ENV['MAIL_TO']);
 $mail->addReplyTo($email, "$vorname $nachname");
 

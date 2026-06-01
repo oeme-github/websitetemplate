@@ -30,16 +30,16 @@
 
 ## Nächste Session: Paket E — Abgleich friendsofthehawks (Rest)
 
-### Paket F — Hintergrundbilder + fehlende CSS-Tokens + MAIL_FROM_NAME
+### Paket F — Hintergrundbilder + fehlende CSS-Tokens + MAIL_FROM_NAME ✅ abgeschlossen
 
-- [ ] `public/assets/images/background/body_bg.jpg` — Placeholder anlegen (ImageMagick)
-- [ ] CSS `:root` — `--bg-image-hero`, `--bg-image-body`, `--color-text-hero`, `--font-display`
-- [ ] CSS `body` — Hintergrundbild mit Gradient-Overlay
-- [ ] CSS `.section.alt` — Hintergrundbild mit Gradient-Overlay
-- [ ] CSS `.hero` — Hintergrundbild aktiv schalten, `color: var(--color-text-hero)`
-- [ ] CSS Dark-Mode — Overlays für body, section.alt, footer, #contact
-- [ ] CSS — Gallery 900px → 2-Spalten Breakpoint
-- [ ] `send_kontakt.php` + `send_sepa.php` — `MAIL_FROM_NAME` aus `.env` statt hardcoded
+- [x] `public/assets/images/background/body_bg.jpg` — Placeholder (ImageMagick)
+- [x] CSS `:root` — `--bg-image-hero`, `--bg-image-body`, `--color-text-hero`, `--font-display`
+- [x] CSS `body` — Hintergrundbild mit Overlay, doppelter Block entfernt
+- [x] CSS `.section.alt` — Hintergrundbild mit Overlay
+- [x] CSS `.hero` — `flex`-Layout, Hintergrundbild aktiv, `color: var(--color-text-hero)`
+- [x] CSS Dark-Mode — Overlays für body, header, nav-mobile, section.alt, footer, #contact
+- [x] CSS — Gallery 900px → 2-Spalten Breakpoint (war fälschlicherweise bei 768px)
+- [x] `send_kontakt.php` + `send_sepa.php` — `MAIL_FROM_NAME` aus `.env`
 
 ### Paket E — Abgleich friendsofthehawks ✅ abgeschlossen
 
