@@ -42,6 +42,7 @@ Für lokalen Mailversand empfiehlt sich [Mailpit](https://mailpit.axllent.org/) 
 |-----|----|
 | Texte & Inhalte | `content/home/` (Markdown), `templates/pages/home.php` |
 | Impressum / Datenschutz | `content/legal/impressum.md`, `content/legal/datenschutz.md` |
+| Copyright-Inhaber (Footer) | `content/legal/copyright.json` → `owner` |
 | Galerie-Bilder | `public/assets/images/content/`, `content/home/gallery.json` |
 | Hero-Bild | `public/assets/images/hero/` |
 | Logo | `public/assets/logo/` |

@@ -2,7 +2,8 @@
     <div class="footer-inner footer-grid">
 
         <div class="footer-col footer-copy">
-            © 2025 · Mein One-Pager
+            <?php $copyright = $gallery('legal/copyright'); ?>
+            © <?= date('Y') ?> · <?= htmlspecialchars($copyright['owner'] ?? '', ENT_QUOTES, 'UTF-8') ?>
         </div>
 
         <nav class="footer-col footer-legal" aria-label="Rechtliches">
