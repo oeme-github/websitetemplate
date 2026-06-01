@@ -322,7 +322,6 @@ body {
 
 .layout-main {
   flex: 1;
-  padding-bottom: var(--footer-height);
 }
 
 
@@ -426,13 +425,14 @@ body {
   Footer
 ===================================================== */
 .footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 900;
-  margin-top: auto;
-  background: var(--color-bg-footer);
+  background:
+    linear-gradient(
+      rgba(var(--color-secondary), 0.95),
+      rgba(var(--color-secondary), 0.95)
+    ),
+    var(--bg-image-body);
+  background-size: cover;
+  background-position: center bottom;
   color: var(--color-text-footer);
 }
 
@@ -513,12 +513,11 @@ body {
 
 /* Navigation Desktop */
 .nav-desktop {
-  display: flex;
-  gap: var(--space-3);
+  display: none;
 }
 
 .menu-toggle {
-  display: none;
+  display: block;
 }
 
 /* Mobile Navigation */
@@ -941,10 +940,6 @@ body {
         transparent);
   }
 
-  .nav-desktop {
-    display: none;
-  }
-
   .nav-mobile a {
     padding: var(--space-3) 0;
   }
@@ -954,7 +949,6 @@ body {
   }
 
   .menu-toggle {
-    display: block;
     font-size: var(--fs-100);
   }
 
