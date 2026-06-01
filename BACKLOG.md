@@ -25,6 +25,7 @@
 - Hamburger-Menü global (kein Desktop-Nav mehr)
 - Footer nicht mehr `position: fixed` — scrollt mit, Layout-Padding entfernt
 - Redundantes Label im Footer entfernt
+- Hero-Bild Preload entfernt (CSS `var()` nicht vom Preload-Scanner erkennbar)
 
 **Testzahlen gesamt:**
 - PHP Unit: 55 Tests · JS Jest: 101 Tests · Integration: 7 Tests
