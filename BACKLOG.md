@@ -2,26 +2,29 @@
 
 ## Letzter Stand
 
-**Version:** v1.5.0 + Paket D vollständig (gepusht)  
-**Zuletzt abgeschlossen:** Paket D1 + D2 + D3
+**Version:** v1.5.0 + Pakete D–F + Bugfixes (gepusht)  
+**Zuletzt abgeschlossen:** Umfassender friendsofthehawks-Abgleich
 
 ### Abgeschlossen in dieser Session
 
-**Paket D1 — Content-Infrastruktur**
-- 7 neue Content-Dateien (`features.md`, `contact.md`, `stats.json`, `stats.md`, `about-cards.json`, `topbar-links.json`, `videos.json`)
-- `gallery.json` auf `{file, alt, category}` umgestellt, Bilder auf `placeholder-1..4.jpg`
-- `home.php` komplett datengetrieben, `header.php` Topbar-Links aus JSON
-- CSS: Topbar-Links, Video-Sektion, About-Cards inkl. Dark-Mode
-- `public/assets/videos/README.md`, `.gitignore` Video-Patterns
+**Paket D1–D3** (vorherige Session) — Content-Infrastruktur, A11y, SEPA
 
-**Paket D2 — Accessibility**
-- `.nav-mobile` CSS: `visibility: hidden` entfernt Menü-Links aus Accessibility Tree wenn geschlossen
+**Paket E — Templates/CSS/htaccess**
+- `impressum.php` + `datenschutz.php` → `$md()`, LCP-Preload, Footer „Start"-Link
+- CSS 600px-Breakpoint (Gallery 1-col, Lightbox nav ausblenden)
+- `.htaccess` Gzip + Cache-Control
 
-**Paket D3 — SEPA-Verbesserungen**
-- `Qurtal` → `Quartal`, neue Felder `geburtsdatum` / `telefon` / `herkunft`
-- `SepaPdf.php`: maschinenlesbar, dynamischer Titel, XSS-Escaping
-- `send_sepa.php`: dynamischer Betreff, PDF-Dateiname `{mandateId}.pdf`
-- Integrations-Test aktualisiert
+**Paket F — Hintergrundbilder + CSS-Tokens**
+- `body_bg.jpg` Placeholder, `--bg-image-*`, `--color-text-hero`, `--font-display`
+- body/section.alt/hero mit Hintergrundbildern + Overlays
+- Dark-Mode Overlays für alle Sektionen
+- Gallery 900px→2-col Breakpoint, MAIL_FROM_NAME aus .env
+
+**Bugfixes dieser Session**
+- WebP-Versionen der 4 Placeholder-Bilder (404-Fehler in Galerie)
+- Hamburger-Menü global (kein Desktop-Nav mehr)
+- Footer nicht mehr `position: fixed` — scrollt mit, Layout-Padding entfernt
+- Redundantes Label im Footer entfernt
 
 **Testzahlen gesamt:**
 - PHP Unit: 55 Tests · JS Jest: 101 Tests · Integration: 7 Tests
