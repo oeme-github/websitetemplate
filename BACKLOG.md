@@ -2,22 +2,28 @@
 
 ## Letzter Stand
 
-**Version:** v1.5.0 + Deployment + Paket D1 (gepusht)  
-**Zuletzt abgeschlossen:** Paket D1 — Content-Infrastruktur vollständig
+**Version:** v1.5.0 + Paket D vollständig (gepusht)  
+**Zuletzt abgeschlossen:** Paket D1 + D2 + D3
 
 ### Abgeschlossen in dieser Session
 
 **Paket D1 — Content-Infrastruktur**
-- `content/home/features.md`, `contact.md`, `stats.json`, `stats.md`, `about-cards.json`, `topbar-links.json`, `videos.json` — alle neu angelegt
-- `content/home/gallery.json` — auf `{file, alt, category}` umgestellt, 4 Placeholder-Einträge
-- Bilder: 4 umbenannt auf `placeholder-1..4.jpg`, 7 projektspezifische gelöscht
-- `templates/pages/home.php` — komplett datengetrieben: `$md()` / `$gallery()`, `<picture>`+webp, Stats/Cards/Video aus JSON
-- `templates/partials/header.php` — Topbar-Links aus JSON, doppelte Security-Header entfernt
-- `main.css` — CSS für Topbar-Links, `.section-video`, `.about-cards` inkl. Dark-Mode + Responsive
-- `public/assets/videos/README.md` — yt-dlp/ffmpeg-Anleitung
-- `.gitignore` — Videodateien ausgeschlossen
+- 7 neue Content-Dateien (`features.md`, `contact.md`, `stats.json`, `stats.md`, `about-cards.json`, `topbar-links.json`, `videos.json`)
+- `gallery.json` auf `{file, alt, category}` umgestellt, Bilder auf `placeholder-1..4.jpg`
+- `home.php` komplett datengetrieben, `header.php` Topbar-Links aus JSON
+- CSS: Topbar-Links, Video-Sektion, About-Cards inkl. Dark-Mode
+- `public/assets/videos/README.md`, `.gitignore` Video-Patterns
 
-**Testzahlen gesamt (unverändert):**
+**Paket D2 — Accessibility**
+- `.nav-mobile` CSS: `visibility: hidden` entfernt Menü-Links aus Accessibility Tree wenn geschlossen
+
+**Paket D3 — SEPA-Verbesserungen**
+- `Qurtal` → `Quartal`, neue Felder `geburtsdatum` / `telefon` / `herkunft`
+- `SepaPdf.php`: maschinenlesbar, dynamischer Titel, XSS-Escaping
+- `send_sepa.php`: dynamischer Betreff, PDF-Dateiname `{mandateId}.pdf`
+- Integrations-Test aktualisiert
+
+**Testzahlen gesamt:**
 - PHP Unit: 55 Tests · JS Jest: 101 Tests · Integration: 7 Tests
 
 ---
