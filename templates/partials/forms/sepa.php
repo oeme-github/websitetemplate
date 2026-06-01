@@ -91,6 +91,35 @@ if (empty($action)) {
         autocomplete="email"
     >
 
+    <!-- Geburtsdatum -->
+    <label for="geburtsdatum">Geburtsdatum*</label>
+    <input
+        id="geburtsdatum"
+        type="date"
+        name="geburtsdatum"
+        required
+        aria-required="true"
+        autocomplete="bday"
+    >
+
+    <!-- Telefon -->
+    <label for="telefon">Telefon (optional)</label>
+    <input
+        id="telefon"
+        type="tel"
+        name="telefon"
+        autocomplete="tel"
+    >
+
+    <!-- Herkunft -->
+    <label for="herkunft">Wie haben Sie von uns erfahren? (optional)</label>
+    <input
+        id="herkunft"
+        type="text"
+        name="herkunft"
+        placeholder="z.B. im Internet gefunden"
+    >
+
     <!-- Beitrag -->
     <label for="beitrag">Mein Beitrag*</label>
     <select
@@ -116,7 +145,7 @@ if (empty($action)) {
         <option value="">Bitte auswählen</option>
         <option value="Spende einmalig">Spende einmalig</option>
         <option value="Jahr">Jahr</option>
-        <option value="Qurtal">Quartal</option>
+        <option value="Quartal">Quartal</option>
         <option value="Monat">Monat</option>
         <option value="Nachricht">s. Nachricht</option>
     </select>

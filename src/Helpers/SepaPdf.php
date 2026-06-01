@@ -1,60 +1,109 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Helpers;
 
 use TCPDF;
 
 class SepaPdf
 {
+    private static function esc(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
     public static function create(array $data): string
     {
-        $pdf = new TCPDF();
-        $pdf->SetCreator($data['creditor_name']);
-        $pdf->SetAuthor($data['creditor_name']);
-        $pdf->SetTitle('SEPA-Lastschriftmandat');
-        $pdf->AddPage();
+        $place        = self::esc($data['place']          ?? '');
+        $date         = self::esc($data['date']           ?? '');
+        $creditorName = self::esc($data['creditor_name']  ?? '');
+        $creditorAddr = self::esc($data['creditor_adress'] ?? '');
+        $creditorId   = self::esc($data['creditor_id']    ?? '');
+        $mandateId    = self::esc($data['mandate_id']     ?? '');
+        $vorname      = self::esc($data['vorname']        ?? '');
+        $nachname     = self::esc($data['nachname']       ?? '');
+        $geburtsdatum = self::esc($data['geburtsdatum']   ?? '');
+        $email        = self::esc($data['email']          ?? '');
+        $telefon      = self::esc($data['telefon']        ?? '');
+        $strasse      = self::esc($data['strasse']        ?? '');
+        $plz          = self::esc($data['plz']            ?? '');
+        $ort          = self::esc($data['ort']            ?? '');
+        $iban         = self::esc($data['iban']           ?? '');
+        $bank         = self::esc($data['bank']           ?? '');
+        $fee          = self::esc($data['fee']            ?? '');
+        $frequ        = self::esc($data['frequ']          ?? '');
+        $memship      = self::esc($data['memship']        ?? '');
+        $herkunft     = self::esc($data['herkunft']       ?? '');
+        $mes          = self::esc($data['mes']            ?? '');
 
+        $isSpende = ($data['frequ']   ?? '') === 'Spende einmalig'
+                 || ($data['memship'] ?? '') === 'Nein';
+        $docTitle = $isSpende
+            ? 'Spende mit SEPA-Lastschriftmandat'
+            : 'Mitgliedsantrag mit SEPA-Lastschriftmandat';
+
+        $pdf = new TCPDF();
+        $pdf->SetCreator($data['creditor_name'] ?? '');
+        $pdf->SetAuthor($data['creditor_name']  ?? '');
+        $pdf->SetTitle($docTitle);
+        $pdf->AddPage();
         $pdf->SetFont('dejavusans', '', 10);
 
-        $check = '☑';
+        $check   = '☑';
         $uncheck = '☐';
 
         $consentSepa = !empty($data['consentsepa']) ? $check : $uncheck;
         $consentDs   = !empty($data['consentds'])   ? $check : $uncheck;
 
+        $telefonLine  = $telefon  !== '' ? "Telefon: {$telefon}<br>"   : '';
+        $herkunftLine = $herkunft !== '' ? "Herkunft: {$herkunft}<br>" : '';
+        $bankLine     = $bank     !== '' ? "Bank: {$bank}<br>"         : '';
+        $mesLine      = $mes      !== '' ? "Nachricht: {$mes}<br>"     : '';
+
         $html = "
-        <h1>SEPA-Lastschriftmandat</h1>
+        <h1>{$docTitle}</h1>
+        <p>Ort: {$place} &nbsp;&nbsp; Datum: {$date}</p>
+
+        <h2>Antragsteller</h2>
         <p>
-            Ort: {$data['place']} Datum: {$data['date']}<br>
+            Vorname: {$vorname}<br>
+            Nachname: {$nachname}<br>
+            Geburtsdatum: {$geburtsdatum}<br>
+            E-Mail: {$email}<br>
+            {$telefonLine}
+            Strasse: {$strasse}<br>
+            PLZ: {$plz}<br>
+            Ort: {$ort}
+        </p>
+
+        <h2>Mitgliedschaft</h2>
+        <p>
+            Betrag: {$fee}<br>
+            Zahlungsrhythmus: {$frequ}<br>
+            Mitgliedschaft: {$memship}<br>
+            {$herkunftLine}
+            {$mesLine}
+        </p>
+
+        <h2>Bankverbindung</h2>
+        <p>
+            IBAN: {$iban}<br>
+            {$bankLine}
+        </p>
+
+        <h2>SEPA-Lastschriftmandat</h2>
+        <p>
+            Gläubiger: {$creditorName}<br>
+            Anschrift: {$creditorAddr}<br>
+            Gläubiger-ID: {$creditorId}<br>
+            Mandatdatum: {$date}<br>
+            Mandats-ID: {$mandateId}
         </p>
         <p>
-            Gläubiger: {$data['creditor_name']}<br>
-            Anschrift: {$data['creditor_adress']}<br>
-            Gläubiger-ID: {$data['creditor_id']}<br>
-        </p>
-        <p>
-            Mandats-ID: {$data['mandate_id']}
-        </p>
-        <p>
-            Name: {$data['name']}<br>
-            Adresse: {$data['strasse']}, {$data['plz']}, {$data['ort']}
-        </p>
-        <p>
-            IBAN: {$data['iban']}<br>
-            Bank: {$data['bank']}
-        </p>
-        <p>
-            Betrag: {$data['fee']}<br>
-            Zahlungsrhytmus: {$data['frequ']}<br>
-        </p>
-        <p>
-            Antrag Mitgliedschaft: {$data['memship']}<br>
-            Nachricht an uns: {$data['mes']}
-        </p>
-        <p>
-            Ich ermächtige den <strong>{$data['creditor_name']}</strong>,<br>
+            Ich ermächtige den <strong>{$creditorName}</strong>,<br>
             Zahlungen von meinem Konto mittels Lastschrift einzuziehen.<br>
             Zugleich weise ich mein Kreditinstitut an,<br>
-            die vom {$data['creditor_name']}<br>
+            die vom {$creditorName}<br>
             auf mein Konto gezogenen Lastschriften einzulösen.
         </p>
         <p>
@@ -75,7 +124,7 @@ class SepaPdf
 
         $pdf->writeHTML($html);
 
-        $path = sys_get_temp_dir() . '/sepa_' . uniqid() . '.pdf';
+        $path = sys_get_temp_dir() . '/sepa_' . uniqid('', true) . '.pdf';
         $pdf->Output($path, 'F');
 
         return $path;

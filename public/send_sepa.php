@@ -38,6 +38,15 @@ $beitrag          = Helpers::clean($_POST['betrag']           ?? '');
 $zahlungsrhythmus = Helpers::clean($_POST['zahlungsrhythmus'] ?? '');
 $mitgliedschaft   = Helpers::clean($_POST['mitgliedschaft']   ?? '');
 $nachricht        = Helpers::clean($_POST['nachricht']        ?? '');
+$telefon          = Helpers::clean($_POST['telefon']          ?? '');
+$herkunft         = Helpers::clean($_POST['herkunft']         ?? '');
+
+$geburtsdatumRaw = Helpers::clean($_POST['geburtsdatum'] ?? '');
+if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $geburtsdatumRaw, $m)) {
+    $geburtsdatum = $m[3] . '.' . $m[2] . '.' . $m[1];
+} else {
+    $geburtsdatum = $geburtsdatumRaw;
+}
 
 $consent            = isset($_POST['consent']);
 $consentdatenschutz = isset($_POST['consent-datenschutz']);
@@ -51,7 +60,7 @@ $consentsepa        = isset($_POST['consent-sepa']);
 $errors = [];
 
 $validBeitrag = ['10 €', '25 €', '50 €', '100 €', 'Nachricht'];
-$validRhythmus = ['Spende einmalig', 'Jahr', 'Qurtal', 'Monat', 'Nachricht'];
+$validRhythmus = ['Spende einmalig', 'Jahr', 'Quartal', 'Monat', 'Nachricht'];
 $validMitgliedschaft = ['Ja', 'Nein', 'Nachricht'];
 
 if ($vorname === '') {
@@ -102,8 +111,15 @@ if (!$consentsepa) {
     $errors['consent-sepa'] = 'SEPA-Einwilligung fehlt';
 }
 
-if ($nachricht === '') {
-    $nachricht = 'keine';
+if ($geburtsdatum === '') {
+    $errors['geburtsdatum'] = 'Geburtsdatum fehlt';
+} elseif (!preg_match('/^\d{2}\.\d{2}\.\d{4}$/', $geburtsdatum)) {
+    $errors['geburtsdatum'] = 'Geburtsdatum ungültig';
+} else {
+    $parts = explode('.', $geburtsdatum);
+    if (!checkdate((int) $parts[1], (int) $parts[0], (int) $parts[2])) {
+        $errors['geburtsdatum'] = 'Geburtsdatum ungültig';
+    }
 }
 
 // IBAN-Lookup
@@ -151,16 +167,20 @@ $pdfPath = $pdf->create([
     'creditor_name'   => $_ENV['SEPA_CREDITOR_NAME'],
     'creditor_adress' => $_ENV['SEPA_CREDITOR_ADRESS'],
     'creditor_id'     => $_ENV['SEPA_CREDITOR_ID'],
-    'name'            => "$vorname $nachname",
+    'vorname'         => $vorname,
+    'nachname'        => $nachname,
+    'geburtsdatum'    => $geburtsdatum,
+    'email'           => $email,
+    'telefon'         => $telefon,
     'strasse'         => $strasse,
     'plz'             => $plz,
     'ort'             => $ort,
-    'email'           => $email,
     'iban'            => $iban,
     'bank'            => $bank,
     'fee'             => $beitrag,
     'frequ'           => $zahlungsrhythmus,
     'memship'         => $mitgliedschaft,
+    'herkunft'        => $herkunft,
     'mes'             => $nachricht,
     'mandate_id'      => $mandateId,
     'consent_ts'      => date('c'),
@@ -197,17 +217,28 @@ $mail->setFrom($_ENV['MAIL_FROM'], 'Website');
 $mail->addAddress($_ENV['MAIL_TO']);
 $mail->addReplyTo($email, "$vorname $nachname");
 
-$mail->Subject = 'Neue Förderung (SEPA)';
+$isSpende = $zahlungsrhythmus === 'Spende einmalig' || $mitgliedschaft === 'Nein';
+$mail->Subject = $isSpende ? 'Neue Spende (SEPA)' : 'Neue Mitgliedschaft (SEPA)';
+
+$telefonLine   = $telefon   !== '' ? "Telefon: $telefon\n"   : '';
+$herkunftLine  = $herkunft  !== '' ? "Herkunft: $herkunft\n" : '';
+$nachrichtLine = $nachricht !== '' ? "Nachricht: $nachricht\n" : '';
+
 $mail->Body =
     "Förderung\n\n" .
     "Name: $vorname $nachname\n" .
+    "Geburtsdatum: $geburtsdatum\n" .
+    "E-Mail: $email\n" .
+    $telefonLine .
     "Beitrag: $beitrag\n" .
+    "Zahlungsrhythmus: $zahlungsrhythmus\n" .
     "IBAN (maskiert): " . Helpers::maskIBAN($iban) . "\n\n" .
     "Mitgliedschaft: $mitgliedschaft\n" .
-    "Nachricht: $nachricht\n\n" .
-    "SEPA-Mandat siehe PDF-Anhang.";
+    $herkunftLine .
+    $nachrichtLine .
+    "\nSEPA-Mandat siehe PDF-Anhang.";
 
-$mail->addAttachment($pdfPath, 'SEPA-Mandat.pdf');
+$mail->addAttachment($pdfPath, $mandateId . '.pdf');
 
 try {
     $mail->send();

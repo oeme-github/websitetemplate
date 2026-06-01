@@ -44,7 +44,8 @@ class SepaFormTest extends TestCase
         $this->assertCount(1, $messages, 'Erwartet genau 1 Mail in Mailpit.');
 
         $msg = $messages[0];
-        $this->assertSame('Neue Förderung (SEPA)', $msg['Subject']);
+        // mitgliedschaft=Nein → Spende
+        $this->assertSame('Neue Spende (SEPA)', $msg['Subject']);
         $this->assertSame('dev@websitetemplate.local', $msg['From']['Address']);
         $this->assertSame('inbox@websitetemplate.local', $msg['To'][0]['Address']);
         $this->assertSame(1, $msg['Attachments'], 'Erwartet genau 1 Anhang in der SEPA-Mail.');
@@ -52,7 +53,7 @@ class SepaFormTest extends TestCase
         $detail = $this->mailpitMessage($msg['ID']);
         $attachment = $detail['Attachments'][0] ?? null;
         $this->assertNotNull($attachment, 'Kein Anhang im Nachrichtendetail.');
-        $this->assertSame('SEPA-Mandat.pdf', $attachment['FileName']);
+        $this->assertMatchesRegularExpression('/^SEPA-\d{8}-[0-9a-f]{8}\.pdf$/', $attachment['FileName']);
         $this->assertSame('application/pdf', $attachment['ContentType']);
     }
 
@@ -107,6 +108,7 @@ class SepaFormTest extends TestCase
             'vorname'              => 'Max',
             'nachname'             => 'Mustermann',
             'email'                => 'max@example.com',
+            'geburtsdatum'         => '1990-01-15',
             'strasse'              => 'Musterstraße 1',
             'plz'                  => '12345',
             'ort'                  => 'Musterstadt',

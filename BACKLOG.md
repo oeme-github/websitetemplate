@@ -22,27 +22,28 @@
 
 ---
 
-## Nächste Session: Paket D2 + D3
+## Nächste Session
 
-### Paket D2 — Accessibility-Fixes (Priorität: hoch) ← nächste Session
+Paket D vollständig abgeschlossen. Offene Punkte:
 
-Aus `friendsofthehawks` zurückgepflegte Bugfixes.
+### Paket D2 — Accessibility-Fixes ✅ abgeschlossen
 
-- [ ] `templates/partials/header.php` — doppelte Security-Header entfernen (macht `index.php` bereits)
-- [ ] `templates/partials/header.php` — `aria-hidden="true"` + `tabindex="-1"` von `.nav-mobile` entfernen
-- [ ] `public/assets/css/main.css` — `.nav-mobile`: `visibility: hidden` im geschlossenen Zustand (statt aria-hidden-Hack)
-- [ ] `public/assets/css/main.css` — `.lightbox`: `visibility: hidden` im geschlossenen Zustand
-- [ ] `templates/pages/home.php` — hardcodiertes `aria-hidden="true"` vom Lightbox-Container entfernen
+- [x] `header.php` doppelte Security-Header entfernt (D1)
+- [x] `header.php` `aria-hidden` + `tabindex` von `.nav-mobile` entfernt (D1)
+- [x] `.lightbox` CSS `visibility: hidden` (war bereits vorhanden)
+- [x] Lightbox-HTML kein hardcodiertes `aria-hidden` (D1)
+- [x] `.nav-mobile` CSS `visibility: hidden` + Transition-Timing
 
-### Paket D3 — SEPA-Verbesserungen (Priorität: mittel)
+### Paket D3 — SEPA-Verbesserungen ✅ abgeschlossen
 
-- [ ] `templates/partials/forms/sepa.php` — Tippfehler `Qurtal` → `Quartal` beheben
-- [ ] `templates/partials/forms/sepa.php` — neue Felder: `geburtsdatum` (Pflicht), `telefon` + `herkunft` (optional)
-- [ ] `public/send_sepa.php` — neue Felder einlesen + validieren (`geburtsdatum` mit `checkdate()`)
-- [ ] `src/Helpers/SepaPdf.php` — Felder maschinenlesbar (`Vorname:`, `Nachname:`, `Strasse:` etc. einzeln)
-- [ ] `src/Helpers/SepaPdf.php` — dynamischer PDF-Titel (Spende vs. Mitgliedschaft)
-- [ ] `public/send_sepa.php` — dynamischer E-Mail-Betreff (Neue Spende / Neue Mitgliedschaft)
-- [ ] `public/send_sepa.php` — PDF-Dateiname eindeutig: `{mandateId}.pdf` statt `SEPA-Mandat.pdf`
+- [x] Tippfehler `Qurtal` → `Quartal` (Formular + Whitelist)
+- [x] Neue Felder: `geburtsdatum` (Pflicht, type=date), `telefon` + `herkunft` (optional)
+- [x] `send_sepa.php` — `geburtsdatum` einlesen, YYYY-MM-DD → DD.MM.YYYY, `checkdate()` Validation
+- [x] `SepaPdf.php` — Felder maschinenlesbar, eigene Sections (Antragsteller/Mitgliedschaft/Bank/Mandat)
+- [x] `SepaPdf.php` — dynamischer Titel (Spende vs. Mitgliedsantrag), XSS-Escaping via `esc()`
+- [x] `send_sepa.php` — dynamischer E-Mail-Betreff
+- [x] `send_sepa.php` — PDF-Dateiname `{mandateId}.pdf`
+- [x] Integrations-Test aktualisiert (neues Pflichtfeld, Betreff, Dateinamen-Pattern)
 
 ---
 
