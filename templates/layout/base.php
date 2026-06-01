@@ -21,7 +21,9 @@
     <link rel="manifest" href="/assets/icons/site.webmanifest">
 
     <!-- Preloads für LCP -->
+    <link rel="preload" href="/assets/images/hero/hero_background.png" as="image">
     <link rel="preload" href="/assets/css/main.css" as="style">
+    <link rel="preload" href="/assets/fonts/playfair-display-v40-latin-700.woff2" as="font" type="font/woff2" crossorigin>
 
     <!-- FOUC Prevention (synchron, kein defer) -->
     <script src="/assets/js/fouc-prevention.js"></script>

@@ -817,6 +817,17 @@ body {
 /* =====================================================
   Mobile Layout
 ===================================================== */
+@media (max-width: 600px) {
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lightbox-btn--prev,
+  .lightbox-btn--next {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
 
   .about-cards {

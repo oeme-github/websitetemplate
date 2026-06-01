@@ -1,4 +1,28 @@
 # ----------------------------------------------------------------------
+# Gzip Compression
+# ----------------------------------------------------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE text/plain
+</IfModule>
+
+# ----------------------------------------------------------------------
+# Cache Control
+# (mod_expires removed: requires AllowOverride Indexes on server;
+#  Cache-Control via mod_headers is sufficient for modern browsers)
+# ----------------------------------------------------------------------
+<IfModule mod_headers.c>
+    <FilesMatch "\.(webp|jpg|jpeg|png|svg|ico|css|js|woff2|woff)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>
+
+# ----------------------------------------------------------------------
 # Rewrite Engine
 # ----------------------------------------------------------------------
 RewriteEngine On

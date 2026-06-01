@@ -8,6 +8,7 @@
 
         <nav class="footer-col footer-legal" aria-label="Rechtliches">
             <ul>
+                <li><a href="/">Start</a></li>
                 <li><a href="impressum">Impressum</a></li>
                 <li><a href="datenschutz">Datenschutz</a></li>
             </ul>

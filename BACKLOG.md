@@ -30,21 +30,13 @@
 
 ## Nächste Session: Paket E — Abgleich friendsofthehawks (Rest)
 
-### Paket E1 — Templates (Priorität: hoch)
+### Paket E — Abgleich friendsofthehawks ✅ abgeschlossen
 
-- [ ] `templates/pages/impressum.php` — auf `$md('legal/impressum')` umstellen (Markdown-Datei bereits vorhanden)
-- [ ] `templates/pages/datenschutz.php` — auf `$md('legal/datenschutz')` umstellen + Tippfehler `<addressp>` entfernen
-- [ ] `templates/layout/base.php` — LCP-Preload für Hero-Bild + Playfair Display 700 Font-Preload
-- [ ] `templates/partials/footer.php` — „Start"-Link in Footer-Legal-Nav ergänzen
-
-### Paket E2 — CSS (Priorität: mittel)
-
-- [ ] `main.css` — `@media (max-width: 600px)`: Gallery 1-Spalte + Lightbox Prev/Next ausblenden
-
-### Paket E3 — Performance / .htaccess (Priorität: mittel)
-
-- [ ] `public/.htaccess` — Gzip-Kompression (`mod_deflate`)
-- [ ] `public/.htaccess` — Cache-Control-Header für statische Assets (`mod_headers`)
+- [x] `impressum.php` + `datenschutz.php` → `$md('legal/...')`, kein Hardcode mehr
+- [x] `base.php` → LCP-Preload für Hero-Bild + Playfair Display 700
+- [x] `footer.php` → „Start"-Link in Legal-Nav
+- [x] `main.css` → `@media (max-width: 600px)`: Gallery 1-Spalte + Lightbox Nav ausblenden
+- [x] `.htaccess` → Gzip-Kompression + Cache-Control für statische Assets
 
 ---
 
