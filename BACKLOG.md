@@ -2,54 +2,29 @@
 
 ## Letzter Stand
 
-**Version:** v1.5.0 + Deployment-Infrastruktur (gepusht)  
-**Zuletzt abgeschlossen:** VPS-Setup, README-Umbau, Lizenz, Copyright-Muster
+**Version:** v1.5.0 + Deployment + Paket D1 (gepusht)  
+**Zuletzt abgeschlossen:** Paket D1 — Content-Infrastruktur vollständig
 
-### Abgeschlossen in letzten Sessions
+### Abgeschlossen in dieser Session
 
-**Deployment-Infrastruktur**
-- `setup/setup.sh`, `setup/update.sh`, `setup/apache/vhost.conf.tpl`, `DEPLOY.md`
+**Paket D1 — Content-Infrastruktur**
+- `content/home/features.md`, `contact.md`, `stats.json`, `stats.md`, `about-cards.json`, `topbar-links.json`, `videos.json` — alle neu angelegt
+- `content/home/gallery.json` — auf `{file, alt, category}` umgestellt, 4 Placeholder-Einträge
+- Bilder: 4 umbenannt auf `placeholder-1..4.jpg`, 7 projektspezifische gelöscht
+- `templates/pages/home.php` — komplett datengetrieben: `$md()` / `$gallery()`, `<picture>`+webp, Stats/Cards/Video aus JSON
+- `templates/partials/header.php` — Topbar-Links aus JSON, doppelte Security-Header entfernt
+- `main.css` — CSS für Topbar-Links, `.section-video`, `.about-cards` inkl. Dark-Mode + Responsive
+- `public/assets/videos/README.md` — yt-dlp/ffmpeg-Anleitung
+- `.gitignore` — Videodateien ausgeschlossen
 
-**README, Lizenz & Copyright**
-- README auf Workflow-first umgestellt, GitHub Template aktiviert
-- Lizenz MIT → EUPL v1.2
-- `content/legal/copyright.json` + Footer dynamisch
-
-**Testzahlen gesamt:**
+**Testzahlen gesamt (unverändert):**
 - PHP Unit: 55 Tests · JS Jest: 101 Tests · Integration: 7 Tests
 
 ---
 
-## Nächste Session: Paket D — Content-Infrastruktur
+## Nächste Session: Paket D2 + D3
 
-Abgleich mit `friendsofthehawks`: Template-seitig wurden viele Verbesserungen nie zurückgepflegt.
-
-### Paket D1 — Content-Infrastruktur (Priorität: hoch)
-
-Alle Sektionen datengetrieben machen, kein Hardcode mehr in PHP-Templates.
-
-- [ ] `content/home/features.md` anlegen (Placeholder-Text für Features-Sektion)
-- [ ] `content/home/contact.md` anlegen (Intro-Text über Formular)
-- [ ] `content/home/stats.json` anlegen (`[{value, label}]`)
-- [ ] `content/home/stats.md` anlegen (Text unter Stats-Grid)
-- [ ] `content/home/about-cards.json` anlegen (4 Karten mit `svg`, `title`, `text`)
-- [ ] `content/home/topbar-links.json` anlegen (externe Links in Topbar, Placeholder leer)
-- [ ] `content/home/videos.json` anlegen (`enabled: false` Placeholder)
-- [ ] `content/home/gallery.json` auf `{file, alt, category}`-Format aktualisieren + 4 Placeholder-Einträge
-- [ ] Placeholder-Bilder in `content/images/content/` auf generische Namen umbenennen (`placeholder-1.jpg` etc.)
-- [ ] `templates/pages/home.php` komplett umstrukturieren:
-  - Alle Sektionen via `$md()` / `$gallery()`
-  - Galerie: `<picture>` mit `.webp` + `.jpg`-Fallback
-  - Stats-Grid aus `stats.json`
-  - About-Cards aus `about-cards.json`
-  - Video-Block aus `videos.json` (mit `enabled`-Flag)
-  - Contact-Intro aus `contact.md`
-- [ ] `templates/partials/header.php` — Topbar-Links aus `topbar-links.json` statt hardcoded
-- [ ] `public/assets/videos/` Verzeichnis + `README.md` (yt-dlp/ffmpeg-Anleitung)
-- [ ] `public/assets/css/main.css` — CSS für `.section-video` und `.section-video-caption`
-- [ ] `.gitignore` — `*.mp4`, `*.webm`, `*.mov` unter `public/assets/videos/` ergänzen
-
-### Paket D2 — Accessibility-Fixes (Priorität: hoch)
+### Paket D2 — Accessibility-Fixes (Priorität: hoch) ← nächste Session
 
 Aus `friendsofthehawks` zurückgepflegte Bugfixes.
 
