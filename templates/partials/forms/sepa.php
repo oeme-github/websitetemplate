@@ -171,19 +171,22 @@ if (empty($action)) {
 
     <label for="iban">IBAN*</label>
     <input
+        id="iban"
         type="text"
         name="iban"
         required
         aria-required="true"
         autocomplete="iban"
     >
-    
+    <span id="iban-status" class="iban-status" aria-live="polite"></span>
+
     <label for="bank">Name der Bank</label>
     <input
+        id="bank"
         type="text"
-        name="Bank"
+        name="bank"
         aria-required="false"
-        autocomplete="bank"
+        autocomplete="organization"
     >
     
     <h2>SEPA-Mandat</h2>

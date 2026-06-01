@@ -13,6 +13,7 @@ formBootstrap();
 guardMethod();
 guardCsrf();
 guardHoneypot();
+guardRateLimit('kontakt');
 requireEnvKeys(['MAIL_HOST', 'MAIL_PORT', 'MAIL_FROM', 'MAIL_TO']);
 
 /*

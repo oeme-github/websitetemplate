@@ -467,6 +467,68 @@
 })();
 
 /* =====================================================
+  I) IBAN Live-Validierung
+===================================================== */
+(function () {
+  var ibanInput = document.getElementById('iban');
+  var bankInput = document.getElementById('bank');
+  var statusEl  = document.getElementById('iban-status');
+
+  if (!ibanInput || !statusEl) return;
+
+  function normalize(raw) {
+    return raw.replace(/\s+/g, '').toUpperCase();
+  }
+
+  function looksLikeIban(iban) {
+    return /^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/.test(iban);
+  }
+
+  function setStatus(text, modifier) {
+    statusEl.textContent = text;
+    statusEl.className = 'iban-status' + (modifier ? ' ' + modifier : '');
+  }
+
+  var debounceTimer = null;
+
+  ibanInput.addEventListener('input', function () {
+    clearTimeout(debounceTimer);
+    var iban = normalize(ibanInput.value);
+
+    if (iban === '') {
+      setStatus('', '');
+      return;
+    }
+
+    if (!looksLikeIban(iban)) {
+      setStatus('IBAN-Format ungültig', 'is-invalid');
+      return;
+    }
+
+    debounceTimer = setTimeout(async function () {
+      setStatus('Prüfe…', 'is-loading');
+
+      try {
+        var res  = await fetch('/iban_lookup.php?iban=' + encodeURIComponent(iban), {
+          credentials: 'same-origin',
+          headers: { 'Accept': 'application/json' },
+        });
+        var data = await res.json();
+
+        if (data.ok && data.bank) {
+          setStatus(data.bank, 'is-valid');
+          if (bankInput) bankInput.value = data.bank;
+        } else {
+          setStatus('IBAN gültig, Bank nicht gefunden', 'is-valid');
+        }
+      } catch (_) {
+        setStatus('Prüfung fehlgeschlagen', 'is-invalid');
+      }
+    }, 600);
+  });
+})();
+
+/* =====================================================
   H) Gallery Tabs
 ===================================================== */
 (function () {

@@ -544,6 +544,16 @@ body {
   margin-top: calc(var(--space-1) * 0.5);
 }
 
+#kontaktForm .iban-status {
+  display: block;
+  font-size: var(--fs-100);
+  margin-top: calc(var(--space-1) * 0.5);
+}
+
+#kontaktForm .iban-status.is-loading { color: var(--color-text-muted, #6b7280); }
+#kontaktForm .iban-status.is-valid   { color: #15803d; }
+#kontaktForm .iban-status.is-invalid { color: #b91c1c; }
+
 /* ------------------------------
   Consent / Checkbox
 ------------------------------ */

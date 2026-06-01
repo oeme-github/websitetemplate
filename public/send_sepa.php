@@ -13,31 +13,11 @@ formBootstrap();
 guardMethod();
 guardCsrf();
 guardHoneypot();
+guardRateLimit('sepa');
 requireEnvKeys([
     'MAIL_HOST', 'MAIL_PORT', 'MAIL_FROM', 'MAIL_TO',
     'PLACE', 'SEPA_CREDITOR_NAME', 'SEPA_CREDITOR_ADRESS', 'SEPA_CREDITOR_ID',
 ]);
-
-/*
-|--------------------------------------------------------------------------
-| IBAN-Lookup Rate-Limit (session-basiert)
-|--------------------------------------------------------------------------
-*/
-function ibanLookupAllowed(): bool
-{
-    $_SESSION['iban_lookup'] ??= ['count' => 0, 'time' => time()];
-
-    if (time() - $_SESSION['iban_lookup']['time'] > 3600) {
-        $_SESSION['iban_lookup'] = ['count' => 0, 'time' => time()];
-    }
-
-    if ($_SESSION['iban_lookup']['count'] >= 10) {
-        return false;
-    }
-
-    $_SESSION['iban_lookup']['count']++;
-    return true;
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -130,7 +110,8 @@ if ($nachricht === '') {
 use App\Services\IbanLookup;
 $bankFromApi = null;
 
-if (ibanLookupAllowed()) {
+$_SESSION['_rate_iban_lookup'] ??= [];
+if (rateLimitCheck($_SESSION['_rate_iban_lookup'], time(), 10, 3600)) {
     $bankFromApi = IbanLookup::lookup($iban);
 }
 

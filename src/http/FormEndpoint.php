@@ -75,3 +75,27 @@ function requireEnvKeys(array $keys): void
         }
     }
 }
+
+function rateLimitCheck(array &$bucket, int $now, int $maxAttempts, int $windowSeconds): bool
+{
+    if (empty($bucket) || $now - $bucket['since'] >= $windowSeconds) {
+        $bucket = ['count' => 0, 'since' => $now];
+    }
+
+    $bucket['count']++;
+
+    return $bucket['count'] <= $maxAttempts;
+}
+
+function guardRateLimit(string $key, int $maxAttempts = 5, int $windowSeconds = 900): void
+{
+    $_SESSION["_rate_{$key}"] ??= [];
+
+    if (!rateLimitCheck($_SESSION["_rate_{$key}"], time(), $maxAttempts, $windowSeconds)) {
+        respond(429, [
+            'ok'      => false,
+            'code'    => 'RATE_LIMIT',
+            'message' => 'Zu viele Anfragen. Bitte später erneut versuchen.',
+        ]);
+    }
+}
