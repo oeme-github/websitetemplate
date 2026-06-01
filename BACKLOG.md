@@ -30,6 +30,17 @@
 
 ## Nächste Session: Paket E — Abgleich friendsofthehawks (Rest)
 
+### Paket F — Hintergrundbilder + fehlende CSS-Tokens + MAIL_FROM_NAME
+
+- [ ] `public/assets/images/background/body_bg.jpg` — Placeholder anlegen (ImageMagick)
+- [ ] CSS `:root` — `--bg-image-hero`, `--bg-image-body`, `--color-text-hero`, `--font-display`
+- [ ] CSS `body` — Hintergrundbild mit Gradient-Overlay
+- [ ] CSS `.section.alt` — Hintergrundbild mit Gradient-Overlay
+- [ ] CSS `.hero` — Hintergrundbild aktiv schalten, `color: var(--color-text-hero)`
+- [ ] CSS Dark-Mode — Overlays für body, section.alt, footer, #contact
+- [ ] CSS — Gallery 900px → 2-Spalten Breakpoint
+- [ ] `send_kontakt.php` + `send_sepa.php` — `MAIL_FROM_NAME` aus `.env` statt hardcoded
+
 ### Paket E — Abgleich friendsofthehawks ✅ abgeschlossen
 
 - [x] `impressum.php` + `datenschutz.php` → `$md('legal/...')`, kein Hardcode mehr
