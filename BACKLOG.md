@@ -2,34 +2,38 @@
 
 ## Letzter Stand
 
-**Version:** v1.4.0 (gepusht)  
-**Zuletzt abgeschlossen:** Paket A + B + Mailpit-Setup + Integration-Tests
+**Version:** v1.5.0 (gepusht)  
+**Zuletzt abgeschlossen:** Paket C — Rate Limiting + IBAN Live-Validierung + SEPA Integration-Tests
 
 ### Abgeschlossen in dieser Session
 
-**Paket A — Formular-Bootstrap vereinheitlicht (Issues #2, #3, #6)**
-- `src/http/FormEndpoint.php`: `respond()`, `formBootstrap()`, `guardMethod()`, `guardCsrf()`, `guardHoneypot()`, `requireEnvKeys()`
-- Bootstrap-Duplikat aus beiden Endpoints entfernt
-- `debug`-Feld nur noch bei `APP_ENV=dev`
-- SEPA: Whitelist-Validierung für `betrag`, `zahlungsrhythmus`, `mitgliedschaft`
+**Paket C — Rate Limiting (Issue #7)**
+- `src/http/FormEndpoint.php`: `rateLimitCheck()` (pure, testbar) + `guardRateLimit()`
+- `guardRateLimit('kontakt')` / `guardRateLimit('sepa')` in beiden Endpoints (nach `guardHoneypot()`)
+- Default: 5 Versuche / 15 Minuten, HTTP 429 bei Überschreitung
+- `ibanLookupAllowed()` aus `send_sepa.php` entfernt → `rateLimitCheck()` direkt
+- `tests/RateLimitTest.php`: 7 Tests
 
-**Paket B — Feldbezogene Fehleranzeige (Issues #4, #9 teilweise)**
-- Backend: `errors` als `{field: message}`-Map statt flat Array
-- Frontend: `clearFieldErrors()`, `showFieldErrors()` mit `aria-invalid` + `aria-describedby`
-- Scroll-to + Fokus auf erstes Fehlerfeld
-- CSS: `.field-error-msg` für inline Fehlertexte
-- JS-Tests: +3 Tests (field-level behavior)
+**Paket C — IBAN Live-Validierung (Issue #8)**
+- `public/iban_lookup.php`: neuer GET-Endpoint, session-rate-limited (10/h)
+- `public/.htaccess`: `iban_lookup.php` in Allow-Liste
+- `sepa.php`: `id="iban"`, `id="bank"` ergänzt, `name="Bank"` → `name="bank"` gefixt, Status-Span
+- `main.css`: `.iban-status` mit `is-loading` / `is-valid` / `is-invalid`
+- `main.js`: IIFE „I" — debounced Input (600ms), Format-Check, Fetch, Bankfeld + Status
+- `tests/js/ibanLookup.test.js`: 12 Tests
 
-**Mailpit-Setup**
-- `.env` für Dev angelegt (Mailpit auf `127.0.0.1:1025`)
-- PHPMailer: `SMTPAutoTLS` und `SMTPAuth` env-gesteuert (kein Hardcode mehr)
-- `MAIL_SECURE`, `MAIL_USER`, `MAIL_PASS` optional (nicht in `requireEnvKeys`)
-- `.env.example` + `CLAUDE.md` mit Mailpit-Anleitung aktualisiert
-- Stale hero-Preload aus `base.php` entfernt
+**SEPA Integration-Tests**
+- `tests/Integration/SepaFormTest.php`: 4 E2E-Tests via HTTP → Apache → Mailpit
+  - Mail mit PDF-Anhang (SEPA-Mandat.pdf)
+  - Validierungsfehler → keine Mail
+  - Ungültige IBAN → Feldfehler
+  - CSRF-Rotation nach Erfolg
+- `composer test-integration` jetzt: 7 Tests (3 Kontakt + 4 SEPA)
 
-**Integration-Tests**
-- `tests/Integration/KontaktFormTest.php`: 3 E2E-Tests via HTTP → Apache → Mailpit
-- `composer test` (Unit, 48 Tests) vs. `composer test-integration` (E2E, 3 Tests) sauber getrennt
+**Testzahlen gesamt:**
+- PHP Unit: 55 Tests
+- JS Jest: 101 Tests
+- Integration: 7 Tests
 
 ---
 
@@ -37,24 +41,21 @@
 
 | # | Titel | Priorität | Nächste Session |
 |---|-------|-----------|-----------------|
-| #4 | Formular-UX verfeinern | Mittel | Paket B Rest / Paket C |
-| #9 | Accessibility Feinschliff | Mittel | Paket B Rest |
-| #7 | Rate Limiting für Formulare | Mittel | Paket C |
-| #8 | IBAN UX-Verbesserung (Frontend) | Mittel | Paket C |
+| #4 | Formular-UX verfeinern | Mittel | Nächste Session reviewen |
+| #9 | Accessibility Feinschliff | Mittel | Nächste Session reviewen |
 | #1 | SEPA-Flow rechtlich finalisieren | Offen | Wartet auf User-Input |
 | #5 | Logging-Strategie (DEV vs PROD) | Offen | Wartet auf User-Input |
 
 ---
 
-## Nächste Session: Paket C
+## Nächste Session
 
-**Ziel:** Rate Limiting + IBAN Live-Validierung im Frontend
+**Issues #4 und #9 reviewen** — sind die noch offen oder durch Paket B abgedeckt?
 
-### Aufgaben
-- [ ] Rate Limiting (Session-basiert) für Formular-Endpoints (Issue #7)
-- [ ] IBAN Live-Validierung im Frontend: Eingabe prüfen, Bankname per API nachladen (Issue #8)
-- [ ] SEPA Integration-Test analog zu KontaktFormTest
-- [ ] Issues #4, #9 reviewen ob noch offen
+Danach ggf.:
+- Paket D (falls Issues #4/#9 noch offen)
+- Issue #1 (SEPA rechtlich) — wartet auf User-Input
+- Issue #5 (Logging) — wartet auf User-Input
 
 ---
 
