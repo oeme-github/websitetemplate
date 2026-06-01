@@ -177,4 +177,4 @@ Kein Build-Step erforderlich — CSS und JS werden direkt ausgeliefert.
 
 ## Lizenz
 
-MIT License — Autor: Jörg Römhild
+[EUPL v1.2](LICENSE) — Autor: Jörg Römhild
