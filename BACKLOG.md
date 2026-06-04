@@ -3,7 +3,7 @@
 ## Letzter Stand
 
 **Version:** v1.6.0 (gepusht)  
-**Zuletzt abgeschlossen:** Section Flags — alle Hauptsektionen per `.env` de-/aktivierbar
+**Zuletzt abgeschlossen:** Section Flags + Template/Kunden-Trennung dokumentiert
 
 ### Abgeschlossen in dieser Session
 
@@ -12,6 +12,11 @@
 - `home.php` — alle 5 Sections gewrappt, Lightbox läuft mit Gallery mit
 - `.env.example` — Flags dokumentiert
 - `CHANGELOG.md`, `README.md`, `DESIGN_PATTERN.md` aktualisiert
+
+**Dokumentation: Template vs. kundenspezifisch**
+- `README.md` — neuer Abschnitt mit vollständiger Aufteilung + Graubereich
+- `README.md` — Git-Upstream-Workflow für Template-Updates in Kundenprojekte
+- `DESIGN_PATTERN.md` — Grundprinzip "Template/Kunden-Trennung" ergänzt
 
 ---
 
