@@ -32,7 +32,14 @@ info "git pull abgeschlossen."
 
 echo ""
 echo "PHP-Abhängigkeiten aktualisieren..."
-composer install --no-dev --optimize-autoloader --quiet
+composer install --no-dev --optimize-autoloader --quiet \
+    --ignore-platform-req=ext-dom \
+    --ignore-platform-req=ext-json \
+    --ignore-platform-req=ext-libxml \
+    --ignore-platform-req=ext-phar \
+    --ignore-platform-req=ext-tokenizer \
+    --ignore-platform-req=ext-xml \
+    --ignore-platform-req=ext-xmlwriter
 info "composer install abgeschlossen."
 
 # ── Fertig ───────────────────────────────────────────────────────────────────

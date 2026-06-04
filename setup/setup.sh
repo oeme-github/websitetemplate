@@ -234,7 +234,14 @@ fi
 
 step "7/7 – PHP-Abhängigkeiten installieren"
 
-sudo -u "$REAL_USER" composer install --no-dev --optimize-autoloader -d "$REPO_PATH" --quiet
+sudo -u "$REAL_USER" composer install --no-dev --optimize-autoloader -d "$REPO_PATH" --quiet \
+    --ignore-platform-req=ext-dom \
+    --ignore-platform-req=ext-json \
+    --ignore-platform-req=ext-libxml \
+    --ignore-platform-req=ext-phar \
+    --ignore-platform-req=ext-tokenizer \
+    --ignore-platform-req=ext-xml \
+    --ignore-platform-req=ext-xmlwriter
 info "composer install abgeschlossen."
 
 # ── Dateirechte ───────────────────────────────────────────────────────────────
