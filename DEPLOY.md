@@ -140,6 +140,27 @@ ssh -T git@github.com
 # Erwartet: "Hi user! You've successfully authenticated..."
 ```
 
+### PHP-Modul für Apache fehlt oder ist nicht aktiv
+
+Symptom: PHP-Dateien werden als Plaintext ausgeliefert oder Apache gibt einen 500er zurück.
+
+Prüfen, welche PHP-Version installiert ist und ob das Modul aktiv ist:
+
+```bash
+php -v
+sudo a2query -m | grep php
+```
+
+Falls kein PHP-Modul aktiv ist:
+
+```bash
+sudo apt install libapache2-mod-php8.4   # Versionsnummer anpassen
+sudo a2enmod php8.4
+sudo systemctl reload apache2
+```
+
+> `setup.sh` installiert `libapache2-mod-php` und aktiviert das Modul automatisch. Dieser Schritt ist nur nötig, wenn die Einrichtung manuell erfolgt oder der Paketname auf dem Zielsystem abweicht.
+
 ### Apache startet nicht
 
 Konfiguration prüfen:

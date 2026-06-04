@@ -86,6 +86,7 @@ apt-get install -y -qq \
     php-xml \
     php-zip \
     php-intl \
+    libapache2-mod-php \
     composer \
     git \
     certbot \
@@ -94,6 +95,16 @@ apt-get install -y -qq \
     curl
 
 a2enmod rewrite ssl headers > /dev/null 2>&1
+
+# PHP-Modul für Apache aktivieren (Version aus installierten mods ableiten)
+PHP_MOD=$(ls /etc/apache2/mods-available/php*.load 2>/dev/null | head -1 | xargs -I{} basename {} .load)
+if [[ -n "$PHP_MOD" ]]; then
+    a2enmod "$PHP_MOD" > /dev/null 2>&1
+    info "Apache-Modul $PHP_MOD aktiviert."
+else
+    warning "Kein PHP-Apache-Modul gefunden — ggf. manuell aktivieren: sudo a2enmod php<version>"
+fi
+
 info "Pakete und Apache-Module bereit."
 
 # ── SSH-Deploy-Key ────────────────────────────────────────────────────────────
