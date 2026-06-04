@@ -39,11 +39,11 @@ $pageH1 = $pageH1 ?? 'Mein One-Pager';
 
         <!-- Desktop Navigation -->
         <nav class="nav-desktop" id="desktopMenu">
-            <a href="/#hero">Start</a>
-            <a href="/#features">Galerie</a>
-            <a href="/#stats">Zahlen</a>
-            <a href="/#about">Über uns</a>
-            <a href="/#contact">Kontakt</a>
+            <?php if ($section('hero')): ?><a href="/#hero">Start</a><?php endif; ?>
+            <?php if ($section('gallery')): ?><a href="/#features">Galerie</a><?php endif; ?>
+            <?php if ($section('stats')): ?><a href="/#stats">Zahlen</a><?php endif; ?>
+            <?php if ($section('about')): ?><a href="/#about">Über uns</a><?php endif; ?>
+            <?php if ($section('contact')): ?><a href="/#contact">Kontakt</a><?php endif; ?>
         </nav>
 
         <!-- Mobile Button -->
@@ -54,10 +54,10 @@ $pageH1 = $pageH1 ?? 'Mein One-Pager';
 
     <!-- Mobile Menü -->
     <nav id="mobileMenu" class="nav-mobile" data-nav>
-        <a href="/#hero">Start</a>
-        <a href="/#features">Galerie</a>
-        <a href="/#stats">Zahlen</a>
-        <a href="/#about">Über uns</a>
-        <a href="/#contact">Kontakt</a>
+        <?php if ($section('hero')): ?><a href="/#hero">Start</a><?php endif; ?>
+        <?php if ($section('gallery')): ?><a href="/#features">Galerie</a><?php endif; ?>
+        <?php if ($section('stats')): ?><a href="/#stats">Zahlen</a><?php endif; ?>
+        <?php if ($section('about')): ?><a href="/#about">Über uns</a><?php endif; ?>
+        <?php if ($section('contact')): ?><a href="/#contact">Kontakt</a><?php endif; ?>
     </nav>
 </header>
