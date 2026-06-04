@@ -3,13 +3,14 @@
 ## Letzter Stand
 
 **Version:** v1.6.1 (gepusht)  
-**Zuletzt abgeschlossen:** libapache2-mod-php in setup.sh + Troubleshooting in DEPLOY.md
+**Zuletzt abgeschlossen:** Issue #11 — `{{VAR_NAME}}`-Platzhalter in Gallery-JSON via `.env`
 
 ### Abgeschlossen in dieser Session
 
-**PHP-Modul für Apache — setup.sh + DEPLOY.md**
-- `setup/setup.sh` — `libapache2-mod-php` zur apt-Liste ergänzt, PHP-Modul wird nach Install automatisch per `a2enmod` aktiviert (versionsneutral)
-- `DEPLOY.md` — neuer Troubleshooting-Abschnitt „PHP-Modul für Apache fehlt oder ist nicht aktiv"
+**Issue #11 — Topbar-Links via `.env` konfigurierbar**
+- `public/index.php` — `$gallery()` löst `{{VAR_NAME}}`-Platzhalter in allen JSON-String-Werten über `$_ENV` auf (generisch, nicht auf APP_URL beschränkt)
+- `.env.example` — `APP_URL` und `ADMIN_URL` als auskommentierte Beispiele dokumentiert
+- Issue #11 auf GitHub geschlossen
 
 ---
 
