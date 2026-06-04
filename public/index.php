@@ -58,7 +58,18 @@ $gallery = static function (string $name) use ($contentRoot): array {
         return [];
     }
     $data = json_decode(file_get_contents($path), true);
-    return is_array($data) ? $data : [];
+    if (!is_array($data)) {
+        return [];
+    }
+    // Resolve {{VAR_NAME}} placeholders in string values using $_ENV
+    array_walk_recursive($data, static function (mixed &$value): void {
+        if (is_string($value)) {
+            $value = preg_replace_callback('/\{\{([A-Z0-9_]+)\}\}/', static function (array $m): string {
+                return $_ENV[$m[1]] ?? '';
+            }, $value);
+        }
+    });
+    return $data;
 };
 
 /*
