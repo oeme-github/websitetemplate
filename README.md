@@ -52,7 +52,7 @@ Für lokalen Mailversand empfiehlt sich [Mailpit](https://mailpit.axllent.org/) 
 | Sections aktivieren / deaktivieren | `.env` → `SECTION_HERO`, `SECTION_GALLERY`, `SECTION_STATS`, `SECTION_ABOUT`, `SECTION_CONTACT` |
 | Favicon & App-Icons | `public/assets/icons/` |
 
-**Nicht anfassen** (es sei denn, du weißt was du tust): `src/Security/`, `src/http/FormEndpoint.php`, `.htaccess`.
+Welche Dateien zum Template gehören und welche pro Deployment angepasst werden → **[Template vs. kundenspezifisch](#template-vs-kundenspezifisch)**.
 
 ### 4. Deployen
 
@@ -78,6 +78,72 @@ cd /var/www/<domain>
 bash setup/update.sh
 sudo systemctl reload apache2
 ```
+
+---
+
+## Template vs. kundenspezifisch
+
+**Faustformel:** `content/`, `public/assets/images/`, `public/assets/logo/`, `public/assets/icons/` und `.env` sind Kundensache. Alles andere gehört dem Template.
+
+### Kundenspezifisch — wird pro Deployment angepasst
+
+| Bereich | Dateien |
+|---------|---------|
+| Texte | `content/home/*.md` — hero, about, features, stats, contact |
+| Daten | `content/home/*.json` — gallery, stats, about-cards, topbar-links, videos |
+| Rechtliches | `content/legal/impressum.md`, `datenschutz.md`, `copyright.json` |
+| Bilder | `public/assets/images/` — hero, content, background |
+| Logo | `public/assets/logo/` |
+| Favicon & App-Icons | `public/assets/icons/` |
+| Konfiguration | `.env` — APP_ENV, FORM_TYPE, SECTION_*, MAIL_*, SEPA_* |
+
+### Template — nicht anfassen
+
+| Bereich | Dateien |
+|---------|---------|
+| PHP-Logik | `src/` komplett — Security, CSRF, IBAN, Helpers, HTTP-Layer |
+| Routing | `public/index.php` |
+| JS-Module | `public/assets/js/` |
+| Layout | `templates/layout/base.php`, `templates/partials/` |
+| Seitenstruktur | `templates/pages/home.php` — Reihenfolge und Struktur der Sections |
+| Formular-HTML | `templates/partials/forms/contact.php`, `sepa.php` |
+| CSS — Komponenten | `public/assets/css/main.css` (Komponenten-Styles) |
+| Schriften | `public/assets/css/fonts.css`, `public/assets/fonts/` |
+| Server | `public/.htaccess`, `setup/` |
+| Tests | `tests/` |
+
+### Partiell anpassbar
+
+| Was | Regel |
+|-----|-------|
+| `main.css` — `[data-color-scheme="..."]`-Blöcke | RGB-Primitive für eigene Farbschemata austauschen ist vorgesehen; Komponenten-CSS nicht anfassen |
+| `templates/pages/home.php` | Sections per `.env` (`SECTION_*`) steuern; Reihenfolge oder neue Sections ändern ist Template-Eingriff |
+
+### Template-Updates übernehmen
+
+Kundenprojekte können Verbesserungen aus dem Template per Git-Merge übernehmen. Weil Template- und Kundendateien sich nicht überschneiden, entstehen dabei in der Regel keine Konflikte.
+
+**Einmalige Einrichtung** (im Kundenprojekt):
+
+```bash
+git remote add template https://github.com/oeme-github/websitetemplate.git
+git fetch template
+```
+
+Beim ersten Merge ist `--allow-unrelated-histories` nötig, weil "Use this template" keine gemeinsame Git-History erzeugt:
+
+```bash
+git merge template/main --allow-unrelated-histories
+```
+
+**Folge-Updates** (ab dem zweiten Mal):
+
+```bash
+git fetch template
+git merge template/main
+```
+
+**Bei Konflikten:** Konflikte können nur in den "partiell anpassbaren" Dateien auftreten (`main.css`-Farbblöcke, `home.php`-Struktur). Kundendateien in `content/`, `public/assets/images/` und `.env` werden vom Merge nie berührt.
 
 ---
 

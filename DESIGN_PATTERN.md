@@ -23,6 +23,11 @@ Prinzip: Weniger Magie, mehr Vorhersagbarkeit
 - **CSS**: Darstellung & Zustände
 - **JS**: Interaktion & Zustandswechsel
 
+### Template/Kunden-Trennung
+- Template-Dateien (`src/`, `public/assets/js/`, `templates/`) und kundenspezifische Dateien (`content/`, `public/assets/images/`, `.env`) überschneiden sich nie
+- Diese Trennung ist bewusst so designt, damit Kundenprojekte Template-Updates per `git merge` konfliktfrei übernehmen können
+- Neue Features dürfen diese Grenze nicht verwischen — Kunden-Content bleibt in `content/`, Template-Logik bleibt in `src/` und `templates/`
+
 ---
 
 ## 2. Template- & Layout-Struktur
