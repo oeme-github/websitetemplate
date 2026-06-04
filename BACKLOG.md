@@ -2,10 +2,20 @@
 
 ## Letzter Stand
 
-**Version:** v1.5.0 + Pakete D–F + Bugfixes (gepusht)  
-**Zuletzt abgeschlossen:** Umfassender friendsofthehawks-Abgleich
+**Version:** v1.6.0 (gepusht)  
+**Zuletzt abgeschlossen:** Section Flags — alle Hauptsektionen per `.env` de-/aktivierbar
 
 ### Abgeschlossen in dieser Session
+
+**Section Flags**
+- `$section()`-Closure in `index.php`
+- `home.php` — alle 5 Sections gewrappt, Lightbox läuft mit Gallery mit
+- `.env.example` — Flags dokumentiert
+- `CHANGELOG.md`, `README.md`, `DESIGN_PATTERN.md` aktualisiert
+
+---
+
+### Abgeschlossen in vorherigen Sessions
 
 **Paket D1–D3** (vorherige Session) — Content-Infrastruktur, A11y, SEPA
 

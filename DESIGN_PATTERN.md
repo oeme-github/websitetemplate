@@ -213,7 +213,33 @@ Markdown- und JSON-Dateien in `content/` werden über zwei Closure-Funktionen in
 
 ---
 
-## 12. JavaScript-Philosophie
+## 12. Section Flags
+
+### Zweck
+Sections der Startseite sind einzeln über `.env` de-/aktivierbar — ohne Code-Änderungen.
+
+### Verfügbare Flags
+| Flag | Section |
+|------|---------|
+| `SECTION_HERO` | Hero-Bereich |
+| `SECTION_GALLERY` | Galerie + Lightbox |
+| `SECTION_STATS` | Stats Counter |
+| `SECTION_ABOUT` | About + Cards |
+| `SECTION_CONTACT` | Kontakt-/SEPA-Formular |
+
+### Mechanismus
+- `$section()`-Closure in `index.php` liest `SECTION_*` aus `$_ENV`
+- Default: `true` — fehlt ein Flag, bleibt die Section aktiv (keine Breaking Change)
+- Deaktivieren: Flag auf `false` setzen (`SECTION_STATS=false`)
+
+### Regeln
+- ❌ keine Section-Logik im Template selbst — nur `<?php if ($section('...')): ?>`
+- ❌ kein JS oder CSS für deaktivierte Sections — das Rendering entfällt vollständig
+- ✅ Lightbox immer zusammen mit `SECTION_GALLERY` ein-/ausgeblendet (logische Einheit)
+
+---
+
+## 13. JavaScript-Philosophie
 
 - IIFE pro Feature (A, B, B2, C, C1–C4, D, E, F, G, H)
 - Kein globaler State

@@ -1,3 +1,17 @@
+## v1.6.0 – Section Flags
+
+### Added
+- **Section Flags**: Jede Hauptsektion der Startseite ist einzeln über `.env` de-/aktivierbar (`SECTION_HERO`, `SECTION_GALLERY`, `SECTION_STATS`, `SECTION_ABOUT`, `SECTION_CONTACT`)
+- `$section()`-Closure in `index.php` — liest `SECTION_*` aus `.env`, Default ist `true` (aktiviert)
+- `.env.example` dokumentiert alle fünf Flags
+
+### Design-Entscheidungen
+- Default `true`: Deployments ohne explizite Flags verhalten sich unverändert
+- Lightbox wird zusammen mit `SECTION_GALLERY` ein-/ausgeblendet (logische Einheit)
+- Flags steuern nur Rendering — kein JS, kein CSS-Aufwand für deaktivierte Sections
+
+---
+
 ## v1.3.0 – Color Schemes, Cookie Notice, Gallery, Stats & Testing
 
 ### Added

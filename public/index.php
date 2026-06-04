@@ -63,6 +63,16 @@ $gallery = static function (string $name) use ($contentRoot): array {
 
 /*
 |--------------------------------------------------------------------------
+| Section-Flags (SECTION_* aus .env, Default: aktiviert)
+|--------------------------------------------------------------------------
+*/
+$section = static function (string $name): bool {
+    $key = 'SECTION_' . strtoupper($name);
+    return ($_ENV[$key] ?? 'true') !== 'false';
+};
+
+/*
+|--------------------------------------------------------------------------
 | Routing-Definition (Whitelist)
 |--------------------------------------------------------------------------
 */

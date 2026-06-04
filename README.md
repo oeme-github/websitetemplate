@@ -49,6 +49,7 @@ Für lokalen Mailversand empfiehlt sich [Mailpit](https://mailpit.axllent.org/) 
 | Farben & Farbschema | `public/assets/css/main.css` → `[data-color-scheme="..."]`-Blöcke |
 | Formulartyp (Kontakt / SEPA) | `.env` → `FORM_TYPE=contact` oder `FORM_TYPE=sepa` |
 | SEPA-Gläubigerdaten | `.env` → `SEPA_CREDITOR_*`, `PLACE` |
+| Sections aktivieren / deaktivieren | `.env` → `SECTION_HERO`, `SECTION_GALLERY`, `SECTION_STATS`, `SECTION_ABOUT`, `SECTION_CONTACT` |
 | Favicon & App-Icons | `public/assets/icons/` |
 
 **Nicht anfassen** (es sei denn, du weißt was du tust): `src/Security/`, `src/http/FormEndpoint.php`, `.htaccess`.

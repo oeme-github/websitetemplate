@@ -1,8 +1,11 @@
+<?php if ($section('hero')): ?>
 <!-- Hero Section -->
 <section id="hero" class="section hero">
     <?= $md('home/hero') ?>
 </section>
+<?php endif; ?>
 
+<?php if ($section('gallery')): ?>
 <!-- Features Section -->
 <section id="features" class="section" aria-label="Galerie">
     <?= $md('home/features') ?>
@@ -73,7 +76,9 @@
             aria-label="Nächstes Bild" data-lightbox-next>&#x203A;</button>
     </div>
 </div>
+<?php endif; ?>
 
+<?php if ($section('stats')): ?>
 <!-- Stats Section -->
 <section id="stats" class="section alt" aria-label="Unsere Zahlen">
     <div class="stats-grid">
@@ -90,7 +95,9 @@
     </div>
     <?= $md('home/stats') ?>
 </section>
+<?php endif; ?>
 
+<?php if ($section('about')): ?>
 <!-- About Section -->
 <section id="about" class="section">
     <?= $md('home/about') ?>
@@ -110,7 +117,9 @@
     </div>
     <?php endif; ?>
 </section>
+<?php endif; ?>
 
+<?php if ($section('contact')): ?>
 <!-- Contact Section -->
 <section id="contact" class="section">
     <?= $md('home/contact') ?>
@@ -118,3 +127,4 @@
         <?php require __DIR__ . '/../' . $formPartial; ?>
     <?php endif; ?>
 </section>
+<?php endif; ?>
