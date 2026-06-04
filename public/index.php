@@ -48,7 +48,13 @@ $contentRoot = dirname(__DIR__) . '/content';
 $md = static function (string $name) use ($parsedown, $contentRoot): string {
     $safe = preg_replace('/[^a-z0-9\/\-_]/', '', strtolower($name));
     $path = $contentRoot . '/' . $safe . '.md';
-    return is_file($path) ? $parsedown->text(file_get_contents($path)) : '';
+    if (!is_file($path)) {
+        return '';
+    }
+    $html = $parsedown->text(file_get_contents($path));
+    return preg_replace_callback('/\{\{([A-Z0-9_]+)\}\}/', static function (array $m): string {
+        return $_ENV[$m[1]] ?? '';
+    }, $html);
 };
 
 $gallery = static function (string $name) use ($contentRoot): array {
