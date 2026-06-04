@@ -3,14 +3,13 @@
 ## Letzter Stand
 
 **Version:** v1.6.1 (gepusht)  
-**Zuletzt abgeschlossen:** Issue #10 echter Fix — `--ignore-platform-req` in Deploy-Skripten
+**Zuletzt abgeschlossen:** libapache2-mod-php in setup.sh + Troubleshooting in DEPLOY.md
 
 ### Abgeschlossen in dieser Session
 
-**Issue #10 — composer install --no-dev Platform-Fix (zweiter Anlauf)**
-- Erster Fix (Extensions in `require-dev`) war wirkungslos — phpunit's Lock-File-Anforderungen werden trotzdem geprüft
-- `setup/setup.sh` + `setup/update.sh` — `--ignore-platform-req` für alle 7 dev-only Extensions ergänzt (`ext-dom`, `ext-xml`, `ext-libxml`, `ext-xmlwriter`, `ext-json`, `ext-phar`, `ext-tokenizer`)
-- Issue #10 auf GitHub erneut geschlossen
+**PHP-Modul für Apache — setup.sh + DEPLOY.md**
+- `setup/setup.sh` — `libapache2-mod-php` zur apt-Liste ergänzt, PHP-Modul wird nach Install automatisch per `a2enmod` aktiviert (versionsneutral)
+- `DEPLOY.md` — neuer Troubleshooting-Abschnitt „PHP-Modul für Apache fehlt oder ist nicht aktiv"
 
 ---
 
