@@ -18,12 +18,26 @@
     }
   },
   "require": {
+    "php": ">=8.0",
+    "ext-ctype": "*",
+    "ext-curl": "*",
+    "ext-filter": "*",
+    "ext-hash": "*",
+    "ext-iconv": "*",
+    "ext-mbstring": "*",
     "vlucas/phpdotenv": "^5.6",
     "phpmailer/phpmailer": "^7.0",
     "tecnickcom/tcpdf": "^6.10",
     "erusev/parsedown": "^1.8"
   },
   "require-dev": {
+    "ext-dom": "*",
+    "ext-json": "*",
+    "ext-libxml": "*",
+    "ext-phar": "*",
+    "ext-tokenizer": "*",
+    "ext-xml": "*",
+    "ext-xmlwriter": "*",
     "phpunit/phpunit": "^10.0"
   },
   "scripts": {
