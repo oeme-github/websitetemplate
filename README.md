@@ -41,7 +41,7 @@ Für lokalen Mailversand empfiehlt sich [Mailpit](https://mailpit.axllent.org/) 
 | Was | Wo |
 |-----|----|
 | Texte & Inhalte | `content/home/` (Markdown), `templates/pages/home.php` |
-| Impressum / Datenschutz | `content/legal/impressum.md`, `content/legal/datenschutz.md` |
+| Impressum / Datenschutz | `content/legal/impressum.md`, `content/legal/datenschutz.md` — die Datenschutzerklärung enthält bereits alle template-spezifischen Abschnitte (Session-Cookie, Kontaktformular, SEPA, openiban.com); nur `[PLATZHALTER]` befüllen und juristisch abnehmen lassen |
 | Copyright-Inhaber (Footer) | `content/legal/copyright.json` → `owner` |
 | Galerie-Bilder | `public/assets/images/content/`, `content/home/gallery.json` |
 | Hero-Bild | `public/assets/images/hero/` |
