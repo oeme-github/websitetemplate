@@ -27,7 +27,7 @@ cd "$REPO_ROOT"
 
 echo ""
 echo "Repository aktualisieren..."
-git pull
+git pull origin main
 info "git pull abgeschlossen."
 
 echo ""
