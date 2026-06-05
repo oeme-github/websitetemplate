@@ -58,3 +58,17 @@
 - **Screenreader-Test SEPA-Formular**: manueller Test (NVDA/VoiceOver) — kein Code-Task
 - **Issue #1** (SEPA rechtlich): Wartet auf Juristencheck / Pflichttexte
 - **Issue #5** (Logging): Wartet auf Entscheidung zu Request-ID
+
+---
+
+## Nächste größere Aufgaben
+
+### friendsofthehawks — Template-Kompatibilität herstellen
+
+`friendsofthehawks` basiert auf dem Template, wurde aber eigenständig weiterentwickelt und hat sich vom Template entfernt. Vor einem `git merge template/main` muss geprüft werden:
+
+- [ ] Diff zwischen `friendsofthehawks` und aktuellem `template/main` — was hat sich auseinanderentwickelt?
+- [ ] Content-Dateien noch unter alten Namen (`hero.md` etc.) — Umbenennung auf `*.example.*`-Fallback-Mechanismus anpassen
+- [ ] `.gitignore` — `!content/**/*.md` / `!content/**/*.json` Override ergänzen
+- [ ] Template-spezifische Änderungen (Security, JS, CSS, PHP) rückportieren
+- [ ] Kundenseitige Anpassungen identifizieren und sichern, damit sie beim Merge nicht überschrieben werden
