@@ -9,7 +9,19 @@ public/assets/videos/*.mp4
 public/assets/videos/*.webm
 public/assets/videos/*.mov
 
-# Customer content files (copies of *.example.* — not tracked in template)
+# ---------------------------------------------------------------------------
+# TEMPLATE REPO ONLY: customer content files are not tracked here.
+# Only *.example.* files live in the template; customer copies are gitignored.
+#
+# DEPLOYMENT REPOS: after merging from template/main, these rules will apply
+# to your repo too — which would stop tracking your real content files.
+# Override them in your own .gitignore by adding:
+#
+#   # Deployment repo: track all content files
+#   !content/**/*.md
+#   !content/**/*.json
+#
+# ---------------------------------------------------------------------------
 content/**/*.md
 content/**/*.json
 !content/**/*.example.md

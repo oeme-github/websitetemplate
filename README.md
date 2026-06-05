@@ -151,7 +151,18 @@ git fetch template
 git merge template/main
 ```
 
-**Bei Konflikten:** Konflikte können nur in den "partiell anpassbaren" Dateien auftreten (`main.css`-Farbblöcke, `home.php`-Struktur). Kundendateien in `content/` sind gitignored und werden vom Merge nicht berührt. Aktualisierte `*.example.*`-Vorlagen können optional manuell in die eigenen Dateien übernommen werden.
+**Bei Konflikten:** Konflikte können nur in den "partiell anpassbaren" Dateien auftreten (`main.css`-Farbblöcke, `home.php`-Struktur).
+
+**Einmalig nach dem ersten Merge, der die `.gitignore`-Änderung enthält (ab v1.7.0):**  
+Das Template ignoriert `content/**/*.md` und `content/**/*.json`, damit Kundendateien nicht versehentlich ins Template-Repo gelangen. Diese Regel gilt nach dem Merge auch im Deployment-Repo und würde dort bereits commitete Content-Dateien aus dem Tracking entfernen. Gegenmittel — einmalig ans Ende der eigenen `.gitignore` anhängen:
+
+```gitignore
+# Deployment repo: track all content files
+!content/**/*.md
+!content/**/*.json
+```
+
+Danach `git add content/` ausführen, damit alle Content-Dateien wieder getrackt werden.
 
 ---
 
