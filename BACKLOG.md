@@ -3,7 +3,7 @@
 ## Letzter Stand
 
 **Version:** v1.6.1 (gepusht)  
-**Zuletzt abgeschlossen:** Issues #7, #8, #13 — Rate Limiting, IBAN DSGVO-Hinweis, update.sh fix
+**Zuletzt abgeschlossen:** `content/`-`.example.*`-Mechanismus + DSGVO-Mustertext + Deployment-Warnung in `.gitignore`
 
 ### Abgeschlossen in dieser Session
 
@@ -13,11 +13,17 @@
 **Issue #8 — IBAN UX-Verbesserung (DSGVO)**
 - `templates/partials/forms/sepa.php` — Hinweistext unter IBAN-Feld (openiban.com)
 - `public/assets/css/main.css` — `.form-hint`-Klasse ergänzt
-- `content/legal/datenschutz.md` — vollständiger Mustertext mit allen template-spezifischen Abschnitten (Session-Cookie, Kontaktformular, SEPA, openiban.com, Betroffenenrechte)
-- `README.md` — Hinweis auf vorausgefüllten Datenschutz-Mustertext
+- `content/legal/datenschutz.example.md` — vollständiger Mustertext mit allen template-spezifischen Abschnitten
 
 **Issue #7 — Rate Limiting für Formulare**
 - Bereits implementiert in `src/http/FormEndpoint.php` — Issue als erledigt geschlossen
+
+**`content/`-`.example.*`-Mechanismus**
+- Alle 13 Content-Dateien umbenannt zu `*.example.*`
+- `$md()` + `$gallery()` in `public/index.php` — Fallback auf `*.example.*` wenn Kundendatei fehlt
+- `.gitignore` — Kundendateien ignoriert, `*.example.*` explizit ausgenommen
+- `.gitignore` — prominente Warnung für Deployment-Repos mit Override-Anleitung
+- `README.md` + `DESIGN_PATTERN.md` — neues Pattern dokumentiert
 
 ---
 
