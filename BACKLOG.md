@@ -3,19 +3,30 @@
 ## Letzter Stand
 
 **Version:** v1.6.1 (gepusht)  
-**Zuletzt abgeschlossen:** Issue #12 — `{{VAR_NAME}}`-Platzhalter auch in `$md()` via `.env`
+**Zuletzt abgeschlossen:** Issues #7, #8, #13 — Rate Limiting, IBAN DSGVO-Hinweis, update.sh fix
 
 ### Abgeschlossen in dieser Session
 
-**Issue #12 — `{{VAR_NAME}}`-Platzhalter in `$md()`**
-- `public/index.php` — `$md()` führt nach Markdown-Rendering denselben Placeholder-Replace-Pass durch wie `$gallery()`
-- Issue #12 auf GitHub geschlossen
+**Issue #13 — `update.sh`: git pull ohne Tracking-Branch**
+- `setup/update.sh` — `git pull` → `git pull origin main`
+
+**Issue #8 — IBAN UX-Verbesserung (DSGVO)**
+- `templates/partials/forms/sepa.php` — Hinweistext unter IBAN-Feld (openiban.com)
+- `public/assets/css/main.css` — `.form-hint`-Klasse ergänzt
+- `content/legal/datenschutz.md` — vollständiger Mustertext mit allen template-spezifischen Abschnitten (Session-Cookie, Kontaktformular, SEPA, openiban.com, Betroffenenrechte)
+- `README.md` — Hinweis auf vorausgefüllten Datenschutz-Mustertext
+
+**Issue #7 — Rate Limiting für Formulare**
+- Bereits implementiert in `src/http/FormEndpoint.php` — Issue als erledigt geschlossen
 
 ---
 
 ### Abgeschlossen in vorherigen Sessions
 
-**Paket D1–D3** (vorherige Session) — Content-Infrastruktur, A11y, SEPA
+**Issue #12 — `{{VAR_NAME}}`-Platzhalter in `$md()`**
+- `public/index.php` — `$md()` führt nach Markdown-Rendering denselben Placeholder-Replace-Pass durch wie `$gallery()`
+
+**Paket D1–D3** — Content-Infrastruktur, A11y, SEPA
 
 **Paket E — Templates/CSS/htaccess**
 - `impressum.php` + `datenschutz.php` → `$md()`, LCP-Preload, Footer „Start"-Link
@@ -28,61 +39,8 @@
 - Dark-Mode Overlays für alle Sektionen
 - Gallery 900px→2-col Breakpoint, MAIL_FROM_NAME aus .env
 
-**Bugfixes dieser Session**
-- WebP-Versionen der 4 Placeholder-Bilder (404-Fehler in Galerie)
-- Hamburger-Menü global (kein Desktop-Nav mehr)
-- Footer nicht mehr `position: fixed` — scrollt mit, Layout-Padding entfernt
-- Redundantes Label im Footer entfernt
-- Hero-Bild Preload entfernt (CSS `var()` nicht vom Preload-Scanner erkennbar)
-
 **Testzahlen gesamt:**
 - PHP Unit: 55 Tests · JS Jest: 101 Tests · Integration: 7 Tests
-
----
-
-## Nächste Session: Paket E — Abgleich friendsofthehawks (Rest)
-
-### Paket F — Hintergrundbilder + fehlende CSS-Tokens + MAIL_FROM_NAME ✅ abgeschlossen
-
-- [x] `public/assets/images/background/body_bg.jpg` — Placeholder (ImageMagick)
-- [x] CSS `:root` — `--bg-image-hero`, `--bg-image-body`, `--color-text-hero`, `--font-display`
-- [x] CSS `body` — Hintergrundbild mit Overlay, doppelter Block entfernt
-- [x] CSS `.section.alt` — Hintergrundbild mit Overlay
-- [x] CSS `.hero` — `flex`-Layout, Hintergrundbild aktiv, `color: var(--color-text-hero)`
-- [x] CSS Dark-Mode — Overlays für body, header, nav-mobile, section.alt, footer, #contact
-- [x] CSS — Gallery 900px → 2-Spalten Breakpoint (war fälschlicherweise bei 768px)
-- [x] `send_kontakt.php` + `send_sepa.php` — `MAIL_FROM_NAME` aus `.env`
-
-### Paket E — Abgleich friendsofthehawks ✅ abgeschlossen
-
-- [x] `impressum.php` + `datenschutz.php` → `$md('legal/...')`, kein Hardcode mehr
-- [x] `base.php` → LCP-Preload für Hero-Bild + Playfair Display 700
-- [x] `footer.php` → „Start"-Link in Legal-Nav
-- [x] `main.css` → `@media (max-width: 600px)`: Gallery 1-Spalte + Lightbox Nav ausblenden
-- [x] `.htaccess` → Gzip-Kompression + Cache-Control für statische Assets
-
----
-
-## Offene Issues (GitHub)
-
-### Paket D2 — Accessibility-Fixes ✅ abgeschlossen
-
-- [x] `header.php` doppelte Security-Header entfernt (D1)
-- [x] `header.php` `aria-hidden` + `tabindex` von `.nav-mobile` entfernt (D1)
-- [x] `.lightbox` CSS `visibility: hidden` (war bereits vorhanden)
-- [x] Lightbox-HTML kein hardcodiertes `aria-hidden` (D1)
-- [x] `.nav-mobile` CSS `visibility: hidden` + Transition-Timing
-
-### Paket D3 — SEPA-Verbesserungen ✅ abgeschlossen
-
-- [x] Tippfehler `Qurtal` → `Quartal` (Formular + Whitelist)
-- [x] Neue Felder: `geburtsdatum` (Pflicht, type=date), `telefon` + `herkunft` (optional)
-- [x] `send_sepa.php` — `geburtsdatum` einlesen, YYYY-MM-DD → DD.MM.YYYY, `checkdate()` Validation
-- [x] `SepaPdf.php` — Felder maschinenlesbar, eigene Sections (Antragsteller/Mitgliedschaft/Bank/Mandat)
-- [x] `SepaPdf.php` — dynamischer Titel (Spende vs. Mitgliedsantrag), XSS-Escaping via `esc()`
-- [x] `send_sepa.php` — dynamischer E-Mail-Betreff
-- [x] `send_sepa.php` — PDF-Dateiname `{mandateId}.pdf`
-- [x] Integrations-Test aktualisiert (neues Pflichtfeld, Betreff, Dateinamen-Pattern)
 
 ---
 
@@ -90,8 +48,8 @@
 
 | # | Titel | Priorität | Status |
 |---|-------|-----------|--------|
-| #1 | SEPA-Flow rechtlich finalisieren | Offen | Wartet auf User-Input |
-| #5 | Logging-Strategie (DEV vs PROD) | Offen | Wartet auf User-Input |
+| #1 | SEPA-Flow rechtlich finalisieren | Offen | Wartet auf Juristencheck |
+| #5 | Logging-Strategie (DEV vs PROD) | Offen | Wartet auf Entscheidung |
 
 ---
 
