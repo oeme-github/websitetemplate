@@ -208,6 +208,7 @@ if (empty($action)) {
         autocomplete="iban"
     >
     <span id="iban-status" class="iban-status" aria-live="polite"></span>
+    <span class="form-hint">Zur Ermittlung des Banknamens wird die IBAN an <a href="https://openiban.com" target="_blank" rel="noopener noreferrer">openiban.com</a> übermittelt.</span>
 
     <label for="bank">Name der Bank</label>
     <input

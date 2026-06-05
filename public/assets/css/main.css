@@ -668,6 +668,18 @@ body {
 #kontaktForm .iban-status.is-valid   { color: #15803d; }
 #kontaktForm .iban-status.is-invalid { color: #b91c1c; }
 
+#kontaktForm .form-hint {
+  display: block;
+  font-size: var(--fs-100);
+  color: var(--color-text-muted, #6b7280);
+  margin-top: calc(var(--space-1) * 0.5);
+}
+
+#kontaktForm .form-hint a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 /* ------------------------------
   Consent / Checkbox
 ------------------------------ */
