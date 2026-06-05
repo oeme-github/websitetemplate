@@ -8,3 +8,9 @@ settings.*
 public/assets/videos/*.mp4
 public/assets/videos/*.webm
 public/assets/videos/*.mov
+
+# Customer content files (copies of *.example.* — not tracked in template)
+content/**/*.md
+content/**/*.json
+!content/**/*.example.md
+!content/**/*.example.json

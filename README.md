@@ -33,6 +33,14 @@ cp .env.example .env
 # .env öffnen und ausfüllen (APP_ENV=dev, MAIL_*, FORM_TYPE)
 ```
 
+Die Website läuft sofort mit den mitgelieferten `*.example.*`-Dateien in `content/`. Zum Anpassen einfach die gewünschte Datei kopieren und bearbeiten — die eigene Version hat immer Vorrang:
+
+```bash
+# Beispiel: Datenschutzerklärung anpassen
+cp content/legal/datenschutz.example.md content/legal/datenschutz.md
+# datenschutz.md öffnen und [PLATZHALTER] befüllen
+```
+
 Lokaler Webserver (Apache mit `mod_rewrite`) muss auf das `public/`-Verzeichnis zeigen.  
 Für lokalen Mailversand empfiehlt sich [Mailpit](https://mailpit.axllent.org/) (`MAIL_HOST=127.0.0.1`, `MAIL_PORT=1025`).
 
@@ -40,7 +48,7 @@ Für lokalen Mailversand empfiehlt sich [Mailpit](https://mailpit.axllent.org/) 
 
 | Was | Wo |
 |-----|----|
-| Texte & Inhalte | `content/home/` (Markdown), `templates/pages/home.php` |
+| Texte & Inhalte | `content/home/*.md` und `*.json` — jeweils `*.example.*` kopieren und anpassen |
 | Impressum / Datenschutz | `content/legal/impressum.md`, `content/legal/datenschutz.md` — die Datenschutzerklärung enthält bereits alle template-spezifischen Abschnitte (Session-Cookie, Kontaktformular, SEPA, openiban.com); nur `[PLATZHALTER]` befüllen und juristisch abnehmen lassen |
 | Copyright-Inhaber (Footer) | `content/legal/copyright.json` → `owner` |
 | Galerie-Bilder | `public/assets/images/content/`, `content/home/gallery.json` |
@@ -89,9 +97,9 @@ sudo systemctl reload apache2
 
 | Bereich | Dateien |
 |---------|---------|
-| Texte | `content/home/*.md` — hero, about, features, stats, contact |
-| Daten | `content/home/*.json` — gallery, stats, about-cards, topbar-links, videos |
-| Rechtliches | `content/legal/impressum.md`, `datenschutz.md`, `copyright.json` |
+| Texte | `content/home/*.md` — Kopien der `*.example.md`-Dateien, angepasst |
+| Daten | `content/home/*.json` — Kopien der `*.example.json`-Dateien, angepasst |
+| Rechtliches | `content/legal/impressum.md`, `datenschutz.md`, `copyright.json` — Kopien der `*.example.*`-Dateien |
 | Bilder | `public/assets/images/` — hero, content, background |
 | Logo | `public/assets/logo/` |
 | Favicon & App-Icons | `public/assets/icons/` |
@@ -121,7 +129,7 @@ sudo systemctl reload apache2
 
 ### Template-Updates übernehmen
 
-Kundenprojekte können Verbesserungen aus dem Template per Git-Merge übernehmen. Weil Template- und Kundendateien sich nicht überschneiden, entstehen dabei in der Regel keine Konflikte.
+Kundenprojekte können Verbesserungen aus dem Template per Git-Merge übernehmen. Kundendateien in `content/` sind in `.gitignore` eingetragen und werden vom Merge nie berührt — nur die `*.example.*`-Vorlagen werden aktualisiert.
 
 **Einmalige Einrichtung** (im Kundenprojekt):
 
@@ -143,7 +151,7 @@ git fetch template
 git merge template/main
 ```
 
-**Bei Konflikten:** Konflikte können nur in den "partiell anpassbaren" Dateien auftreten (`main.css`-Farbblöcke, `home.php`-Struktur). Kundendateien in `content/`, `public/assets/images/` und `.env` werden vom Merge nie berührt.
+**Bei Konflikten:** Konflikte können nur in den "partiell anpassbaren" Dateien auftreten (`main.css`-Farbblöcke, `home.php`-Struktur). Kundendateien in `content/` sind gitignored und werden vom Merge nicht berührt. Aktualisierte `*.example.*`-Vorlagen können optional manuell in die eigenen Dateien übernommen werden.
 
 ---
 

@@ -49,6 +49,9 @@ $md = static function (string $name) use ($parsedown, $contentRoot): string {
     $safe = preg_replace('/[^a-z0-9\/\-_]/', '', strtolower($name));
     $path = $contentRoot . '/' . $safe . '.md';
     if (!is_file($path)) {
+        $path = $contentRoot . '/' . $safe . '.example.md';
+    }
+    if (!is_file($path)) {
         return '';
     }
     $html = $parsedown->text(file_get_contents($path));
@@ -60,6 +63,9 @@ $md = static function (string $name) use ($parsedown, $contentRoot): string {
 $gallery = static function (string $name) use ($contentRoot): array {
     $safe = preg_replace('/[^a-z0-9\/\-_]/', '', strtolower($name));
     $path = $contentRoot . '/' . $safe . '.json';
+    if (!is_file($path)) {
+        $path = $contentRoot . '/' . $safe . '.example.json';
+    }
     if (!is_file($path)) {
         return [];
     }

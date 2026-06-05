@@ -212,6 +212,19 @@ Markdown- und JSON-Dateien in `content/` werden über zwei Closure-Funktionen in
 - `$md('home/hero')` — lädt `content/home/hero.md` und rendert HTML
 - `$gallery('home/gallery')` — lädt `content/home/gallery.json` und gibt Array zurück
 
+### Fallback auf `.example.*`
+Jede Content-Datei existiert im Template als `*.example.md` / `*.example.json`. Die Loader suchen zuerst nach der Kundendatei (ohne `.example`), fallen bei Nichtvorhandensein auf die Vorlage zurück:
+
+1. `content/home/hero.md` → wird verwendet, wenn vorhanden
+2. `content/home/hero.example.md` → Fallback (Template-Vorlage)
+
+Kundendateien (ohne `.example`) sind in `.gitignore` eingetragen und werden beim `git merge template/main` nie überschrieben. Template-Updates aktualisieren nur die `*.example.*`-Vorlagen.
+
+### Regeln
+- ❌ Kundendateien (ohne `.example`) nie ins Template committen
+- ✅ Template-Vorlagen immer als `*.example.*` pflegen
+- ✅ Neue Content-Dateien immer als `*.example.*` anlegen
+
 ### Sicherheit
 - Pfadnamen werden vor dem Laden sanitiert (nur `a-z0-9/-_` erlaubt)
 - Kein direkter Nutzerzugriff auf `content/`-Dateien
