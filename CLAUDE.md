@@ -29,6 +29,7 @@ Before ending a session:
    ```bash
    git -C /mnt/f/git_repos/websitetemplate pull
    ```
+4. Sage **"Session beenden"** im Hub (dev-notes) — Claude erstellt dort die Übergabe-Notiz.
 
 Das stellt sicher dass `F:\git_repos\websitetemplate` auf Windows immer aktuell ist.
 
