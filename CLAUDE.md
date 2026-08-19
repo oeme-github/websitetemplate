@@ -66,6 +66,12 @@ vendor/bin/phpunit --filter testValidIbanReturnsTrue
 
 ## Local Environment (WSL2)
 
+Automatisierte Tests (`composer test`, `npm test`) laufen headless auch sauber auf der Devbox
+(`~/git_repos/websitetemplate`, siehe `dev-notes/projects/devbox-umzug.md`). Der volle visuelle
+Browser-Test-Workflow unten (Apache + `hosts`-Eintrag + Windows-Browser) bleibt aber an WSL2
+gebunden, analog zur Hardware-/GUI-Ausnahme in `dev-notes/STANDARDS.md` — die Devbox ist eine
+reine SSH-Umgebung ohne Browser/GUI.
+
 Die primäre Entwicklungsumgebung ist **WSL2 (Ubuntu)**. VS Code verbindet sich per Remote-WSL direkt in das WSL2-Dateisystem. Alle Befehle (PHP, Composer, npm, Git, Apache) laufen in WSL2.
 
 - **OS**: Ubuntu on WSL2
