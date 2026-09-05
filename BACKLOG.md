@@ -69,6 +69,14 @@
 
 ## Nächste größere Aufgaben
 
+### websitetemplate_D01 — CLAUDE.md auf dev-notes-Template umstellen
+
+Eigene englische Struktur, keine STANDARDS.md-Referenz. Gemeinsam mit
+`buero-desk-booking-landing`/`friendsofthehawks` zu betrachten (gemeinsame Abstammung von hier).
+Zusätzlicher konkreter Fund: toter Session-End-Schritt „Windows-Kopie synchronisieren"
+(`/mnt/f/git_repos/websitetemplate`) muss dabei ebenfalls entfernt werden (seit WSL-Ablösung
+2026-09-02 nicht mehr funktionsfähig). Siehe `dev-notes/BACKLOG.md` D17, `dev-notes_F02`.
+
 ### friendsofthehawks — Template-Kompatibilität herstellen
 
 `friendsofthehawks` basiert auf dem Template, wurde aber eigenständig weiterentwickelt und hat sich vom Template entfernt. Vor einem `git merge template/main` muss geprüft werden:
