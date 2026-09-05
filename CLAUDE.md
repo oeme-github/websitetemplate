@@ -31,7 +31,7 @@ Gemeinsame Devbox-Umgebung (OS/Hardware/Migrationsgeschichte): siehe `dev-notes/
   entschieden — siehe `BACKLOG.md`. Dieses Kapitel wird final geschrieben, sobald das entschieden
   ist.
 
-### Startup-Routine — projektspezifische Ergänzungen
+## Startup-Routine — projektspezifische Ergänzungen
 Generischer Kern: siehe `dev-notes/STANDARDS.md` §2. Keine zusätzlichen Schritte für dieses
 Projekt.
 
