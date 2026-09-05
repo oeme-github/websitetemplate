@@ -96,3 +96,16 @@ verweist bis dahin nur auf diesen Punkt statt einen unfertigen Workflow zu besch
 - [ ] `.gitignore` — `!content/**/*.md` / `!content/**/*.json` Override ergänzen
 - [ ] Template-spezifische Änderungen (Security, JS, CSS, PHP) rückportieren
 - [ ] Kundenseitige Anpassungen identifizieren und sichern, damit sie beim Merge nicht überschrieben werden
+
+### websitetemplate_D02 — Feature-Entwicklungen aus friendsofthehawks auf Rückportierung ins Template prüfen
+
+Fund 2026-09-05 (`dev-notes`-CLAUDE.md-Konsolidierungsaudit, `friendsofthehawks_D01`): die
+Abweichungen zwischen `friendsofthehawks` und diesem Template (u. a. andere Test-Anzahl,
+sessionless statt session-basierte CSRF-Tokens, kein Color-Scheme-System) stammen laut User nicht
+nur aus verpasstem `git merge template/main`, sondern aus **eigenen Feature-Entwicklungen in
+`friendsofthehawks`**, die bisher nie mit dem Template abgeglichen wurden — andere Richtung als
+die obige Checkliste (die vor allem Template→Downstream betrachtet). Zu klären, sobald der Diff
+aus der Checkliste oben vorliegt: welche dieser Feature-Entwicklungen sind generisch genug, um
+ins Template zurückzuwandern (damit auch `buero-desk-booking-landing`/`beatmungswg-ofterdingen`
+davon profitieren), und welche sind bewusst `friendsofthehawks`-spezifisch und bleiben dort.
+
