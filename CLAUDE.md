@@ -1,114 +1,64 @@
-# CLAUDE.md
+# CLAUDE.md – websitetemplate
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Verbindlicher Arbeitsablauf
 
-## Startup
+Der vollständige Arbeitsablauf (Sprache, Startup-Routine, Arbeit im Projekt, Session-End-Routine)
+steht **ausschließlich** in `dev-notes/STANDARDS.md` §1–§4 — automatisch per `@`-Import geladen
+(siehe „Automatisch geladene Dateien" unten), hier nicht redundant wiederholen. Die Abschnitte
+unten enthalten nur **projektspezifische Ergänzungen und Fakten**.
 
-> Claude Code wird aus WSL2 gestartet: `cd ~/git_repos/websitetemplate && claude`
+**Rolle dieses Repos:** Template-Ursprung für PHP-One-Pager-Landingpages. Architektur,
+Security-Model, Code-Standards, Testing-Aufbau und Dependencies hier sind die **kanonische
+Quelle** für alle abgeleiteten Repos (siehe `dev-notes/STANDARDS.md` §3, „Single Source of Truth
+für Infra-Fakten" — Kategorie Code-Template-Ableitungen). Bugs/Verbesserungen an diesen Themen
+gehören hierher, nicht in ein abgeleitetes Repo.
 
-The following files are automatically loaded at startup (via `@` import):
-- @BACKLOG.md - **Check first**: Contains last session status and where to continue work
-- @README.md - Project overview and setup instructions
-- @CHANGELOG.md - Version history and recent changes
-- @DESIGN_PATTERN.md - Design patterns used in the codebase
-- @REVIEW_CHECKLIST.md - Code review checklist
-- @SECURITY_APPENDIX.md - Security implementation details
+## Entwicklungsumgebung
 
-## Session End
+Gemeinsame Devbox-Umgebung (OS/Hardware/Migrationsgeschichte): siehe `dev-notes/REPOS.md`
+(„Speicherorte") — autoritative Quelle, hier bewusst nicht dupliziert.
 
-Before ending a session:
+- **Projektpfad (Devbox):** `~/git_repos/websitetemplate`
+- **Versionskontrolle:** Git, Remote auf GitHub (`github.com/oeme-github/websitetemplate`)
+- **Automatisierte Tests** (`composer test`, `npm test`) laufen headless sauber auf der Devbox.
+- **Visueller Browser-QA-Workflow:** War bis 2026-09-02 WSL2-gebunden (GUI-Ausnahme, Devbox ist
+  reine SSH-Umgebung ohne Browser). Ersatz erfolgreich verprobt (2026-09-03): `php -S
+  <devbox-lan-ip>:<port> -t public` auf der Devbox starten, per `mcp__claude-in-chrome` vom
+  echten Browser des Users über die LAN-IP ansteuern (Details:
+  `dev-notes/projects/websitetemplate.md`, Cross-Machine-Browser-Test-Muster). **Noch offen:**
+  saubere URLs (`/impressum` etc., aktuell über `.htaccess`-Rewrites) im Ersatz-Workflow abbilden
+  — Router-Skript für `php -S` vs. Apache-Vhost auf der Devbox (bräuchte `sudo`), noch nicht
+  entschieden — siehe `BACKLOG.md`. Dieses Kapitel wird final geschrieben, sobald das entschieden
+  ist.
 
-1. Update `BACKLOG.md` with current status, what was completed, where to continue
-2. Commit and push all open changes:
-   ```bash
-   git add -p
-   git commit -m "..."
-   git push origin main
-   ```
-3. Windows-Kopie synchronisieren (WSL2 ist primär — Windows zieht nach):
-   ```bash
-   git -C /mnt/f/git_repos/websitetemplate pull
-   ```
-4. Sage **"Session beenden"** im Hub (dev-notes) — Claude erstellt dort die Übergabe-Notiz.
+### Startup-Routine — projektspezifische Ergänzungen
+Generischer Kern: siehe `dev-notes/STANDARDS.md` §2. Keine zusätzlichen Schritte für dieses
+Projekt.
 
-Das stellt sicher dass `F:\git_repos\websitetemplate` auf Windows immer aktuell ist.
-
-## Project Overview
-
-A lightweight, one-page PHP website template with built-in form handling (contact or SEPA). Framework-free, using vanilla HTML/CSS/JavaScript with PHP 8.0+ backend. Security-first design with CSRF, XSS protection, CSP headers, and a RGB-based color scheme system with FOUC prevention.
-
-## Commands
-
+## Häufige Befehle
 ```bash
-# Install PHP dependencies
+# PHP-Abhängigkeiten installieren
 composer install
 
-# Install JS dependencies (Jest)
+# JS-Abhängigkeiten installieren (Jest)
 npm install
 
-# Run PHP tests (48 PHPUnit tests)
+# PHP-Tests (48 PHPUnit-Tests)
 composer test
 
-# Run JS tests (86 Jest tests)
+# JS-Tests (86 Jest-Tests)
 npm test
-# or via Composer:
+# oder via Composer:
 composer test-js
 
-# Run PHPUnit directly
-vendor/bin/phpunit
-
-# Run a single test file
+# Einzelne Testdatei
 vendor/bin/phpunit tests/IbanValidatorTest.php
 
-# Run a specific test method
+# Einzelne Testmethode
 vendor/bin/phpunit --filter testValidIbanReturnsTrue
 ```
 
-## Local Environment (WSL2)
-
-Automatisierte Tests (`composer test`, `npm test`) laufen headless auch sauber auf der Devbox
-(`~/git_repos/websitetemplate`, siehe `dev-notes/projects/devbox-umzug.md`). Der volle visuelle
-Browser-Test-Workflow unten (Apache + `hosts`-Eintrag + Windows-Browser) bleibt aber an WSL2
-gebunden, analog zur Hardware-/GUI-Ausnahme in `dev-notes/STANDARDS.md` — die Devbox ist eine
-reine SSH-Umgebung ohne Browser/GUI.
-
-Die primäre Entwicklungsumgebung ist **WSL2 (Ubuntu)**. VS Code verbindet sich per Remote-WSL direkt in das WSL2-Dateisystem. Alle Befehle (PHP, Composer, npm, Git, Apache) laufen in WSL2.
-
-- **OS**: Ubuntu on WSL2
-- **Server**: Apache2 with `mod_rewrite` enabled
-- **PHP**: 8.x (installed via apt)
-- **Web root**: `public/` directory — Apache VirtualHost points here
-- **Dev repo**: `/home/oeme/git_repos/websitetemplate/`
-- **No build step** — CSS and JS are served as-is
-- URL rewrites via `.htaccess` work out of the box
-- **GitHub CLI**: `gh` (on PATH in WSL2)
-
-### Session-Start (täglich)
-
-```bash
-# 1. In WSL2-Terminal:
-cd ~/git_repos/websitetemplate
-
-# 2. Apache läuft? (WSL2 startet Dienste nicht automatisch)
-sudo service apache2 status
-sudo service apache2 start   # falls nicht aktiv
-
-# 3. Mailpit starten (lokaler SMTP-Catcher für Formular-Tests):
-mailpit &
-# → SMTP auf localhost:1025 (kein TLS, kein Auth)
-# → Web-UI: http://localhost:8025
-
-# 4. VS Code mit Remote-WSL öffnen:
-code .
-# → VS Code öffnet sich verbunden mit WSL2
-# → Terminal in VS Code ist direkt das WSL2-Terminal
-```
-
-Browser-Test (von Windows): `http://websitetemplate.local`  
-Mail-Inbox (lokal): `http://localhost:8025`
-
 ### Mailpit – lokale .env (DEV)
-
 ```env
 APP_ENV=dev
 MAIL_HOST=127.0.0.1
@@ -120,55 +70,28 @@ MAIL_FROM=dev@websitetemplate.local
 MAIL_FROM_NAME=Dev
 MAIL_TO=inbox@websitetemplate.local
 ```
+PHPMailer sendet dann an Mailpit statt an einen echten SMTP-Server. Alle Mails (inkl.
+SEPA-PDF-Anhang) sind in dessen Web-UI sichtbar (`http://localhost:8025`).
 
-PHPMailer sendet dann an Mailpit statt an einen echten SMTP-Server.
-Alle Mails (inkl. SEPA-PDF-Anhang) sind in der Web-UI sichtbar.
-
-### Einmaliges Setup (WSL2-Seite)
-
-```bash
-# Traversal-Rechte für www-data (WSL2-spezifisch, sonst 403):
-chmod o+x /home/oeme
-chmod o+x /home/oeme/git_repos
-
-# Apache-Konfiguration:
-sudo cp setup/apache/websitetemplate.conf /etc/apache2/sites-available/
-sudo a2ensite websitetemplate.conf
-sudo a2enmod rewrite
-sudo service apache2 restart
-
-# Abhängigkeiten:
-composer install
-npm install
-```
-
-### Einmaliges Setup (Windows-Seite)
-
-**`C:\Users\jroem\.wslconfig`** (WSL2 Mirrored Networking — damit `localhost` von Windows auf WSL2 zeigt):
-```ini
-[wsl2]
-networkingMode=mirrored
-```
-Nach Änderung: `wsl --shutdown` in PowerShell, dann WSL2 neu starten.
-
-**`C:\Windows\System32\drivers\etc\hosts`** (einmalig, als Admin):
-```
-127.0.0.1 websitetemplate.local
-```
-
-### Apache-Konfiguration
-
+### Apache-Konfiguration (Referenz, aktuell nicht aktiv genutzt — siehe „Entwicklungsumgebung")
 Template: `setup/apache/websitetemplate.conf`
-Auf dem Server: `/etc/apache2/sites-available/websitetemplate.conf`
 
 ### Template-Einsatz (Referenz)
 
-Dieses Template wird bereits in folgenden Projekten eingesetzt:
+Dieses Template wird bereits in folgenden Repos eingesetzt (alle per `git remote template`
+periodisch nachgezogen, siehe `dev-notes/REPOS.md` „Kontinuierlicher Verbesserungsprozess"):
 
-| Projekt | Pfad (WSL2) | URL (lokal) |
-|---------|-------------|-------------|
-| friendsofthehawks | `/home/oeme/git_repos/friendsofthehawks/` | `http://friendsofthehawks.localhost` |
-| beatmungswg-ofterdingen | `/home/oeme/git_repos/beatmungswg-ofterdingen/` | `http://beatmungswg-ofterdingen.local` |
+| Repo | Pfad (Devbox) |
+|------|---------------|
+| `buero-desk-booking-landing` | `~/git_repos/buero-desk-booking-landing/` |
+| `friendsofthehawks` | `~/git_repos/friendsofthehawks/` |
+| `beatmungswg-ofterdingen` | `~/git_repos/beatmungswg-ofterdingen/` |
+
+---
+
+## Project Overview
+
+A lightweight, one-page PHP website template with built-in form handling (contact or SEPA). Framework-free, using vanilla HTML/CSS/JavaScript with PHP 8.0+ backend. Security-first design with CSRF, XSS protection, CSP headers, and a RGB-based color scheme system with FOUC prevention.
 
 ## Architecture
 
@@ -255,3 +178,46 @@ Jest environment: jsdom. Run with `npm test`.
 - `erusev/parsedown` - Markdown rendering for content files
 - `phpunit/phpunit` (dev) - PHP testing framework
 - `jest` + `jest-environment-jsdom` (dev) - JavaScript testing framework
+
+---
+
+## Session-End-Routine — projektspezifische Ergänzungen
+Generischer Kern: siehe `dev-notes/STANDARDS.md` §4. Keine zusätzlichen Schritte für dieses
+Projekt (der frühere Windows-Mirror-Sync-Schritt ist seit der WSL-Ablösung 2026-09-02
+gegenstandslos und entfällt).
+
+## Automatisch geladene Dateien (via `@`-Import)
+- @BACKLOG.md — **zuerst lesen**: enthält letzten Stand und wo weitermachen
+- @README.md — Projektübersicht und Setup
+- @CHANGELOG.md — Versionshistorie und aktuelle Änderungen
+- @DESIGN_PATTERN.md — Design-Patterns im Code
+- @REVIEW_CHECKLIST.md — Code-Review-Checkliste
+- @SECURITY_APPENDIX.md — Security-Implementierungsdetails
+- @~/git_repos/dev-notes/STANDARDS.md — verbindlicher, projektübergreifender Arbeitsablauf
+  (Hub-Regelwerk; externer Import außerhalb dieses Projekts — Claude Code zeigt beim allerersten
+  Laden einen einmaligen Genehmigungsdialog, danach automatisch)
+
+---
+
+## Doku-Check (alle 4 Wochen)
+Dedizierte Session zur Synchronisierung der Dokumentation mit dem tatsächlichen Projektstand:
+- `CLAUDE.md` — nur noch projektspezifische Fakten hier; „Entwicklungsumgebung" final schreiben,
+  sobald die Router-Skript-vs-Apache-Entscheidung gefallen ist
+- `README.md` — Features, Konfiguration, Installationsschritte
+- `BACKLOG.md` — erledigte Einträge bereinigen, neue Erkenntnisse ergänzen; IDs auf
+  `<repo>_<ID>`-Konvention prüfen und ggf. nachziehen (siehe `dev-notes/STANDARDS.md`) — inkl.
+  Querverweise in `dev-notes/PROJECTS.md`/`dev-notes/projects/websitetemplate.md` und den
+  abgeleiteten Repos
+
+Nächster Doku-Check: **2026-10-03**
+
+---
+
+## Verwandte Repositories
+
+| Repo | Zweck |
+|------|-------|
+| `oeme-github/dev-notes` | PM-Hub, Projektübersicht |
+| `oeme-github/buero-desk-booking-landing` | Abgeleitetes Repo (Downstream-Klon) |
+| `oeme-github/friendsofthehawks` | Abgeleitetes Repo (Downstream-Klon) |
+| `oeme-github/beatmungswg-ofterdingen` | Abgeleitetes Repo (Downstream-Klon) |

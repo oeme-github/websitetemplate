@@ -77,6 +77,16 @@ Zusätzlicher konkreter Fund: toter Session-End-Schritt „Windows-Kopie synchro
 (`/mnt/f/git_repos/websitetemplate`) muss dabei ebenfalls entfernt werden (seit WSL-Ablösung
 2026-09-02 nicht mehr funktionsfähig). Siehe `dev-notes/BACKLOG.md` D17, `dev-notes_F02`.
 
+**Teilweise umgesetzt (2026-09-05):** `CLAUDE.md` auf dev-notes-Template umgestellt (Verweis auf
+`STANDARDS.md`, Entwicklungsumgebung/Doku-Check/Verwandte-Repositories ergänzt), toter
+Windows-Sync-Schritt entfernt, „Template-Einsatz"-Tabelle um `buero-desk-booking-landing`
+ergänzt. **Bewusst nicht final geschrieben:** das „Local Environment"-Kapitel — der WSL2-Ersatz
+für den visuellen Browser-QA-Workflow ist verprobt (`php -S` + `mcp__claude-in-chrome` über LAN,
+siehe `dev-notes/projects/websitetemplate.md`, Eintrag 2026-09-03), aber die Folgefrage „saubere
+URLs (Router-Skript vs. Apache-Vhost auf der Devbox)" ist noch **nicht entschieden** — braucht
+eine eigene `websitetemplate`-Sitzung, bevor das Kapitel final beschrieben werden kann. `CLAUDE.md`
+verweist bis dahin nur auf diesen Punkt statt einen unfertigen Workflow zu beschreiben.
+
 ### friendsofthehawks — Template-Kompatibilität herstellen
 
 `friendsofthehawks` basiert auf dem Template, wurde aber eigenständig weiterentwickelt und hat sich vom Template entfernt. Vor einem `git merge template/main` muss geprüft werden:
