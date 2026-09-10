@@ -52,18 +52,14 @@
 
 ## Offene Issues (GitHub)
 
-| # | Titel | Priorität | Status |
-|---|-------|-----------|--------|
-| #1 | SEPA-Flow rechtlich finalisieren | Offen | Wartet auf Juristencheck |
-| #5 | Logging-Strategie (DEV vs PROD) | Offen | Wartet auf Entscheidung |
+Keine offenen Issues. Issue #1 (SEPA-Flow rechtlich finalisieren) und #5 (Logging-Strategie DEV
+vs PROD) am 2026-09-10 geschlossen — aktueller Stand vom Betreiber als ausreichend bestätigt.
 
 ---
 
 ## Zurückgestellt
 
 - **Screenreader-Test SEPA-Formular**: manueller Test (NVDA/VoiceOver) — kein Code-Task
-- **Issue #1** (SEPA rechtlich): Wartet auf Juristencheck / Pflichttexte
-- **Issue #5** (Logging): Wartet auf Entscheidung zu Request-ID
 
 ---
 
