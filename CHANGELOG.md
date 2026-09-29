@@ -1,3 +1,44 @@
+## v1.7.0 – Site-Identität, Dev-Router, Template-Fixes
+
+### Added
+- **Site-Identität konfigurierbar** (`websitetemplate_D03`): `content/site.json` (Fallback
+  `content/site.example.json`) steuert Name (H1 der Startseite), Topbar-Text (`tagline`),
+  Logo-Alt-Text, Seitentitel (`titles.home/impressum/datenschutz/404`), Meta-Descriptions pro
+  Route (`metaDescriptions.<page>`) und Navigationslabels (`nav.hero/gallery/stats/about/contact`).
+  Fehlende Schlüssel fallen auf die bisherigen Werte zurück — ohne `site.json` bleibt alles wie in
+  v1.6.x.
+- **`dev/router.php`**: Router für den eingebauten PHP-Server, bildet die Regeln aus
+  `public/.htaccess` nach (saubere URLs, 403 für nicht freigegebene `.php`-Dateien und Dotfiles).
+  Start: `php -S <host>:<port> -t public dev/router.php`. Schließt `websitetemplate_D01`
+  (Router-Skript statt Apache-Vhost für die lokale Entwicklung).
+
+### Fixed
+- `.visually-hidden` fehlte in `main.css` → Zahlen im Stats-Bereich erschienen doppelt
+  (`websitetemplate_B01`)
+- Bilder in Markdown-Inhalten sprengten die Seitenbreite → globale `img`-Regel
+  `max-width: 100%` (`websitetemplate_B02`)
+- Hero-Gradient war deckend, `--bg-image-hero` nie sichtbar → `--color-bg-hero-start/-end` jetzt
+  `rgba(..., 0.75)`, Downstream kann den Wert über die Tokens überschreiben (`websitetemplate_B03`)
+- `site.webmanifest` verwies auf `/android-chrome-*.png` statt `/assets/icons/…`
+  (`websitetemplate_B04`)
+
+Gemeldet von `beatmungswg-ofterdingen` (`beatmungswg-ofterdingen_B08`).
+
+### Migration für Downstream-Repos
+Wer bisher `templates/partials/header.php` oder `public/index.php` lokal gepatcht hat, um Name,
+Topbar-Text, Logo-Alt, Titel, Meta-Description oder Menütexte zu ändern:
+1. `git merge template/main` — bei Konflikten in diesen beiden Dateien die **Template-Version**
+   übernehmen (`git checkout --theirs templates/partials/header.php public/index.php`).
+2. `cp content/site.example.json content/site.json` und die bisher gepatchten Texte dort
+   eintragen (nur abweichende Schlüssel nötig).
+3. Prüfen, dass `content/site.json` getrackt wird (Override `!content/**/*.json` in der eigenen
+   `.gitignore`, siehe README „Template-Updates übernehmen").
+
+Alle Template-Änderungen seit v1.6.0 gehören zu diesem Release, auch der
+`content/`-`.example.*`-Mechanismus samt `.gitignore`-Änderung.
+
+---
+
 ## v1.6.0 – Section Flags
 
 ### Added

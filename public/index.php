@@ -86,6 +86,33 @@ $gallery = static function (string $name) use ($contentRoot): array {
 
 /*
 |--------------------------------------------------------------------------
+| Site identity (content/site.json, fallback content/site.example.json)
+|--------------------------------------------------------------------------
+| Defaults keep the pre-v1.7.0 behaviour when neither file provides a key.
+*/
+$site = array_replace_recursive([
+    'name'             => 'Mein One-Pager',
+    'tagline'          => 'One-Pager Template',
+    'logoAlt'          => null,
+    'titles'           => [
+        'home'        => 'Startseite',
+        'impressum'   => 'Impressum',
+        'datenschutz' => 'Datenschutz',
+        '404'         => '404 – Seite nicht gefunden',
+    ],
+    'metaDescriptions' => [],
+    'nav'              => [
+        'hero'    => 'Start',
+        'gallery' => 'Galerie',
+        'stats'   => 'Zahlen',
+        'about'   => 'Über uns',
+        'contact' => 'Kontakt',
+    ],
+], $gallery('site'));
+$site['logoAlt'] ??= $site['name'];
+
+/*
+|--------------------------------------------------------------------------
 | Section-Flags (SECTION_* aus .env, Default: aktiviert)
 |--------------------------------------------------------------------------
 */
@@ -102,18 +129,18 @@ $section = static function (string $name): bool {
 $routes = [
     'home' => [
         'template'  => 'pages/home.php',
-        'title'     => 'Startseite',
+        'title'     => $site['titles']['home'],
         'variant'   => 'home',
     ],
     'impressum' => [
         'template'   => 'pages/impressum.php',
-        'title'      => 'Impressum',
+        'title'      => $site['titles']['impressum'],
         'metaRobots' => 'noindex, follow',
         'variant'    => 'default',
     ],
     'datenschutz' => [
         'template'   => 'pages/datenschutz.php',
-        'title'      => 'Datenschutz',
+        'title'      => $site['titles']['datenschutz'],
         'metaRobots' => 'noindex, follow',
         'variant'    => 'default',
     ],
@@ -156,13 +183,13 @@ if (!isset($routes[$page])) {
     http_response_code(404);
 
     $template           = 'pages/404.php';
-    $title              = '404 – Seite nicht gefunden';
+    $title              = $site['titles']['404'];
     $metaRobots         = 'noindex, follow';
 } else {
     $route              = $routes[$page];
     $template           = $route['template'];
     $title              = $route['title'];
-    $metaDescription    = $route['metaDescription'] ?? null;
+    $metaDescription    = $site['metaDescriptions'][$page] ?? null;
     $metaRobots         = $route['metaRobots'] ?? null;
     $variant            = $route['variant'] ?? 'default';
 }

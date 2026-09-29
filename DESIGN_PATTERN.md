@@ -220,6 +220,12 @@ Jede Content-Datei existiert im Template als `*.example.md` / `*.example.json`. 
 
 Kundendateien (ohne `.example`) sind in `.gitignore` eingetragen und werden beim `git merge template/main` nie überschrieben. Template-Updates aktualisieren nur die `*.example.*`-Vorlagen.
 
+### Site-Identität
+`content/site.json` (Fallback `site.example.json`) wird in `index.php` einmal als `$site` geladen und
+mit eingebauten Defaults gemergt (`array_replace_recursive`): `name`, `tagline`, `logoAlt`,
+`titles.<page>`, `metaDescriptions.<page>`, `nav.<section>`. Instanzspezifische Texte gehören
+dorthin, nie als Literal in `templates/partials/` oder in die Routen-Tabelle.
+
 ### Regeln
 - ❌ Kundendateien (ohne `.example`) nie ins Template committen
 - ✅ Template-Vorlagen immer als `*.example.*` pflegen

@@ -4,13 +4,23 @@ declare(strict_types=1);
 // Security headers are set in public/index.php
 
 // @var string $pageH1
-$pageH1 = $pageH1 ?? 'Mein One-Pager';
+// @var array  $site   (set in public/index.php)
+$pageH1 = $pageH1 ?? $site['name'];
+
+// Section key => anchor id
+$navItems = [
+    'hero'    => 'hero',
+    'gallery' => 'features',
+    'stats'   => 'stats',
+    'about'   => 'about',
+    'contact' => 'contact',
+];
 ?>
 
 <!-- Topbar -->
 <div class="topbar">
     <div class="topbar-inner">
-        <span>One-Pager Template</span>
+        <?php if (($site['tagline'] ?? '') !== ''): ?><span><?= e($site['tagline']) ?></span><?php endif; ?>
         <?php $topbarLinks = $gallery('home/topbar-links'); if ($topbarLinks): ?>
         <nav class="topbar-links" aria-label="Externe Links">
             <?php foreach ($topbarLinks as $link):
@@ -32,18 +42,14 @@ $pageH1 = $pageH1 ?? 'Mein One-Pager';
 <header class="header">
     <div class="header-inner">
         <a href="/#top" class="logo" aria-label="Startseite">
-            <img class="logo-img" src="/assets/logo/logo_mark.svg" alt="Mein One-Pager" width="40" height="40" />
+            <img class="logo-img" src="/assets/logo/logo_mark.svg" alt="<?= e($site['logoAlt']) ?>" width="40" height="40" />
         </a>
 
         <h1><?= htmlspecialchars($pageH1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></h1>
 
         <!-- Desktop Navigation -->
         <nav class="nav-desktop" id="desktopMenu">
-            <?php if ($section('hero')): ?><a href="/#hero">Start</a><?php endif; ?>
-            <?php if ($section('gallery')): ?><a href="/#features">Galerie</a><?php endif; ?>
-            <?php if ($section('stats')): ?><a href="/#stats">Zahlen</a><?php endif; ?>
-            <?php if ($section('about')): ?><a href="/#about">Über uns</a><?php endif; ?>
-            <?php if ($section('contact')): ?><a href="/#contact">Kontakt</a><?php endif; ?>
+            <?php foreach ($navItems as $key => $anchor): if ($section($key)): ?><a href="/#<?= $anchor ?>"><?= e($site['nav'][$key] ?? '') ?></a><?php endif; endforeach; ?>
         </nav>
 
         <!-- Mobile Button -->
@@ -54,10 +60,6 @@ $pageH1 = $pageH1 ?? 'Mein One-Pager';
 
     <!-- Mobile Menü -->
     <nav id="mobileMenu" class="nav-mobile" data-nav>
-        <?php if ($section('hero')): ?><a href="/#hero">Start</a><?php endif; ?>
-        <?php if ($section('gallery')): ?><a href="/#features">Galerie</a><?php endif; ?>
-        <?php if ($section('stats')): ?><a href="/#stats">Zahlen</a><?php endif; ?>
-        <?php if ($section('about')): ?><a href="/#about">Über uns</a><?php endif; ?>
-        <?php if ($section('contact')): ?><a href="/#contact">Kontakt</a><?php endif; ?>
+        <?php foreach ($navItems as $key => $anchor): if ($section($key)): ?><a href="/#<?= $anchor ?>"><?= e($site['nav'][$key] ?? '') ?></a><?php endif; endforeach; ?>
     </nav>
 </header>

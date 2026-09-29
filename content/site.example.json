@@ -1,0 +1,21 @@
+{
+    "name": "Mein One-Pager",
+    "tagline": "One-Pager Template",
+    "logoAlt": "Mein One-Pager",
+    "titles": {
+        "home": "Startseite",
+        "impressum": "Impressum",
+        "datenschutz": "Datenschutz",
+        "404": "404 – Seite nicht gefunden"
+    },
+    "metaDescriptions": {
+        "home": "Kurzbeschreibung der Website für Suchmaschinen (ca. 150 Zeichen)."
+    },
+    "nav": {
+        "hero": "Start",
+        "gallery": "Galerie",
+        "stats": "Zahlen",
+        "about": "Über uns",
+        "contact": "Kontakt"
+    }
+}

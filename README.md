@@ -41,13 +41,20 @@ cp content/legal/datenschutz.example.md content/legal/datenschutz.md
 # datenschutz.md öffnen und [PLATZHALTER] befüllen
 ```
 
-Lokaler Webserver (Apache mit `mod_rewrite`) muss auf das `public/`-Verzeichnis zeigen.  
+Lokal reicht der eingebaute PHP-Server mit dem mitgelieferten Router, der die Rewrite-Regeln aus `public/.htaccess` nachbildet (saubere URLs wie `/impressum`):
+
+```bash
+php -S 127.0.0.1:8011 -t public dev/router.php
+```
+
+Alternativ Apache mit `mod_rewrite`, Document Root auf `public/` (Vorlage: `setup/apache/websitetemplate.conf`).  
 Für lokalen Mailversand empfiehlt sich [Mailpit](https://mailpit.axllent.org/) (`MAIL_HOST=127.0.0.1`, `MAIL_PORT=1025`).
 
 ### 3. Anpassen
 
 | Was | Wo |
 |-----|----|
+| Name, Topbar-Text, Logo-Alt, Seitentitel, Meta-Descriptions, Menütexte | `content/site.json` — Kopie von `site.example.json`, nur abweichende Schlüssel nötig |
 | Texte & Inhalte | `content/home/*.md` und `*.json` — jeweils `*.example.*` kopieren und anpassen |
 | Impressum / Datenschutz | `content/legal/impressum.md`, `content/legal/datenschutz.md` — die Datenschutzerklärung enthält bereits alle template-spezifischen Abschnitte (Session-Cookie, Kontaktformular, SEPA, openiban.com); nur `[PLATZHALTER]` befüllen und juristisch abnehmen lassen |
 | Copyright-Inhaber (Footer) | `content/legal/copyright.json` → `owner` |
@@ -215,6 +222,7 @@ Texte als Markdown, Galerien als JSON im `content/`-Verzeichnis:
 
 ```
 content/
+├── site.json          # Site-Identität: name, tagline, logoAlt, titles, metaDescriptions, nav
 ├── home/
 │   ├── hero.md
 │   ├── about.md
@@ -224,7 +232,9 @@ content/
     └── datenschutz.md
 ```
 
-In Templates: `$md('home/hero')` und `$gallery('home/gallery')`.
+In Templates: `$md('home/hero')` und `$gallery('home/gallery')`. Die Site-Identität steht in allen Templates als `$site` bereit.
+
+**Von lokalen `header.php`-/`index.php`-Patches auf `site.json` umstellen** (Downstream-Repos vor v1.7.0): beim `git merge template/main` die Template-Version von `templates/partials/header.php` und `public/index.php` übernehmen, die bisher gepatchten Texte in `content/site.json` eintragen — Details im [CHANGELOG](CHANGELOG.md) unter v1.7.0.
 
 ---
 
@@ -235,6 +245,8 @@ composer test        # PHPUnit — 55 Unit-Tests
 npm test             # Jest   — 101 JS-Tests
 composer test-integration  # E2E via HTTP + Mailpit (Apache muss laufen)
 ```
+
+Lokaler Server ohne Apache: `php -S <host>:<port> -t public dev/router.php` — der Router liefert Assets direkt aus, führt nur die freigegebenen Endpoints (`index.php`, `send_*.php`, `iban_lookup.php`) aus, beantwortet andere `.php`-Dateien und Dotfiles mit 403 und leitet alles andere an `index.php` weiter (unbekannte Seiten → 404). Für Browser-Tests von einem anderen Rechner aus an die LAN-Adresse statt `127.0.0.1` binden.
 
 Kein Build-Step erforderlich — CSS und JS werden direkt ausgeliefert.
 
