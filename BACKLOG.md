@@ -57,6 +57,37 @@ vs PROD) am 2026-09-10 geschlossen — aktueller Stand vom Betreiber als ausreic
 
 ---
 
+## Template-Mängel aus `beatmungswg-ofterdingen_B08` (2026-09-29)
+
+Beim Einspielen der Inhalte in `beatmungswg-ofterdingen` (Template-Stand `dc22c0d`) gefunden,
+hier am 2026-09-29 gegengeprüft (alle bestätigt). `beatmungswg-ofterdingen` hat lokale Patches und
+entfernt sie nach dem nächsten `git merge template/main`.
+
+- **websitetemplate_B01 — `.visually-hidden` fehlt in `main.css`.** `templates/pages/home.php:91`
+  (Stats) nutzt die Klasse, `main.css` definiert sie nicht → jede Zahl erscheint doppelt, auch mit
+  den Example-Inhalten. Fix: Standard-`.visually-hidden`-Regel (clip/1px) ergänzen.
+- **websitetemplate_B02 — Bilder in Markdown-Inhalten ohne `max-width`.** Es gibt keine
+  generische `img`-Regel (nur `.logo-img`/`.lightbox-img`) → Bilder aus `$md()` sprengen die
+  Seitenbreite. Fix: `img { max-width: 100%; height: auto; }` als Basisregel.
+- **websitetemplate_B03 — `.hero`-Gradient deckend, `--bg-image-hero` nie sichtbar.**
+  `--color-bg-hero-start/-end` sind `rgb(...)` ohne Alpha (`main.css:61–62`, Dark-Mode `:125–126`),
+  der Gradient liegt voll deckend über dem Bild. Fix: Tokens auf `rgba(..., <alpha>)` umstellen
+  (analog Footer-Overlay mit 0.95, für den Hero deutlich transparenter).
+- **websitetemplate_B04 — falsche Icon-Pfade in `site.webmanifest`.** Datei liegt unter
+  `public/assets/icons/`, referenziert aber `/android-chrome-*.png` (Root). Fix: Pfade auf
+  `/assets/icons/android-chrome-*.png`.
+- **websitetemplate_D03 — Instanz-Identität hart im Template-Code.** Topbar-Text („One-Pager
+  Template"), Logo-Alt und H1-Default („Mein One-Pager") in `templates/partials/header.php`,
+  Seitentitel/Meta-Description in der Routen-Tabelle in `public/index.php`, Nav-Labels
+  („Galerie", „Zahlen", …) in `header.php`. Downstream muss Template-Code ändern → Merge-Konflikte
+  bei jedem Update, widerspricht der Template/Kunden-Trennung (`DESIGN_PATTERN.md` §1).
+  Vorschlag: konfigurierbar über `content/` (z. B. `content/site.example.json` mit
+  `name`/`tagline`/`logoAlt`/`titles`/`metaDescriptions`/`nav`, analog zum `.example`-Fallback)
+  statt `.env` (Texte mit Umlauten/Sonderzeichen gehören nicht in `.env`). **Architektur-
+  entscheidung, wartet auf den User.**
+
+---
+
 ## Zurückgestellt
 
 - **Screenreader-Test SEPA-Formular**: manueller Test (NVDA/VoiceOver) — kein Code-Task
