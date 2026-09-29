@@ -58,8 +58,8 @@
   --color-bg-body:        rgb(var(--color-secondary));
   --color-bg-header:      rgb(var(--color-secondary));
   --color-bg-section-alt: rgb(var(--color-secondary-alt));
-  --color-bg-hero-start:  rgb(var(--color-secondary));
-  --color-bg-hero-end:    rgb(var(--color-primary));
+  --color-bg-hero-start:  rgba(var(--color-secondary), 0.75);
+  --color-bg-hero-end:    rgba(var(--color-primary), 0.75);
   --color-bg-footer:      rgb(var(--color-secondary));
 
   --color-text-main:   rgb(var(--color-secondary-comp));
@@ -122,8 +122,8 @@
   --color-bg-body:        rgb(var(--color-secondary-comp));
   --color-bg-header:      rgb(var(--color-secondary-comp));
   --color-bg-section-alt: rgb(var(--color-secondary-alt-comp));
-  --color-bg-hero-start:  rgb(var(--color-secondary-comp));
-  --color-bg-hero-end:    rgb(var(--color-primary-comp));
+  --color-bg-hero-start:  rgba(var(--color-secondary-comp), 0.75);
+  --color-bg-hero-end:    rgba(var(--color-primary-comp), 0.75);
   --color-bg-footer:      rgb(var(--color-secondary-comp));
 
   --color-text-main:   rgb(var(--color-secondary));
@@ -246,6 +246,25 @@ small {
 /* Reset & Basis */
 * {
   box-sizing: border-box;
+}
+
+/* Content images (e.g. from Markdown) never exceed their container */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Screen-reader-only text */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .topbar {
