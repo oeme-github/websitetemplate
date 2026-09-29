@@ -96,12 +96,46 @@ verweist bis dahin nur auf diesen Punkt statt einen unfertigen Workflow zu besch
 ### websitetemplate_D02 — Feature-Entwicklungen aus friendsofthehawks auf Rückportierung ins Template prüfen
 
 Fund 2026-09-05 (`dev-notes`-CLAUDE.md-Konsolidierungsaudit, `friendsofthehawks_D01`): die
-Abweichungen zwischen `friendsofthehawks` und diesem Template (u. a. andere Test-Anzahl,
-sessionless statt session-basierte CSRF-Tokens, kein Color-Scheme-System) stammen laut User nicht
+Abweichungen zwischen `friendsofthehawks` und diesem Template (u. a. andere Test-Anzahl) stammen
+laut User nicht
 nur aus verpasstem `git merge template/main`, sondern aus **eigenen Feature-Entwicklungen in
 `friendsofthehawks`**, die bisher nie mit dem Template abgeglichen wurden — andere Richtung als
 die obige Checkliste (die vor allem Template→Downstream betrachtet). Zu klären, sobald der Diff
 aus der Checkliste oben vorliegt: welche dieser Feature-Entwicklungen sind generisch genug, um
 ins Template zurückzuwandern (damit auch `buero-desk-booking-landing`/`beatmungswg-ofterdingen`
 davon profitieren), und welche sind bewusst `friendsofthehawks`-spezifisch und bleiben dort.
+
+**Korrigiert 2026-09-29** (Fund aus dem `friendsofthehawks`-Doku-Check, hier gegengeprüft): die
+ursprünglich hier genannten Abweichungen „sessionless CSRF-Tokens" und „kein Color-Scheme-System"
+stimmen nicht — `src/Security/csrf.php` ist in beiden Repos identisch (session-basiert), und
+`friendsofthehawks` hat das Color-Scheme-System (`main.js`, `colorScheme`). Umgekehrt fehlt
+`friendsofthehawks` `src/http/FormEndpoint.php` (inkl. `guardRateLimit()`) aus dem Template. In
+`friendsofthehawks` ist **kein** `template`-Remote eingerichtet (anders als seit 2026-09-29 in
+`beatmungswg-ofterdingen`).
+
+**Kandidaten aus `friendsofthehawks` v2.32.0 — bewertet 2026-09-29, noch nicht umgesetzt:**
+
+- **`src/Security/RateLimiter.php`** — dateibasiertes Fixed-Window-Limit (`flock`, Schlüssel
+  SHA-256-gehasht → keine IP/Mail im Klartext auf Platte), eigene PHPUnit-Tests.
+  **Bewertung: generisch, Rückportierung empfohlen.** Schließt eine echte Lücke im vorhandenen
+  Rate Limiting (Issue #7): `guardRateLimit()`/`rateLimitCheck()` zählen in `$_SESSION` — ein Bot
+  holt sich pro Versuch eine neue Session samt CSRF-Token und setzt den Zähler damit zurück.
+  Umsetzungsidee: `guardRateLimit()` in `FormEndpoint.php` intern auf `RateLimiter` umstellen
+  (Schlüssel z. B. `form:<key>:<REMOTE_ADDR>`), IBAN-Lookup ebenso. Offen: `RATE_LIMIT_DIR` in
+  `.env.example` + `setup/setup.sh` (außerhalb `public/`, beschreibbar für `www-data`),
+  generischer Fallback-Name unter `sys_get_temp_dir()` statt `fothawks-ratelimit`, kein Aufräumen
+  alter Dateien (bei One-Pager-Last unkritisch), Datenschutz-Abschnitt in
+  `content/legal/datenschutz.example.md` ergänzen (gehashte IP, Speicherdauer = Zeitfenster).
+- **`src/Services/MemberCopy.php`** — Bestätigungsmail an die im SEPA-Formular eingegebene
+  Adresse: fester Text, Nutzernachricht auf Klartext reduziert (Links → `[Link entfernt]`, max.
+  1000 Zeichen), gedrosselt per IP (3/h) und Empfänger (2/24 h) über `RateLimiter`, separater
+  Versand (Fehler bricht die Hauptmail nicht ab). **Bewertung: Muster generisch, Code in der
+  jetzigen Form nicht.** Betreff und Text (Vereinsname, „Mitgliedsantrag"/„Spende") sind
+  hartcodiert kundenspezifisch — im Template müsste der Text aus `content/` kommen (z. B.
+  `content/mail/member-copy.example.md` mit `{{…}}`-Platzhaltern) und die Funktion per `.env`
+  abschaltbar sein, Default aus (unverifizierter Empfänger bleibt ein Relay-/Missbrauchsvektor).
+  Hängt von `RateLimiter` ab → erst danach. `sanitizeMessage()` ist für sich generisch.
+
+**Verworfen:** `FORM_TYPE=both` (beide Formulare gleichzeitig) — für `beatmungswg-ofterdingen`
+kurz erwogen, dort reicht das Kontaktformular.
 
