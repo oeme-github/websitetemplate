@@ -61,6 +61,13 @@ vs PROD) am 2026-09-10 geschlossen — aktueller Stand vom Betreiber als ausreic
 
 ---
 
+## Doku-Check 2026-10-03 — bekannte Drift
+
+- `CLAUDE.md` „Testing“: nennt 48 PHPUnit-/86 Jest-Tests und 4 bzw. 9 Testdateien; tatsächlich
+  55/101, zusätzlich `RateLimitTest.php`, `ibanLookup.test.js` und `tests/Integration/`.
+
+---
+
 ## Zurückgestellt
 
 - **Screenreader-Test SEPA-Formular**: manueller Test (NVDA/VoiceOver) — kein Code-Task
