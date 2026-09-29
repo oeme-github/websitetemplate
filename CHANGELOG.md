@@ -12,6 +12,10 @@
   Start: `php -S <host>:<port> -t public dev/router.php`. Setzt die Entscheidung aus
   `websitetemplate_D01` um (Router-Skript statt Apache-Vhost für die lokale Entwicklung).
 
+### Changed
+- `CLAUDE.md` „Entwicklungsumgebung" final: `php -S` auf Port 8011 mit `dev/router.php`, Apache
+  nur noch als Produktions-Referenz; `websitetemplate_D01` damit abgeschlossen
+
 ### Fixed
 - `.visually-hidden` fehlte in `main.css` → Zahlen im Stats-Bereich erschienen doppelt
   (`websitetemplate_B01`)

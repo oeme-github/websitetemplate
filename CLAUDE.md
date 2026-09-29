@@ -21,15 +21,14 @@ Gemeinsame Devbox-Umgebung (OS/Hardware/Migrationsgeschichte): siehe `dev-notes/
 - **Projektpfad (Devbox):** `~/git_repos/websitetemplate`
 - **Versionskontrolle:** Git, Remote auf GitHub (`github.com/oeme-github/websitetemplate`)
 - **Automatisierte Tests** (`composer test`, `npm test`) laufen headless sauber auf der Devbox.
-- **Visueller Browser-QA-Workflow:** War bis 2026-09-02 WSL2-gebunden (GUI-Ausnahme, Devbox ist
-  reine SSH-Umgebung ohne Browser). Ersatz erfolgreich verprobt (2026-09-03): `php -S
-  <devbox-lan-ip>:<port> -t public` auf der Devbox starten, per `mcp__claude-in-chrome` vom
-  echten Browser des Users über die LAN-IP ansteuern (Details:
-  `dev-notes/projects/websitetemplate.md`, Cross-Machine-Browser-Test-Muster). **Noch offen:**
-  saubere URLs (`/impressum` etc., aktuell über `.htaccess`-Rewrites) im Ersatz-Workflow abbilden
-  — Router-Skript für `php -S` vs. Apache-Vhost auf der Devbox (bräuchte `sudo`), noch nicht
-  entschieden — siehe `BACKLOG.md`. Dieses Kapitel wird final geschrieben, sobald das entschieden
-  ist.
+- **Lokaler Dev-Server:** `php -S <devbox-lan-ip>:8011 -t public dev/router.php` (Port 8011 in
+  `dev-notes/PORTS.md` eingetragen). `dev/router.php` bildet die Regeln aus `public/.htaccess`
+  nach: saubere URLs (`/impressum`, `/datenschutz`), 403 für nicht freigegebene `.php`-Dateien und
+  Dotfiles, unbekannte Seiten 404 über das Whitelist-Routing von `index.php`.
+- **Visueller Browser-QA-Workflow:** Dev-Server wie oben an die LAN-IP binden und per
+  `mcp__claude-in-chrome` aus dem echten Browser des Users über die LAN-IP ansteuern (Devbox ist
+  reine SSH-Umgebung ohne Browser; Muster: `dev-notes/projects/websitetemplate.md`,
+  Cross-Machine-Browser-Test-Muster).
 
 ## Startup-Routine — projektspezifische Ergänzungen
 Generischer Kern: siehe `dev-notes/STANDARDS.md` §2. Keine zusätzlichen Schritte für dieses
@@ -43,10 +42,10 @@ composer install
 # JS-Abhängigkeiten installieren (Jest)
 npm install
 
-# PHP-Tests (48 PHPUnit-Tests)
+# PHP-Tests (55 PHPUnit-Tests)
 composer test
 
-# JS-Tests (86 Jest-Tests)
+# JS-Tests (101 Jest-Tests)
 npm test
 # oder via Composer:
 composer test-js
@@ -73,7 +72,7 @@ MAIL_TO=inbox@websitetemplate.local
 PHPMailer sendet dann an Mailpit statt an einen echten SMTP-Server. Alle Mails (inkl.
 SEPA-PDF-Anhang) sind in dessen Web-UI sichtbar (`http://localhost:8025`).
 
-### Apache-Konfiguration (Referenz, aktuell nicht aktiv genutzt — siehe „Entwicklungsumgebung")
+### Apache-Konfiguration (nur Referenz für Produktion — lokal siehe „Entwicklungsumgebung")
 Template: `setup/apache/websitetemplate.conf`
 
 ### Template-Einsatz (Referenz)
@@ -201,8 +200,7 @@ gegenstandslos und entfällt).
 
 ## Doku-Check (alle 4 Wochen)
 Dedizierte Session zur Synchronisierung der Dokumentation mit dem tatsächlichen Projektstand:
-- `CLAUDE.md` — nur noch projektspezifische Fakten hier; „Entwicklungsumgebung" final schreiben,
-  sobald die Router-Skript-vs-Apache-Entscheidung gefallen ist
+- `CLAUDE.md` — nur noch projektspezifische Fakten hier
 - `README.md` — Features, Konfiguration, Installationsschritte
 - `BACKLOG.md` — erledigte Einträge bereinigen, neue Erkenntnisse ergänzen; IDs auf
   `<repo>_<ID>`-Konvention prüfen und ggf. nachziehen (siehe `dev-notes/STANDARDS.md`) — inkl.

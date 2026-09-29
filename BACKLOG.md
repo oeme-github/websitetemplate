@@ -69,16 +69,6 @@ vs PROD) am 2026-09-10 geschlossen — aktueller Stand vom Betreiber als ausreic
 
 ## Nächste größere Aufgaben
 
-### websitetemplate_D01 — CLAUDE.md auf dev-notes-Template umstellen
-
-Umstellung seit 2026-09-05 erledigt. Die Frage „Router-Skript oder Apache-Vhost für saubere URLs“
-ist am 2026-09-29 für das Router-Skript entschieden, `dev/router.php` ist mit v1.7.0 umgesetzt
-(Vorlage aus `beatmungswg-ofterdingen`, ergänzt um die `.php`-Whitelist aus `public/.htaccess`).
-**Offen:** Das Kapitel „Entwicklungsumgebung“ in `CLAUDE.md` fertig schreiben: `php -S` mit
-`dev/router.php` + `mcp__claude-in-chrome` über die LAN-IP, Verweis auf die Apache-Vorlage nur
-noch als Produktions-Referenz. Port für das Template selbst: Vorschlag `8011` (in
-`dev-notes/PORTS.md` frei, Eintrag macht die Hub-Session). Danach D01 schließen.
-
 ### friendsofthehawks — Template-Kompatibilität herstellen
 
 `friendsofthehawks` basiert auf dem Template, wurde aber eigenständig weiterentwickelt und hat sich vom Template entfernt. Vor einem `git merge template/main` muss geprüft werden:
