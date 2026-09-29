@@ -114,6 +114,20 @@ URLs (Router-Skript vs. Apache-Vhost auf der Devbox)" ist noch **nicht entschied
 eine eigene `websitetemplate`-Sitzung, bevor das Kapitel final beschrieben werden kann. `CLAUDE.md`
 verweist bis dahin nur auf diesen Punkt statt einen unfertigen Workflow zu beschreiben.
 
+**Kandidat Router-Skript (2026-09-29, aus `beatmungswg-ofterdingen`):**
+`~/git_repos/beatmungswg-ofterdingen/dev/router.php` (Branch `feature/B02-template-merge`), Start
+`php -S devbox.lan:8010 -t public dev/router.php`. Liefert vorhandene Dateien direkt aus, setzt
+sonst `$_GET['page']` aus dem Pfad und bindet `public/index.php` ein → `/impressum` und
+`/datenschutz` 200, unbekannte Pfade 404 über das Whitelist-Routing von `index.php`. Dort ohne
+Änderung am Template-Code verprobt. **Bewertung:** Spricht klar für das Router-Skript statt eines
+Apache-Vhosts: kein `sudo`, passt zum verprobten `php -S`-Workflow, knapp 10 Zeilen, keine
+Produktionswirkung. Abweichung zur `.htaccess`: jede `.php`-Datei unter `public/` wird direkt
+ausgeliefert, während `.htaccess` nur `send_kontakt.php`/`send_sepa.php`/`iban_lookup.php` erlaubt
+und alles andere mit 403 abweist. Beim Übernehmen deshalb dieselbe Whitelist nachbilden, damit
+lokal kein Verhalten durchgeht, das in Produktion 403 liefert. `devbox.lan:8010` gehört als
+Beispiel in die Doku, der Port ist vorher in `dev-notes/PORTS.md` zu prüfen. Umsetzung wartet
+auf die Entscheidung des Users.
+
 ### friendsofthehawks — Template-Kompatibilität herstellen
 
 `friendsofthehawks` basiert auf dem Template, wurde aber eigenständig weiterentwickelt und hat sich vom Template entfernt. Vor einem `git merge template/main` muss geprüft werden:
