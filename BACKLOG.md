@@ -2,10 +2,14 @@
 
 ## Letzter Stand
 
-**Version:** v1.6.1 (gepusht)  
-**Zuletzt abgeschlossen:** `content/`-`.example.*`-Mechanismus + DSGVO-Mustertext + Deployment-Warnung in `.gitignore`
+**Version:** v1.7.0 (2026-09-29)  
+**Zuletzt abgeschlossen:** `websitetemplate_B01`–`B04` (Template-Fixes aus `beatmungswg-ofterdingen_B08`),
+`websitetemplate_D03` (Site-Identität über `content/site.json`), `dev/router.php` für `php -S` —
+Details in `CHANGELOG.md` v1.7.0.  
+**Nächster Schritt:** `RateLimiter` aus `friendsofthehawks` zurückportieren (siehe
+`websitetemplate_D02`, vom User für die nächste Session entschieden).
 
-### Abgeschlossen in dieser Session
+### Abgeschlossen in v1.6.1
 
 **Issue #13 — `update.sh`: git pull ohne Tracking-Branch**
 - `setup/update.sh` — `git pull` → `git pull origin main`
@@ -57,37 +61,6 @@ vs PROD) am 2026-09-10 geschlossen — aktueller Stand vom Betreiber als ausreic
 
 ---
 
-## Template-Mängel aus `beatmungswg-ofterdingen_B08` (2026-09-29)
-
-Beim Einspielen der Inhalte in `beatmungswg-ofterdingen` (Template-Stand `dc22c0d`) gefunden,
-hier am 2026-09-29 gegengeprüft (alle bestätigt). `beatmungswg-ofterdingen` hat lokale Patches und
-entfernt sie nach dem nächsten `git merge template/main`.
-
-- **websitetemplate_B01 — `.visually-hidden` fehlt in `main.css`.** `templates/pages/home.php:91`
-  (Stats) nutzt die Klasse, `main.css` definiert sie nicht → jede Zahl erscheint doppelt, auch mit
-  den Example-Inhalten. Fix: Standard-`.visually-hidden`-Regel (clip/1px) ergänzen.
-- **websitetemplate_B02 — Bilder in Markdown-Inhalten ohne `max-width`.** Es gibt keine
-  generische `img`-Regel (nur `.logo-img`/`.lightbox-img`) → Bilder aus `$md()` sprengen die
-  Seitenbreite. Fix: `img { max-width: 100%; height: auto; }` als Basisregel.
-- **websitetemplate_B03 — `.hero`-Gradient deckend, `--bg-image-hero` nie sichtbar.**
-  `--color-bg-hero-start/-end` sind `rgb(...)` ohne Alpha (`main.css:61–62`, Dark-Mode `:125–126`),
-  der Gradient liegt voll deckend über dem Bild. Fix: Tokens auf `rgba(..., <alpha>)` umstellen
-  (analog Footer-Overlay mit 0.95, für den Hero deutlich transparenter).
-- **websitetemplate_B04 — falsche Icon-Pfade in `site.webmanifest`.** Datei liegt unter
-  `public/assets/icons/`, referenziert aber `/android-chrome-*.png` (Root). Fix: Pfade auf
-  `/assets/icons/android-chrome-*.png`.
-- **websitetemplate_D03 — Instanz-Identität hart im Template-Code.** Topbar-Text („One-Pager
-  Template"), Logo-Alt und H1-Default („Mein One-Pager") in `templates/partials/header.php`,
-  Seitentitel/Meta-Description in der Routen-Tabelle in `public/index.php`, Nav-Labels
-  („Galerie", „Zahlen", …) in `header.php`. Downstream muss Template-Code ändern → Merge-Konflikte
-  bei jedem Update, widerspricht der Template/Kunden-Trennung (`DESIGN_PATTERN.md` §1).
-  Vorschlag: konfigurierbar über `content/` (z. B. `content/site.example.json` mit
-  `name`/`tagline`/`logoAlt`/`titles`/`metaDescriptions`/`nav`, analog zum `.example`-Fallback)
-  statt `.env` (Texte mit Umlauten/Sonderzeichen gehören nicht in `.env`). **Architektur-
-  entscheidung, wartet auf den User.**
-
----
-
 ## Zurückgestellt
 
 - **Screenreader-Test SEPA-Formular**: manueller Test (NVDA/VoiceOver) — kein Code-Task
@@ -98,35 +71,13 @@ entfernt sie nach dem nächsten `git merge template/main`.
 
 ### websitetemplate_D01 — CLAUDE.md auf dev-notes-Template umstellen
 
-Eigene englische Struktur, keine STANDARDS.md-Referenz. Gemeinsam mit
-`buero-desk-booking-landing`/`friendsofthehawks` zu betrachten (gemeinsame Abstammung von hier).
-Zusätzlicher konkreter Fund: toter Session-End-Schritt „Windows-Kopie synchronisieren"
-(`/mnt/f/git_repos/websitetemplate`) muss dabei ebenfalls entfernt werden (seit WSL-Ablösung
-2026-09-02 nicht mehr funktionsfähig). Siehe `dev-notes/BACKLOG.md` D17, `dev-notes_F02`.
-
-**Teilweise umgesetzt (2026-09-05):** `CLAUDE.md` auf dev-notes-Template umgestellt (Verweis auf
-`STANDARDS.md`, Entwicklungsumgebung/Doku-Check/Verwandte-Repositories ergänzt), toter
-Windows-Sync-Schritt entfernt, „Template-Einsatz"-Tabelle um `buero-desk-booking-landing`
-ergänzt. **Bewusst nicht final geschrieben:** das „Local Environment"-Kapitel — der WSL2-Ersatz
-für den visuellen Browser-QA-Workflow ist verprobt (`php -S` + `mcp__claude-in-chrome` über LAN,
-siehe `dev-notes/projects/websitetemplate.md`, Eintrag 2026-09-03), aber die Folgefrage „saubere
-URLs (Router-Skript vs. Apache-Vhost auf der Devbox)" ist noch **nicht entschieden** — braucht
-eine eigene `websitetemplate`-Sitzung, bevor das Kapitel final beschrieben werden kann. `CLAUDE.md`
-verweist bis dahin nur auf diesen Punkt statt einen unfertigen Workflow zu beschreiben.
-
-**Kandidat Router-Skript (2026-09-29, aus `beatmungswg-ofterdingen`):**
-`~/git_repos/beatmungswg-ofterdingen/dev/router.php` (Branch `feature/B02-template-merge`), Start
-`php -S devbox.lan:8010 -t public dev/router.php`. Liefert vorhandene Dateien direkt aus, setzt
-sonst `$_GET['page']` aus dem Pfad und bindet `public/index.php` ein → `/impressum` und
-`/datenschutz` 200, unbekannte Pfade 404 über das Whitelist-Routing von `index.php`. Dort ohne
-Änderung am Template-Code verprobt. **Bewertung:** Spricht klar für das Router-Skript statt eines
-Apache-Vhosts: kein `sudo`, passt zum verprobten `php -S`-Workflow, knapp 10 Zeilen, keine
-Produktionswirkung. Abweichung zur `.htaccess`: jede `.php`-Datei unter `public/` wird direkt
-ausgeliefert, während `.htaccess` nur `send_kontakt.php`/`send_sepa.php`/`iban_lookup.php` erlaubt
-und alles andere mit 403 abweist. Beim Übernehmen deshalb dieselbe Whitelist nachbilden, damit
-lokal kein Verhalten durchgeht, das in Produktion 403 liefert. `devbox.lan:8010` gehört als
-Beispiel in die Doku, der Port ist vorher in `dev-notes/PORTS.md` zu prüfen. Umsetzung wartet
-auf die Entscheidung des Users.
+Umstellung seit 2026-09-05 erledigt. Die Frage „Router-Skript oder Apache-Vhost für saubere URLs“
+ist am 2026-09-29 für das Router-Skript entschieden, `dev/router.php` ist mit v1.7.0 umgesetzt
+(Vorlage aus `beatmungswg-ofterdingen`, ergänzt um die `.php`-Whitelist aus `public/.htaccess`).
+**Offen:** Das Kapitel „Entwicklungsumgebung“ in `CLAUDE.md` fertig schreiben: `php -S` mit
+`dev/router.php` + `mcp__claude-in-chrome` über die LAN-IP, Verweis auf die Apache-Vorlage nur
+noch als Produktions-Referenz. Port für das Template selbst: Vorschlag `8011` (in
+`dev-notes/PORTS.md` frei, Eintrag macht die Hub-Session). Danach D01 schließen.
 
 ### friendsofthehawks — Template-Kompatibilität herstellen
 
@@ -162,7 +113,8 @@ stimmen nicht — `src/Security/csrf.php` ist in beiden Repos identisch (session
 
 - **`src/Security/RateLimiter.php`** — dateibasiertes Fixed-Window-Limit (`flock`, Schlüssel
   SHA-256-gehasht → keine IP/Mail im Klartext auf Platte), eigene PHPUnit-Tests.
-  **Bewertung: generisch, Rückportierung empfohlen.** Schließt eine echte Lücke im vorhandenen
+  **Bewertung: generisch, Rückportierung empfohlen — vom User für die nächste Session
+  entschieden (2026-09-29).** Schließt eine echte Lücke im vorhandenen
   Rate Limiting (Issue #7): `guardRateLimit()`/`rateLimitCheck()` zählen in `$_SESSION` — ein Bot
   holt sich pro Versuch eine neue Session samt CSRF-Token und setzt den Zähler damit zurück.
   Umsetzungsidee: `guardRateLimit()` in `FormEndpoint.php` intern auf `RateLimiter` umstellen
