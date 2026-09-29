@@ -9,8 +9,8 @@
   v1.6.x.
 - **`dev/router.php`**: Router für den eingebauten PHP-Server, bildet die Regeln aus
   `public/.htaccess` nach (saubere URLs, 403 für nicht freigegebene `.php`-Dateien und Dotfiles).
-  Start: `php -S <host>:<port> -t public dev/router.php`. Schließt `websitetemplate_D01`
-  (Router-Skript statt Apache-Vhost für die lokale Entwicklung).
+  Start: `php -S <host>:<port> -t public dev/router.php`. Setzt die Entscheidung aus
+  `websitetemplate_D01` um (Router-Skript statt Apache-Vhost für die lokale Entwicklung).
 
 ### Fixed
 - `.visually-hidden` fehlte in `main.css` → Zahlen im Stats-Bereich erschienen doppelt
