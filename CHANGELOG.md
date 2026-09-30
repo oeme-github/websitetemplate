@@ -1,3 +1,9 @@
+## Unreleased
+
+### Fixed
+- `content/legal/impressum.example.md`: „§ 5 TMG“ → „§ 5 DDG“ (TMG seit Mai 2024 durch das
+  Digitale-Dienste-Gesetz ersetzt). Abgeleitete Seiten mit eigenem `impressum.md` prüfen.
+
 ## v1.7.0 – Site-Identität, Dev-Router, Template-Fixes
 
 ### Added
